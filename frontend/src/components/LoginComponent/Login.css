@@ -1,0 +1,89 @@
+#modalLogin {
+    position: fixed;
+    z-index: 500;
+    width: 20%;
+    margin: auto;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, 0.29);
+    overflow: auto;
+    left: 40%;
+    border: 2px solid #ccc !important;
+    border-radius: 16px;
+    background-color: white;
+    height: fit-content;
+}
+
+#forgotPassword {
+    color: #1a73e8;
+    font-family: 'Google Sans', Arial, sans-serif;
+    font-size: medium;
+    cursor: pointer;
+    letter-spacing: 0.25px;
+    font-weight: bold;
+}
+
+#submitLogin {
+    margin: 10px auto 10px auto;
+    background-color: #0202C7;
+    box-shadow: 10px 10px 5px -5px rgba(0, 0, 0, 0.29);
+}
+
+#submitLogin:hover {
+    background-color: #010195;
+}
+
+#submitLogin:active {
+    background-color: #010195;
+    box-shadow: 0 6px 5px -5px rgba(0, 0, 0, 0.29);
+    transform: translateY(4px);
+}
+
+@media (max-width: 1380px) {
+    #modalLogin {
+        width: 40%;
+        left: 30%;
+        top: 15%;
+    }
+}
+
+@media (max-width: 1250px) {
+    #modalLogin {
+        width: 40%;
+        left: 18%;
+        top: 20%;
+    }
+}
+
+@media (max-width: 1000px) {
+    #modalLogin {
+        width: 50%;
+        left: 22%;
+        margin-left: 0;
+    }
+
+    .fullLength {
+        width: 85%;
+    }
+
+    .halfLength {
+        width: 42.5%;
+    }
+}
+
+@media (max-width: 750px) {
+    #modalLogin {
+        left: 22%;
+        top: 5%;
+        bottom: 5%;
+        height: fit-content;
+    }
+}
+
+@media (max-width: 500px) {
+    #modalLogin {
+        left: 20%;
+        top: 11%;
+        bottom: 0;
+    }
+}

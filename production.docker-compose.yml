@@ -1,0 +1,22 @@
+version: '3'
+services:
+  front-end:
+    image: "registry.gitlab.com/ipsenh-bootboys/bootbnb:frontend_latest"
+    ports:
+      - "5000:80"
+  back-end:
+    image: "registry.gitlab.com/ipsenh-bootboys/bootbnb:backend_latest"
+    volumes:
+      - /home/school/production/backend/.env:/.env
+    ports:
+      - "5050:5000"
+  databaseprod:
+    image: "postgres:12.2"
+    volumes:
+      - /home/school/production/backend/database:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: bootbnbipsenh
+      POSTGRES_USER: postgres
+      POSTGRES_DB: bootbnb
+    

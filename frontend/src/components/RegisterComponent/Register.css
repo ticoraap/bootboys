@@ -1,0 +1,105 @@
+.dialog {
+    display: inline-block;
+}
+
+
+.fullLength {
+    width: 73%;
+}
+
+.halfLength {
+    width: 36.5%;
+}
+
+h1 {
+    text-align: center;
+}
+
+.closeModal {
+    cursor: pointer;
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#submitRegister {
+    margin: 10px auto auto;
+    background-color: #0202C7;
+    box-shadow: 10px 10px 5px -5px rgba(0, 0, 0, 0.29);
+}
+
+#submitRegister:hover {
+    background-color: #010195;
+}
+
+#submitRegister:active {
+    background-color: #010195;
+    box-shadow: 0 6px 5px -5px rgba(0, 0, 0, 0.29);
+    transform: translateY(4px);
+}
+
+
+#modalSignUp {
+    position: fixed;
+    z-index: 500;
+    width: 40%;
+    margin: auto;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, 0.29);
+    overflow: auto;
+    left: 30%;
+    border: 2px solid #ccc !important;
+    border-radius: 16px;
+    background-color: white;
+}
+
+@media (max-width: 1380px) {
+    #modalSignUp {
+        width: 60%;
+        left: 18%;
+        top: -100px;
+    }
+}
+
+@media (max-width: 1250px) {
+    #modalSignUp {
+        width: 60%;
+        left: 18%;
+        top: 20%;
+    }
+}
+
+@media (max-width: 1000px) {
+    #modalSignUp {
+        width: 80%;
+        left: 8%;
+        margin-left: 0;
+        top: -90px;
+    }
+
+    .fullLength {
+        width: 85%;
+    }
+
+    .halfLength {
+        width: 42.5%;
+    }
+}
+
+@media (max-width: 750px) {
+    #modalSignUp {
+        left: 5%;
+        top: 5%;
+        bottom: 5%;
+        height: 450px;
+    }
+}
+
+@media (max-width: 500px) {
+    #modalSignUp {
+        left: 5%;
+        top: 11%;
+        bottom: 0;
+    }
+}

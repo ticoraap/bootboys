@@ -1,0 +1,80 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.9.13",
+    "@material-ui/icons": "^4.9.1",
+    "@stripe/react-stripe-js": "^1.1.2",
+    "@stripe/stripe-js": "^1.6.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.19.2",
+    "env-cmd": "^10.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "eslint-formatter-gitlab": "^2.0.0",
+    "history": "^4.10.1",
+    "js-sha256": "^0.9.0",
+    "leaflet": "^1.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-async-script-loader": "^0.3.0",
+    "react-calendar": "^3.1.0",
+    "react-dom": "^16.13.1",
+    "react-leaflet": "^2.7.0",
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-test-renderer": "^16.13.1",
+    "react-toastify": "^6.0.5",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "rxjs": "^6.5.5",
+    "socket.io-client": "^2.3.0",
+    "stripe": "^8.56.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "start-local": "env-cmd -f src/env/.env.local react-scripts start",
+    "start-staging": "env-cmd -f src/env/.env.staging react-scripts start",
+    "start-production": "env-cmd -f src/env/.env.production react-scripts start",
+    "build-local": "env-cmd -f src/env/.env.local react-scripts build",
+    "build-staging": "env-cmd -f src/env/.env.staging react-scripts build",
+    "build-production": "env-cmd -f src/env/.env.production react-scripts build",
+    "test": "react-scripts test",
+    "test-ci": "react-scripts test --ci --reporters=default --reporters=jest-junit",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-security": "^1.4.0",
+    "jest-junit": "^10.0.0"
+  },
+  "jest-junit": {
+    "reporters":["jest-junit"],
+     "output": "./junit.xml",
+     "classNameTemplate": "{classname}-{title}",
+     "titleTemplate": "{classname}-{title}",
+     "ancestorSeparator": " › ",
+     "suiteNameTemplate": "{filepath}",
+     "usePathForSuiteName": "true"
+ }
+}

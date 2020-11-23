@@ -1,0 +1,66 @@
+:root {
+    --sucess: #3db96d;
+    --error: #ea4634;
+    --warning: #ea8634;
+    --notify: #f5ed02;
+    --warning-lighter: #e9b78e;
+    --notify-lighter: #eceaab;
+
+    --white: #fff;
+
+    --gray-lightest: #f2f2f3;
+    --gray-lighterer: #dbdcdd;
+    --gray-lighter: #bebfc3;
+    --gray-light: #8ca4a5;
+
+    --gray-darker: #717171;
+    --gray-dark: #434954;
+
+    --primary: #f26c4e; /* #2F8BE6 */
+    --primary-lighter: #dab5ad; /* #2F8BE6 */
+}
+
+@font-face {
+    font-family: "Comic Sans MS";
+    src: url("assets/fonts/ComicSansMSRegular.ttf");
+}
+
+body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: "Comic Sans MS", 'Source Sans Pro', sans-serif;
+    background-color: var(--gray-lightest);
+    color: var(--gray-dark);
+    font-size: 14px;
+}
+
+code {
+    font-family: "Comic Sans MS", source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h4 {
+    font-size: 30px;
+    text-align: left;
+    font-weight: lighter;
+}
+
+h5 {
+    font-size: 25px;
+    text-align: left;
+    font-weight: lighter;
+}
+
+p {
+    font-size: 15px;
+    text-align: left;
+    font-weight: lighter;
+}
+
+
+.leaflet-container {
+    width: 100%;
+    min-height: 100%;
+}
+

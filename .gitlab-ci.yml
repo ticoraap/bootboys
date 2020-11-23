@@ -1,0 +1,298 @@
+image: verbindingsfout/image-builder:latest
+
+variables:
+  dockerTag: '$CI_COMMIT_SHA'
+  DOCKER_REPO: registry.gitlab.com/ipsenh-bootboys
+  
+  IMAGE_BASE_NAME: bootbnb
+  
+  BACKEND_IMAGE: $DOCKER_REPO/$IMAGE_BASE_NAME:backend_$CI_COMMIT_SHA
+  FRONTEND_IMAGE: $DOCKER_REPO/$IMAGE_BASE_NAME:frontend_$CI_COMMIT_SHA
+
+  TARGET_DIR_STAGE: /home/school/staging
+  TARGET_DIR_PROD: /home/school/production
+
+  BACKEND_RELEASE_IMAGE: $DOCKER_REPO/$IMAGE_BASE_NAME:backend_latest
+  FRONTEND_RELEASE_IMAGE: $DOCKER_REPO/$IMAGE_BASE_NAME:frontend_latest
+
+  INTEGRATION_DOCKER_COMPOSE_CMD: cd $TARGET_DIR_STAGE && docker-compose 
+  PRODUCTION_DOCKER_COMPOSE_CMD: cd $TARGET_DIR_PROD && docker-compose 
+  DOCKER_LOGIN_CMD: docker login registry.gitlab.com -u tico@l-dorp.nl -p $GITLAB_REGISTRY_TOKEN
+
+  STAGING_FOLDER_STRUCTURE: mkdir -p ~/staging/{backend/database,frontend}
+  PRODUCTION_FOLDER_STRUCTURE: mkdir -p ~/production/{backend/database,frontend}
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+    - when: always
+
+before_script:
+  - echo $dockerTag
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - chmod -R 700 ~/.ssh
+
+stages:
+  - backend_testing_building
+  - frontend_testing_building
+  - static_code_analysis
+  - test
+  - backend_integration
+  - frontend_integration
+  - backend_production
+  - frontend_production
+
+
+## Backend part testing building on target branches
+backend_testing_building_part_branch:
+  stage: backend_testing_building
+  tags:
+    - bootbnb-image-builder
+  script:
+    - cd backend
+    - echo "flask image is being built"
+    - docker build -t $BACKEND_IMAGE .
+  only:
+    - master
+    - staging
+    - develop
+        
+## Backend part testing building on changes dependencies
+backend_testing_building_part_dependency:
+  stage: backend_testing_building
+  tags:
+    - bootbnb-image-builder
+  script:
+    - cd backend
+    - echo "flask image is being build"
+    - docker build -t $BACKEND_IMAGE .
+
+    # login
+    - docker login registry.gitlab.com -u tico@l-dorp.nl -p $GITLAB_REGISTRY_TOKEN
+    # give the image a tag set in $RELEASE_IMAGE (:latest)
+    - docker tag $BACKEND_IMAGE $BACKEND_RELEASE_IMAGE
+    # push the image to the registry
+    - docker push $BACKEND_RELEASE_IMAGE
+  only:    
+    changes:
+        - backend/app/requirements.txt
+
+## Frontend part testing building on target branches production
+frontend_testing_building_part_branch_production:
+  stage: frontend_testing_building
+  tags:
+    - bootbnb-image-builder
+  script:
+    - cd frontend
+    - echo "Node image is being build"
+    - docker build -t $FRONTEND_IMAGE --build-arg ENVIROMENT=production .
+  only:
+    - master
+    
+## Frontend part testing building on target staging
+frontend_testing_building_part_branch_staging:
+  stage: frontend_testing_building
+  tags:
+    - bootbnb-image-builder
+  script:
+    - cd frontend
+    - echo "Node image is being build"
+    - docker build -t $FRONTEND_IMAGE --build-arg ENVIROMENT=staging .
+  only:
+    - staging
+    - develop
+
+## Frontend part testing building on changes dependencies
+frontend_testing_building_part_dependency:
+  stage: frontend_testing_building
+  tags:
+    - bootbnb-image-builder
+  script:
+    - cd frontend
+    - echo "Node image is being build"
+    - docker build -t $FRONTEND_IMAGE .
+  only:  
+    changes:
+        - frontend/yarn.lock
+        - frontend/package.json
+  except:
+    - master
+    - staging
+    - develop
+    
+## Backend part deploying to integration
+deploy_backend_to_integration:
+  stage: backend_integration
+  tags:
+    - bootbnb-image-builder
+  script:
+    # login
+    - docker login registry.gitlab.com -u tico@l-dorp.nl -p $GITLAB_REGISTRY_TOKEN
+    # give the image a tag set in $RELEASE_IMAGE (:latest)
+    - docker tag $BACKEND_IMAGE $BACKEND_RELEASE_IMAGE
+    # push the image to the registry
+    - docker push $BACKEND_RELEASE_IMAGE
+
+    # start the new image on the integration machine
+    - echo "Deploying to staging server"
+    - ssh school@178.162.196.230 -p22 "$DOCKER_LOGIN_CMD"
+    - ssh school@178.162.196.230 -p22 "$STAGING_FOLDER_STRUCTURE"
+    - ssh school@178.162.196.230 -p22 "docker pull $BACKEND_RELEASE_IMAGE"
+    - ssh school@178.162.196.230 -p22 "${INTEGRATION_DOCKER_COMPOSE_CMD} stop"
+    # copy the docker-compose.yml to the server
+    - scp ./staging.docker-compose.yml school@178.162.196.230:~/staging/docker-compose.yml
+    - ssh school@178.162.196.230 -p22 "${INTEGRATION_DOCKER_COMPOSE_CMD} up -d"
+    - echo "Deployed"
+  only:
+    - staging
+
+## Frontend part deploying to integration
+deploy_frontend_to_integration:
+  stage: frontend_integration
+  tags:
+    - bootbnb-image-builder
+  script:
+    # login
+    - docker login registry.gitlab.com -u tico@l-dorp.nl -p $GITLAB_REGISTRY_TOKEN
+    # give the image a tag set in $RELEASE_IMAGE (:latest)
+    - docker tag $FRONTEND_IMAGE $FRONTEND_RELEASE_IMAGE
+    # push the image to the registry
+    - docker push $FRONTEND_RELEASE_IMAGE
+
+    # start the new image on the integration machine
+    - echo "Deploying to staging server"
+    - ssh school@178.162.196.230 -p22 "$DOCKER_LOGIN_CMD"
+    - ssh school@178.162.196.230 -p22 "$STAGING_FOLDER_STRUCTURE"
+    - ssh school@178.162.196.230 -p22 "docker pull $FRONTEND_RELEASE_IMAGE"
+    - ssh school@178.162.196.230 -p22 "${INTEGRATION_DOCKER_COMPOSE_CMD} stop"
+    # copy the docker-compose.yml to the server
+    - scp ./staging.docker-compose.yml school@178.162.196.230:~/staging/docker-compose.yml
+    - ssh school@178.162.196.230 -p22 "${INTEGRATION_DOCKER_COMPOSE_CMD} up -d"
+    - echo "Deployed"
+  only:
+    - staging
+
+## Backend part deploying to production
+deploy_backend_to_production:
+  stage: backend_production
+  tags:
+    - bootbnb-image-builder
+  script:
+    # login
+    - docker login registry.gitlab.com -u tico@l-dorp.nl -p $GITLAB_REGISTRY_TOKEN
+    # give the image a tag set in $RELEASE_IMAGE (:latest)
+    - docker tag $BACKEND_IMAGE $BACKEND_RELEASE_IMAGE
+    # push the image to the registry
+    - docker push $BACKEND_RELEASE_IMAGE
+
+    # start the new image on the production machine
+    - echo "Deploying to production server"
+    - ssh school@178.162.196.230 -p22 "$DOCKER_LOGIN_CMD"
+    - ssh school@178.162.196.230 -p22 "$PRODUCTION_FOLDER_STRUCTURE"
+    - ssh school@178.162.196.230 -p22 "docker pull $BACKEND_RELEASE_IMAGE"
+    - ssh school@178.162.196.230 -p22 "${PRODUCTION_DOCKER_COMPOSE_CMD} stop"
+    # copy the docker-compose.yml to the server
+    - scp ./production.docker-compose.yml school@178.162.196.230:~/production/docker-compose.yml
+    - ssh school@178.162.196.230 -p22 "${PRODUCTION_DOCKER_COMPOSE_CMD} up -d"
+    - echo "Deployed"
+  only:
+    - master
+
+## Frontend part deploying to production
+deploy_frontend_to_production:
+  stage: frontend_production
+  tags:
+    - bootbnb-image-builder
+  script:
+    # login
+    - docker login registry.gitlab.com -u tico@l-dorp.nl -p $GITLAB_REGISTRY_TOKEN
+    # give the image a tag set in $RELEASE_IMAGE (:latest)
+    - docker tag $FRONTEND_IMAGE $FRONTEND_RELEASE_IMAGE
+    # push the image to the registry
+    - docker push $FRONTEND_RELEASE_IMAGE
+
+    # start the new image on the production machine
+    - echo "Deploying to production server"
+    - ssh school@178.162.196.230 -p22 "$DOCKER_LOGIN_CMD"
+    - ssh school@178.162.196.230 -p22 "$PRODUCTION_FOLDER_STRUCTURE"
+    - ssh school@178.162.196.230 -p22 "docker pull $FRONTEND_RELEASE_IMAGE"
+    - ssh school@178.162.196.230 -p22 "${PRODUCTION_DOCKER_COMPOSE_CMD} stop"
+    # copy the docker-compose.yml to the server
+    - scp ./production.docker-compose.yml school@178.162.196.230:~/production/docker-compose.yml
+    - ssh school@178.162.196.230 -p22 "${PRODUCTION_DOCKER_COMPOSE_CMD} up -d"
+    - echo "Deployed"
+  only:
+    - master
+
+pytest:
+  stage: test
+  image:
+    name: $BACKEND_RELEASE_IMAGE
+    entrypoint: [""]
+  before_script:
+    - cd backend/app
+  script:
+    - pytest --cov=./ --junitxml=report.xml -p no:cacheprovider
+  retry: 1
+  artifacts:
+    reports:
+      junit: ./backend/app/report.xml
+
+
+jest:
+  stage: test
+  image: node:latest
+  before_script:
+    - cd frontend
+    - echo $(pwd)
+    - yarn
+  script:
+    - yarn test-ci
+  artifacts:
+    reports:
+      junit: ./frontend/junit.xml
+
+bandit:
+  stage: static_code_analysis
+  image:
+    name: $BACKEND_RELEASE_IMAGE
+    entrypoint: [""]
+  script:
+    - bandit -r ./backend/app/app -x test --format json --output CI-USE-ONLY/rawBandit.json
+  after_script:
+    - cd CI-USE-ONLY
+    - python bandit_mapper.py
+  artifacts:
+    reports:
+      sast: CI-USE-ONLY/gl-sast-report.json
+
+#Wanneer deze issue is gesolved https://gitlab.com/gitlab-org/gitlab/-/issues/202142 uncomment de onderstaande regels
+prospector:
+  stage: static_code_analysis
+  image:
+    name: $BACKEND_RELEASE_IMAGE
+    entrypoint: [""]
+  script:
+    - prospector ./backend/app/app -i wsgi.py #--output-format json:prospectoroutput.json
+#  after_script:
+#    - cd CI-USE-ONLY
+#    - python prospector_mapper.py
+#  artifacts:
+#    reports:
+#      codequality: CI-USE-ONLY/prospector_result.json
+
+eslint:
+  stage: static_code_analysis
+  image: node:latest
+  before_script:
+    - cd frontend
+    - echo $(pwd)
+    - yarn
+  script:
+    - yarn eslint --format gitlab --output-file result.json ./src
+  artifacts:
+    reports:
+        codequality: result.json

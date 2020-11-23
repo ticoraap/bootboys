@@ -1,0 +1,34 @@
+.searchDock {
+    width: 220px;
+    display: inline-block;
+}
+
+#wrapper {
+    width: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#mapDocks {
+    max-height: 500px;
+    margin-bottom: 450px;
+}
+
+#inputs {
+    margin-bottom: 10px;
+}
+
+
+
+@media (max-width: 1400px) {
+    #mapDocks {
+        height: 200px;
+    }
+}
+
+@media (max-width: 750px) {
+    #wrapper {
+        grid-template-columns: 1fr;
+    }
+}

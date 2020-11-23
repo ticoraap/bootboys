@@ -1,0 +1,37 @@
+.DockManager {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.DockManagerList{
+    width: 100%;
+    max-height: 30vh;
+    border-style: groove;
+    overflow-y:scroll;
+}
+
+.DockManagerCreator {
+    flex-grow: 1;
+    min-height: 70vh; 
+    border-style: groove;
+    width: min-content;
+}
+
+@media (min-width: 1000px) {
+    .DockManagerList{
+        width: unset;
+        min-height: 70vh; 
+    }
+}
+
+.DockManagerButtons{
+    display: flex;
+}
+
+
+.EpmtyDockList {
+    padding: 20px;
+    max-width: 300px;
+}
+

@@ -1,0 +1,63 @@
+.Button {
+    background-color: transparent;
+    border: none;
+    color: var(--white);
+    background-color: var(--primary);
+    outline: none;
+    cursor: pointer;
+    font: inherit;
+    height: 48px;
+    border-radius: 3px;
+    font-size: 15px;
+    padding: 0 12px;
+    margin: 10px
+}
+
+.Disabled {
+    cursor: not-allowed;
+    background-color: var(--gray-darker);
+}
+
+/* Styles: */
+
+.Form {
+    margin-top: 36px;
+    height: 34px;
+    padding: 0 10px;
+    float: left;
+    overflow: hidden;
+    min-width: fit-content;
+}
+
+.Facility {
+    height: 30px;
+    padding: 0 10px;
+    float: left;
+    overflow: hidden;
+    min-width: fit-content;
+}
+
+.DockCard {
+    background-color: var(--gray-darker);
+    height: 30px;
+    transition: all 0.3s ease;
+}
+.DockCard:hover {
+    background-color: var(--notify);
+    color: black;
+}
+
+.DockCardDanger {
+    background-color: var(--gray-darker);
+    height: 30px;
+    transition: all 0.3s ease;
+}
+
+.DockCardDanger:hover {
+    background-color: var(--primary);
+    color: black;
+}
+
+.DockManager {
+    display: block;
+}

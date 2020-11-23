@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="4" failures="0" time="11.463">
+  <testsuite name="src\components\Dock\DockCard\DockCard.test.js" errors="0" failures="0" skipped="0" timestamp="2020-06-09T22:57:29" time="6.33" tests="1">
+    <testcase classname="&lt;DockCard /&gt;-should render the title " name="&lt;DockCard /&gt;-should render the title " time="0.047">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\components\Navigation\NavigationItems\NavigationItems.test.js" errors="0" failures="0" skipped="0" timestamp="2020-06-09T22:57:29" time="8.065" tests="2">
+    <testcase classname="&lt;NavigationItems /&gt;-should render two &lt;NavigationItem /&gt; elements if not authenticated" name="&lt;NavigationItems /&gt;-should render two &lt;NavigationItem /&gt; elements if not authenticated" time="0.132">
+    </testcase>
+    <testcase classname="&lt;NavigationItems /&gt;-should render five &lt;NavigationItem /&gt; elements if authenticated" name="&lt;NavigationItems /&gt;-should render five &lt;NavigationItem /&gt; elements if authenticated" time="0.037">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\containers\DockManager\DockManager.test.js" errors="0" failures="0" skipped="0" timestamp="2020-06-09T22:57:29" time="8.774" tests="1">
+    <testcase classname="&lt;DockManager /&gt;-should render two &lt;DockCards /&gt; elements if two dock objects are passed as props" name="&lt;DockManager /&gt;-should render two &lt;DockCards /&gt; elements if two dock objects are passed as props" time="0.08">
+    </testcase>
+  </testsuite>
+</testsuites>

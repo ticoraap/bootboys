@@ -1,0 +1,30 @@
+#elementbox {
+    border-style: groove;
+    background-color: #f3f3f3;
+    margin-top: 3%;
+}
+
+#textfields {
+    justify-content: center;
+    display: flex;
+    font-size: 18px;
+}
+
+#ownP{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+#editbutton {
+    background-color: #ea4634;
+    border: none;
+    color: white;
+    display: inline-block;
+    font-size: 24px;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+
+

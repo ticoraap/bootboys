@@ -1,0 +1,30 @@
+.FacilityCreator {
+    display: grid;
+    border: 1px solid var(--gray-lighter);
+}
+
+.FacilityForm {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.FacilityForm textarea {
+    height: 50px;
+}
+
+.Input {
+    display: block;
+}
+
+.Warning {
+    padding: 10px;
+    font-weight: bold;
+    color: var(--error);
+}
+
+.Header {
+    padding: 10px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    border-bottom: 1px solid var(--gray-lighter);
+}

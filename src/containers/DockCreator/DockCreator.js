@@ -17,7 +17,7 @@ import Spinner from "../../components/UI/Spinner/Spinner";
 import ToastMaker from "../../components/shared/ToastMaker";
 export class DockCreator extends Component {
     state = {
-        createDockForm: {
+        dockForm: {
             name: {
                 wrapperClassName: "WrapperclassFull",
                 label: "Title/Name of the Dock",
@@ -29,7 +29,7 @@ export class DockCreator extends Component {
                 value: "",
                 validationWarning:
                     "Please enter a Title/Name not greater then 80 chars",
-                validation: {
+                validationRules: {
                     required: true,
                     maxLength: 80,
                 },
@@ -47,7 +47,7 @@ export class DockCreator extends Component {
                 },
                 value: "",
                 validationWarning: "Please choose a address or create a new",
-                validation: {
+                validationRules: {
                     required: true,
                 },
                 valid: false,
@@ -65,7 +65,7 @@ export class DockCreator extends Component {
                 value: "",
                 validationWarning:
                     "Please enter a short description max 500 characters",
-                validation: {
+                validationRules: {
                     required: true,
                     maxLength: 500,
                 },
@@ -87,7 +87,7 @@ export class DockCreator extends Component {
                 },
                 value: "",
                 validationWarning: "This field is required",
-                validation: {
+                validationRules: {
                     required: true,
                     isMeters: true,
                 },
@@ -103,7 +103,7 @@ export class DockCreator extends Component {
                     placeholder: "Width in meters",
                 },
                 value: "",
-                validation: {
+                validationRules: {
                     required: true,
                     isMeters: true,
                 },
@@ -120,7 +120,7 @@ export class DockCreator extends Component {
                 },
                 value: "",
                 validationWarning: "Price in euros Example: 25 or €29,99",
-                validation: {
+                validationRules: {
                     required: true,
                     isEuros: true,
                 },
@@ -136,7 +136,7 @@ export class DockCreator extends Component {
                     placeholder: "Example: A or C12",
                 },
                 value: "",
-                validation: {
+                validationRules: {
                     required: false,
                 },
                 valid: false,
@@ -152,7 +152,7 @@ export class DockCreator extends Component {
                     disabled: true,
                 },
                 value: "",
-                validation: {
+                validationRules: {
                     required: true,
                     isLatitude: true,
                 },
@@ -169,7 +169,7 @@ export class DockCreator extends Component {
                     disabled: true,
                 },
                 value: "",
-                validation: {
+                validationRules: {
                     required: true,
                     isLongitude: true,
                 },
@@ -177,7 +177,7 @@ export class DockCreator extends Component {
                 touched: false,
             },
         },
-        formIsValid: false,
+        allFieldsValid: false,
         mapcenter: {
             lat: 52.16121472938702,
             lon: 4.501615852518094,
@@ -227,12 +227,12 @@ export class DockCreator extends Component {
                         };
                     });
 
-                    const updatedCreateDockForm = {
-                        ...this.state.createDockForm,
+                    const updatedDockForm = {
+                        ...this.state.dockForm,
                         address: {
-                            ...this.state.createDockForm.address,
+                            ...this.state.dockForm.address,
                             elementConfig: {
-                                ...this.state.createDockForm.address
+                                ...this.state.dockForm.address
                                     .elementConfig,
                                 options: newAddressOptions,
                             },
@@ -241,7 +241,7 @@ export class DockCreator extends Component {
 
                     this.setState({
                         addresses: newAddressess,
-                        createDockForm: updatedCreateDockForm,
+                        dockForm: updatedDockForm,
                     });
                 }
             })
@@ -250,93 +250,94 @@ export class DockCreator extends Component {
             });
     };
 
-    checkValidity = (value, rules) => {
+    checkValidity = (input, rules) => {
         let isValid = true;
-        let trimmedValue = String(value).trim();
-        let trimmedValueLength = trimmedValue.length;
+        let trimmedInput = String(input).trim();
+        let trimmedInputLength = trimmedInput.length;
 
         if (rules) {
             if (rules.required) {
-                isValid = trimmedValue !== "";
+                isValid = trimmedInput !== "";
             }
             if (rules.minLength) {
-                isValid = trimmedValueLength >= rules.minLength && isValid;
+                isValid = trimmedInputLength >= rules.minLength && isValid;
             }
             if (rules.maxLength) {
-                isValid = trimmedValueLength <= rules.maxLength && isValid;
+                isValid = trimmedInputLength <= rules.maxLength && isValid;
             }
             if (rules.isEmail) {
-                const re = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                const emailRegExp = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 isValid =
-                    re.test(String(trimmedValue).toLowerCase()) && isValid;
+                    emailRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
             }
             if (rules.isPostalcode) {
-                const re = /^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i;
+                const postalCodeRegEx = /^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i;
                 isValid =
-                    re.test(String(trimmedValue).toLowerCase()) && isValid;
+                    postalCodeRegEx.test(String(trimmedInput).toLowerCase()) && isValid;
             }
             if (rules.isMeters) {
-                const re = /^(\d+(?:[.,]\d{1,2})?['m']?)$/;
+                const metersRegExp = /^(\d+(?:[.,]\d{1,2})?['m']?)$/;
                 isValid =
-                    re.test(String(trimmedValue).toLowerCase()) && isValid;
+                    metersRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
             }
             if (rules.isEuros) {
-                const re = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
+                const euroCurrencyRegExp = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
                 isValid =
-                    re.test(String(trimmedValue).toLowerCase()) && isValid;
+                    euroCurrencyRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
             }
             if (rules.isLatitude) {
-                const re = /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,20})?))$/;
+                const latitudeRegExp = /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,20})?))$/;
                 isValid =
-                    re.test(String(trimmedValue).toLowerCase()) && isValid;
+                    latitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
             }
             if (rules.isLongitude) {
-                const re = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,20})?))$/;
+                const longitudeRegExp = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,20})?))$/;
                 isValid =
-                    re.test(String(trimmedValue).toLowerCase()) && isValid;
+                    longitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
             }
         }
         return isValid;
     };
 
-    inputChangedHandler = (event, inputIdentifier) => {
-        const updatedCreateDockForm = {
-            ...this.state.createDockForm,
-            [inputIdentifier]: {
-                ...this.state.createDockForm[inputIdentifier],
+    inputChangedHandler = (event, formElementId) => {
+        const updatedDockForm = {
+            ...this.state.dockForm,
+            [formElementId]: {
+                ...this.state.dockForm[formElementId],
                 value: event.target.value,
                 valid: this.checkValidity(
                     event.target.value,
-                    this.state.createDockForm[inputIdentifier].validation
+                    this.state.dockForm[formElementId].validationRules
                 ),
                 touched: true,
             },
         };
 
-        let formIsValid = true;
-        for (let dockFormIdentfier in updatedCreateDockForm) {
-            if (!updatedCreateDockForm[dockFormIdentfier].validation) {
+        let allFieldsValid = true;
+        for (let dockFormId in updatedDockForm) {
+            if (!updatedDockForm[dockFormId].validationRules) {
                 continue;
             }
-            formIsValid =
-                updatedCreateDockForm[dockFormIdentfier].valid && formIsValid;
+            allFieldsValid =
+                updatedDockForm[dockFormId].valid && allFieldsValid;
         }
 
         this.setState((oldState) => {
             return {
                 ...oldState,
-                createDockForm: updatedCreateDockForm,
-                formIsValid: formIsValid,
+                dockForm: updatedDockForm,
+                allFieldsValid: allFieldsValid,
             };
         });
 
         // check if selected address exists, update latlong and center the map around it
-        if (inputIdentifier === "address" && event.target.value !== "") {
+        if (formElementId === "address" && event.target.value !== "") {
             const address = this.state.addresses.find(
                 (address) =>
                     parseInt(address.addressid) === parseInt(event.target.value)
             );
             queryAddressLatLong(address)
+            // console.log(address)
                 .then((latlon) => {
                     this.updateLatitudeLongitude(latlon);
                     this.setState({ mapcenter: latlon });
@@ -391,27 +392,27 @@ export class DockCreator extends Component {
         if (event) {
             event.preventDefault();
         }
-        const updatedCreateDockForm = {
-            ...this.state.createDockForm,
+        const updatedDockForm = {
+            ...this.state.dockForm,
 
             latitude: {
-                ...this.state.createDockForm.latitude,
+                ...this.state.dockForm.latitude,
                 elementConfig: {
-                    ...this.state.createDockForm.latitude.elementConfig,
-                    disabled: !this.state.createDockForm.latitude.elementConfig
+                    ...this.state.dockForm.latitude.elementConfig,
+                    disabled: !this.state.dockForm.latitude.elementConfig
                         .disabled,
                 },
             },
             longitude: {
-                ...this.state.createDockForm.longitude,
+                ...this.state.dockForm.longitude,
                 elementConfig: {
-                    ...this.state.createDockForm.longitude.elementConfig,
-                    disabled: !this.state.createDockForm.longitude.elementConfig
+                    ...this.state.dockForm.longitude.elementConfig,
+                    disabled: !this.state.dockForm.longitude.elementConfig
                         .disabled,
                 },
             },
         };
-        this.setState({ createDockForm: updatedCreateDockForm });
+        this.setState({ dockForm: updatedDockForm });
     };
 
     notifyAddressAdded = () => {
@@ -429,29 +430,29 @@ export class DockCreator extends Component {
         }
 
         const dock = {
-            name: this.state.createDockForm.name.value,
-            addressid: this.state.createDockForm.address.value,
-            description: this.state.createDockForm.description.value,
+            name: this.state.dockForm.name.value,
+            addressid: this.state.dockForm.address.value,
+            description: this.state.dockForm.description.value,
             length: parseFloat(
-                this.state.createDockForm.length.value
+                this.state.dockForm.length.value
                     .replace(",", ".")
                     .replace("m", "")
                     .replace("M", "")
             ),
             width: parseFloat(
-                this.state.createDockForm.width.value
+                this.state.dockForm.width.value
                     .replace(",", ".")
                     .replace("m", "")
                     .replace("M", "")
             ),
             price: parseFloat(
-                this.state.createDockForm.price.value
+                this.state.dockForm.price.value
                     .replace(",", ".")
                     .replace("€", "")
             ),
-            place: this.state.createDockForm.place.value,
-            latitude: parseFloat(this.state.createDockForm.latitude.value),
-            longitude: parseFloat(this.state.createDockForm.longitude.value),
+            place: this.state.dockForm.place.value,
+            latitude: parseFloat(this.state.dockForm.latitude.value),
+            longitude: parseFloat(this.state.dockForm.longitude.value),
             facilities: this.state.facilities,
         };
 
@@ -461,18 +462,18 @@ export class DockCreator extends Component {
     };
 
     resetDockForm = () => {
-        const resetCreateDockForm = { ...this.state.createDockForm };
-        for (let inputIdentifier in this.state.createDockForm) {
-            if (resetCreateDockForm[inputIdentifier].value) {
-                resetCreateDockForm[inputIdentifier].value = "";
-                resetCreateDockForm[inputIdentifier].valid = false;
-                resetCreateDockForm[inputIdentifier].touched = false;
+        const resetDockForm = { ...this.state.dockForm };
+        for (let inputIdentifier in this.state.dockForm) {
+            if (resetDockForm[inputIdentifier].value) {
+                resetDockForm[inputIdentifier].value = "";
+                resetDockForm[inputIdentifier].valid = false;
+                resetDockForm[inputIdentifier].touched = false;
             }
         }
 
         this.setState({
-            createDockForm: resetCreateDockForm,
-            formIsValid: false,
+            dockForm: resetDockForm,
+            allFieldsValid: false,
             facilities: [],
             loading: false,
             mapcenter: {
@@ -491,19 +492,19 @@ export class DockCreator extends Component {
             <Input
                 key={key}
                 wrapperClassName={
-                    this.state.createDockForm[key].wrapperClassName
+                    this.state.dockForm[key].wrapperClassName
                 }
-                elementType={this.state.createDockForm[key].elementType}
-                elementConfig={this.state.createDockForm[key].elementConfig}
-                value={this.state.createDockForm[key].value}
-                invalid={!this.state.createDockForm[key].valid}
-                shouldValidate={this.state.createDockForm[key].validation}
-                touched={this.state.createDockForm[key].touched}
-                label={this.state.createDockForm[key].label}
+                elementType={this.state.dockForm[key].elementType}
+                elementConfig={this.state.dockForm[key].elementConfig}
+                value={this.state.dockForm[key].value}
+                invalid={!this.state.dockForm[key].valid}
+                shouldValidate={this.state.dockForm[key].validationRules}
+                touched={this.state.dockForm[key].touched}
+                label={this.state.dockForm[key].label}
                 validationWarning={
-                    this.state.createDockForm[key].validationWarning
+                    this.state.dockForm[key].validationWarning
                 }
-                styling={this.state.createDockForm[key].styling}
+                styling={this.state.dockForm[key].styling}
                 changed={(event) => this.inputChangedHandler(event, key)}
             >
                 {children}
@@ -514,8 +515,8 @@ export class DockCreator extends Component {
     render() {
         const basicInformationTitle = (
             <h5 key={"basicInformationTitle"}>
-                {this.state.createDockForm.name.value.length
-                    ? this.state.createDockForm.name.value
+                {this.state.dockForm.name.value.length
+                    ? this.state.dockForm.name.value
                     : "New Dock"}
             </h5>
         );
@@ -579,7 +580,7 @@ export class DockCreator extends Component {
         const submitDockButton = (
             <Button
                 clicked={this.addDockHandler}
-                disabled={!this.state.formIsValid}
+                disabled={!this.state.allFieldsValid}
             >
                 Submit new Dock
             </Button>

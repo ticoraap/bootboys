@@ -53,7 +53,7 @@ export class DockManager extends Component{
                         length={dock.length}
                         width={dock.width}
                         price={dock.price}
-                        numFacilities={dock.facilities.length}
+                        numFacilities={dock.facilities?.length}
                         edit={() => this.editDock(dock)}
                         remove={() => this.removeDock(dock)}
                         styleName='DockManager'

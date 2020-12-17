@@ -14,7 +14,7 @@ import ToastMaker from "../../components/shared/ToastMaker";
 class AddAddress extends Component {
 
     state = {
-        createAddressForm: {
+        addressForm: {
 
             street: {
                 styling: {
@@ -26,7 +26,7 @@ class AddAddress extends Component {
                     type: 'text',
                 },
                 value: '',
-                validation: {
+                validationRules: {
                     required: true,
                     maxLength: 100
                 },
@@ -44,7 +44,7 @@ class AddAddress extends Component {
                     type: 'text',
                 },
                 value: '',
-                validation: {
+                validationRules: {
                     required: true,
                     maxLength: 100
                 },
@@ -62,7 +62,7 @@ class AddAddress extends Component {
                     type: 'text',
                 },
                 value: '',
-                validation: {
+                validationRules: {
                     required: true,
                     isPostalcode: true
                 },
@@ -79,7 +79,7 @@ class AddAddress extends Component {
                     type: 'text',
                 },
                 value: '',
-                validation: {
+                validationRules: {
                     required: true,
                 },
                 valid: false,
@@ -95,7 +95,7 @@ class AddAddress extends Component {
                     options: countryCodes()
                 },
                 value: 'NL',
-                validation: {
+                validationRules: {
                     required: true
                 },
                 valid: true,
@@ -112,7 +112,7 @@ class AddAddress extends Component {
                     placeholder: 'Select a State'
                 },
                 value: '',
-                validation: {
+                validationRules: {
                     required: true
                 },
                 valid: true,
@@ -121,78 +121,78 @@ class AddAddress extends Component {
 
 
         },
-        formIsValid: false,
+        allFieldsValid: false,
         loading: false,
         address: null,
         badAddressWarning: false
     }
 
-    inputChangedHandler = (event, inputIdentifier) => {
-        const updatedCreateAddressForm = {
-            ...this.state.createAddressForm
+    inputChangedHandler = (event, formElementId) => {
+        const updatedAddressForm = {
+            ...this.state.addressForm
         }
-        const updatedCreateAddressFormElement = {
-            ...updatedCreateAddressForm[inputIdentifier]
+        const updatedAddressFormElement = {
+            ...updatedAddressForm[formElementId]
         }
-        updatedCreateAddressFormElement.value = event.target.value;
-        updatedCreateAddressFormElement.valid = this.checkValidity(updatedCreateAddressFormElement.value, updatedCreateAddressFormElement.validation)
-        updatedCreateAddressFormElement.touched = true;
-        updatedCreateAddressForm[inputIdentifier] = updatedCreateAddressFormElement
+        updatedAddressFormElement.value = event.target.value;
+        updatedAddressFormElement.valid = this.checkValidity(updatedAddressFormElement.value, updatedAddressFormElement.validationRules)
+        updatedAddressFormElement.touched = true;
+        updatedAddressForm[formElementId] = updatedAddressFormElement
 
-        let formIsValid = true
-        for (let inputIdentfier in updatedCreateAddressForm) {
-            if (!updatedCreateAddressForm[inputIdentfier].validation) {
+        let allFieldsValid = true
+        for (let formElementId in updatedAddressForm) {
+            if (!updatedAddressForm[formElementId].validationRules) {
                 continue;
             }
-            formIsValid = updatedCreateAddressForm[inputIdentfier].valid && formIsValid
+            allFieldsValid = updatedAddressForm[formElementId].valid && allFieldsValid
         }
 
-        this.setState({createAddressForm: updatedCreateAddressForm, formIsValid: formIsValid, badAddressWarning: false})
+        this.setState({addressForm: updatedAddressForm, allFieldsValid: allFieldsValid, badAddressWarning: false})
     }
 
 
-    checkValidity = (value, rules) => {
+    checkValidity = (input, rules) => {
         let isValid = true
 
-        let trimmedValue = value.trim()
-        let trimmedValueLength = trimmedValue.length
+        let trimmedInput = input.trim()
+        let trimmedInputLength = trimmedInput.length
 
         if (rules) {
             if (rules.required) {
-                isValid = trimmedValue !== '';
+                isValid = trimmedInput !== '';
             }
 
             if (rules.minLength) {
-                isValid = trimmedValueLength >= rules.minLength && isValid
+                isValid = trimmedInputLength >= rules.minLength && isValid
             }
 
             if (rules.maxLength) {
-                isValid = trimmedValueLength <= rules.maxLength && isValid
+                isValid = trimmedInputLength <= rules.maxLength && isValid
             }
 
             if (rules.isEmail) {
-                const re = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const emailRegExp = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                isValid = emailRegExp.test(String(trimmedInput).toLowerCase()) && isValid
             }
             if (rules.isPostalcode) {
-                const re = /^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const postalCodeRegEx = /^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i;
+                isValid = postalCodeRegEx.test(String(trimmedInput).toLowerCase()) && isValid
             }
             if (rules.isMeters) {
-                const re = /^(\d+(?:[.,]\d{1,2})?)$/;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const metersRegExp = /^(\d+(?:[.,]\d{1,2})?)$/;
+                isValid = metersRegExp.test(String(trimmedInput).toLowerCase()) && isValid
             }
             if (rules.isEuros) {
-                const re = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const euroCurrencyRegExp = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
+                isValid = euroCurrencyRegExp.test(String(trimmedInput).toLowerCase()) && isValid
             }
             if (rules.isLatitude) {
-                const re = /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,20})?))$/;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const latitudeRegExp = /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,20})?))$/;
+                isValid = latitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid
             }
             if (rules.isLongitude) {
-                const re = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,20})?))$/;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const longitudeRegExp = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,20})?))$/;
+                isValid = longitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid
             }
         }
         return isValid;
@@ -208,12 +208,12 @@ class AddAddress extends Component {
         }
 
         const address = {
-            street: this.state.createAddressForm.street.value,
-            houseNumber: this.state.createAddressForm.houseNumber.value,
-            postalcode: this.state.createAddressForm.postalcode.value.split(" ").join(""),
-            city: this.state.createAddressForm.city.value,
-            country: this.state.createAddressForm.country.value,
-            state: this.state.createAddressForm.state.value,
+            street: this.state.addressForm.street.value,
+            houseNumber: this.state.addressForm.houseNumber.value,
+            postalcode: this.state.addressForm.postalcode.value.split(" ").join(""),
+            city: this.state.addressForm.city.value,
+            country: this.state.addressForm.country.value,
+            state: this.state.addressForm.state.value,
         }
 
         queryAddressLatLong(address)
@@ -230,34 +230,34 @@ class AddAddress extends Component {
         ApiService.post('address', address)
             .then(() => {
                 // reset the form
-                const UpdatedcreateAddressForm = {
-                    ...this.state.createAddressForm,
+                const UpdatedaddressForm = {
+                    ...this.state.addressForm,
                     street: {
-                        ...this.state.createAddressForm.street,
+                        ...this.state.addressForm.street,
                         value: ''
                     },
                     houseNumber: {
-                        ...this.state.createAddressForm.houseNumber,
+                        ...this.state.addressForm.houseNumber,
                         value: ''
                     },
                     postalcode: {
-                        ...this.state.createAddressForm.postalcode,
+                        ...this.state.addressForm.postalcode,
                         value: ''
                     },
                     city: {
-                        ...this.state.createAddressForm.city,
+                        ...this.state.addressForm.city,
                         value: ''
                     },
                     country: {
-                        ...this.state.createAddressForm.country,
+                        ...this.state.addressForm.country,
                         value: 'NL'
                     },
                     state: {
-                        ...this.state.createAddressForm.state,
+                        ...this.state.addressForm.state,
                         value: ''
                     },
                 }
-                this.setState({createAddressForm: UpdatedcreateAddressForm, badAddressWarning: false, loading: false})
+                this.setState({addressForm: UpdatedaddressForm, badAddressWarning: false, loading: false})
                 this.props.notifyAddressAdded()
             })
             .catch(() => {
@@ -268,13 +268,13 @@ class AddAddress extends Component {
     render() {
 
         const formElementsArray = []
-        for (let key in this.state.createAddressForm) {
-            if (key === "state" && this.state.createAddressForm.country.value !== "US") {
+        for (let key in this.state.addressForm) {
+            if (key === "state" && this.state.addressForm.country.value !== "US") {
                 continue;
             }
             formElementsArray.push({
                 id: key,
-                config: this.state.createAddressForm[key]
+                config: this.state.addressForm[key]
             })
         }
 
@@ -302,18 +302,18 @@ class AddAddress extends Component {
                 })}
                 <div style={{width: "100%"}}>
                     <Button
-                        disabled={!this.state.formIsValid}>{this.state.badAddressWarning ? "Yes continue" : "Add address"}</Button>
+                        disabled={!this.state.allFieldsValid}>{this.state.badAddressWarning ? "Yes continue" : "Add address"}</Button>
 
                 </div>
             </form>
         )
 
-        let spinner = this.state.loading ? <div className={classes.Spinner}><Spinner/></div> : null
+        let loadingSpinner = this.state.loading ? <div className={classes.Spinner}><Spinner/></div> : null
 
         return (
             <div>
                 <div className={classes.AddressCreator}>
-                    {spinner}
+                    {loadingSpinner}
                     <h5>Add a new Address</h5>
                     {form}
                     {this.state.badAddressWarning ?

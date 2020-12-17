@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 class FacilityCreator extends Component {
 
     state = {
-        createFacilityForm: {
+        facilityForm: {
             description: {
                 styling: {
                     width: "100%"
@@ -22,7 +22,7 @@ class FacilityCreator extends Component {
                 },
                 value: '',
                 validationWarning: "Please enter a description not greater then 500 chars",
-                validation: {
+                validationRules: {
                     required: true,
                     maxLength: 500
                 },
@@ -41,7 +41,7 @@ class FacilityCreator extends Component {
                 },
                 value: '',
                 validationWarning: "Please enter a price in euros Example: 25 or €29,99",
-                validation: {
+                validationRules: {
                     required: true,
                     isEuros: true
                 },
@@ -52,53 +52,53 @@ class FacilityCreator extends Component {
                 elementType: 'saveFacilityButton',
             },
         },
-        formIsValid: false,
+        allFieldsValid: false,
     }
 
-    checkValidity = (value, rules) => {
+    checkValidity = (input, rules) => {
         let isValid = true
-        let trimmedValue = String(value).trim()
-        let trimmedValueLength = trimmedValue.length
+        let trimmedInput = String(input).trim()
+        let trimmedInputLength = trimmedInput.length
 
         if (rules) {
             if (rules.required) {
-                isValid = trimmedValue !== '';
+                isValid = trimmedInput !== '';
             }
             if (rules.minLength) {
-                isValid = trimmedValueLength >= rules.minLength && isValid
+                isValid = trimmedInputLength >= rules.minLength && isValid
             }
             if (rules.maxLength) {
-                isValid = trimmedValueLength <= rules.maxLength && isValid
+                isValid = trimmedInputLength <= rules.maxLength && isValid
             }
             if (rules.isEuros) {
-                const re = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
-                isValid = re.test(String(trimmedValue).toLowerCase()) && isValid
+                const euroCurrencyRegExp = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
+                isValid = euroCurrencyRegExp.test(String(trimmedInput).toLowerCase()) && isValid
             }
         }
         return isValid;
     }
 
-    inputChangedHandler = (event, inputIdentifier) => {
+    inputChangedHandler = (event, formElementId) => {
 
         const updatedCreateFacilityForm = {
-            ...this.state.createFacilityForm,
-            [inputIdentifier]: {
-                ...this.state.createFacilityForm[inputIdentifier],
+            ...this.state.facilityForm,
+            [formElementId]: {
+                ...this.state.facilityForm[formElementId],
                 value: event.target.value,
-                valid: this.checkValidity(event.target.value, this.state.createFacilityForm[inputIdentifier].validation),
+                valid: this.checkValidity(event.target.value, this.state.facilityForm[formElementId].validationRules),
                 touched: true
             }
         }
 
-        let formIsValid = true
-        for (let facilityFormIdentfier in updatedCreateFacilityForm) {
-            if (!updatedCreateFacilityForm[facilityFormIdentfier].validation) {
+        let allFieldsValid = true
+        for (let formElementId in updatedCreateFacilityForm) {
+            if (!updatedCreateFacilityForm[formElementId].validationRules) {
                 continue;
             }
-            formIsValid = updatedCreateFacilityForm[facilityFormIdentfier].valid && formIsValid
+            allFieldsValid = updatedCreateFacilityForm[formElementId].valid && allFieldsValid
         }
 
-        this.setState({createFacilityForm: updatedCreateFacilityForm, formIsValid: formIsValid})
+        this.setState({facilityForm: updatedCreateFacilityForm, allFieldsValid: allFieldsValid})
     }
 
     deleteFacility = (id) => {
@@ -114,8 +114,8 @@ class FacilityCreator extends Component {
         newFacilityList.push(
             {
                 id: sharedMethods.generateRandomString(),
-                price: parseFloat(this.state.createFacilityForm.price.value.replace(',', '.').replace('€', '')),
-                description: this.state.createFacilityForm.description.value
+                price: parseFloat(this.state.facilityForm.price.value.replace(',', '.').replace('€', '')),
+                description: this.state.facilityForm.description.value
             }
         )
 
@@ -123,33 +123,31 @@ class FacilityCreator extends Component {
 
         //reset the facilitys form
         const retsetFacilitiesForm = {
-            ...this.state.createFacilityForm,
+            ...this.state.facilityForm,
             description: {
-                ...this.state.createFacilityForm.description,
+                ...this.state.facilityForm.description,
                 value: '',
                 valid: false,
                 touched: false
             },
             price: {
-                ...this.state.createFacilityForm.price,
+                ...this.state.facilityForm.price,
                 value: '',
                 valid: false,
                 touched: false
             }
         }
 
-        this.setState({createFacilityForm: retsetFacilitiesForm, formIsValid: false})
+        this.setState({facilityForm: retsetFacilitiesForm, allFieldsValid: false})
     }
 
     render() {
 
-
-
         const formElementsArray = []
-        for (let key in this.state.createFacilityForm) {
+        for (let key in this.state.facilityForm) {
             formElementsArray.push({
                 id: key,
-                config: this.state.createFacilityForm[key]
+                config: this.state.facilityForm[key]
             })
         }
 
@@ -159,7 +157,7 @@ class FacilityCreator extends Component {
 
                     if (formElement.config.elementType === 'saveFacilityButton') {
                         return <Button key={formElement.id} clicked={this.addFacility} btnType="Form"
-                                       disabled={!this.state.formIsValid}>Save</Button>
+                                       disabled={!this.state.allFieldsValid}>Save</Button>
                     }
 
                     return <Input
@@ -168,7 +166,7 @@ class FacilityCreator extends Component {
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
                         invalid={!formElement.config.valid}
-                        shouldValidate={formElement.config.validation}
+                        shouldValidate={formElement.config.validationRules}
                         touched={formElement.config.touched}
                         label={formElement.config.label}
                         validationWarning={formElement.config.validationWarning}

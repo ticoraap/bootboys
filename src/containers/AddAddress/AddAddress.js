@@ -1,314 +1,312 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 
-import Input from '../../components/UI/Input/Input';
-import Button from '../../components/UI/Button/Button';
-import classes from './AddAddress.module.css';
-import countryCodes from './countryCodes';
-import stateCodes from './stateCodes';
-import {queryAddressLatLong} from './LocationQuery';
-import PropTypes from 'prop-types';
-import {ApiService} from '../../components/shared/Api.service';
-import Spinner from '../../components/UI/Spinner/Spinner';
+import * as utility from "../../shared/utility";
+
+import Input from "../../components/UI/Input/Input";
+import Button from "../../components/UI/Button/Button";
+import classes from "./AddAddress.module.css";
+import countryCodes from "./countryCodes";
+import stateCodes from "./stateCodes";
+import { queryAddressLatLong } from "./LocationQuery";
+import PropTypes from "prop-types";
+import { ApiService } from "../../components/shared/Api.service";
+import Spinner from "../../components/UI/Spinner/Spinner";
 import ToastMaker from "../../components/shared/ToastMaker";
 
 class AddAddress extends Component {
-
     state = {
         addressForm: {
-
             street: {
                 styling: {
-                    width: "80%"
+                    width: "80%",
                 },
-                label: 'Street',
-                elementType: 'input',
+                label: "Street",
+                elementType: "input",
                 elementConfig: {
-                    type: 'text',
+                    type: "text",
                 },
-                value: '',
+                value: "",
                 validationRules: {
                     required: true,
-                    maxLength: 100
+                    maxLength: 100,
                 },
                 validationWarning: "*required",
                 valid: false,
-                touched: false
+                touched: false,
             },
             houseNumber: {
                 styling: {
-                    width: "20%"
+                    width: "20%",
                 },
-                label: 'Number',
-                elementType: 'input',
+                label: "Number",
+                elementType: "input",
                 elementConfig: {
-                    type: 'text',
+                    type: "text",
                 },
-                value: '',
+                value: "",
                 validationRules: {
                     required: true,
-                    maxLength: 100
+                    maxLength: 100,
                 },
                 validationWarning: "*required",
                 valid: false,
-                touched: false
+                touched: false,
             },
             postalcode: {
                 styling: {
-                    width: "50%"
+                    width: "50%",
                 },
-                label: 'Postal code',
-                elementType: 'input',
+                label: "Postal code",
+                elementType: "input",
                 elementConfig: {
-                    type: 'text',
+                    type: "text",
                 },
-                value: '',
+                value: "",
                 validationRules: {
                     required: true,
-                    isPostalcode: true
+                    isPostalcode: true,
                 },
                 valid: false,
-                touched: false
+                touched: false,
             },
             city: {
                 styling: {
-                    width: "50%"
+                    width: "50%",
                 },
-                label: 'City',
-                elementType: 'input',
+                label: "City",
+                elementType: "input",
                 elementConfig: {
-                    type: 'text',
+                    type: "text",
                 },
-                value: '',
+                value: "",
                 validationRules: {
                     required: true,
                 },
                 valid: false,
-                touched: false
+                touched: false,
             },
             country: {
                 styling: {
-                    width: "50%"
+                    width: "50%",
                 },
-                label: 'Country',
-                elementType: 'select',
+                label: "Country",
+                elementType: "select",
                 elementConfig: {
-                    options: countryCodes()
+                    options: countryCodes(),
                 },
-                value: 'NL',
+                value: "NL",
                 validationRules: {
-                    required: true
+                    required: true,
                 },
                 valid: true,
-                touched: true
+                touched: true,
             },
             state: {
                 styling: {
-                    width: "50%"
+                    width: "50%",
                 },
-                label: 'US State',
-                elementType: 'select',
+                label: "US State",
+                elementType: "select",
                 elementConfig: {
                     options: stateCodes(),
-                    placeholder: 'Select a State'
+                    placeholder: "Select a State",
                 },
-                value: '',
+                value: "",
                 validationRules: {
-                    required: true
+                    required: true,
                 },
                 valid: true,
-                touched: true
+                touched: true,
             },
-
-
         },
         allFieldsValid: false,
         loading: false,
         address: null,
-        badAddressWarning: false
-    }
+        badAddressWarning: false,
+    };
 
-    inputChangedHandler = (event, formElementId) => {
-        const updatedAddressForm = {
-            ...this.state.addressForm
-        }
-        const updatedAddressFormElement = {
-            ...updatedAddressForm[formElementId]
-        }
-        updatedAddressFormElement.value = event.target.value;
-        updatedAddressFormElement.valid = this.checkValidity(updatedAddressFormElement.value, updatedAddressFormElement.validationRules)
-        updatedAddressFormElement.touched = true;
-        updatedAddressForm[formElementId] = updatedAddressFormElement
+    inputChangedHandler = (event, inputElementKey) => {
+        this.updateAddressFormElement(event.target.value, inputElementKey);
+        this.updateAddressFormValidity();
+    };
 
-        let allFieldsValid = true
-        for (let formElementId in updatedAddressForm) {
-            if (!updatedAddressForm[formElementId].validationRules) {
-                continue;
-            }
-            allFieldsValid = updatedAddressForm[formElementId].valid && allFieldsValid
-        }
+    updateAddressFormElement = (inputElementValue, inputElementKey) => {
+        const updatedAddressForm = this.getUpdatedAddressForm(
+            inputElementValue,
+            inputElementKey
+        );
+        this.setState({ addressForm: updatedAddressForm });
+    };
 
-        this.setState({addressForm: updatedAddressForm, allFieldsValid: allFieldsValid, badAddressWarning: false})
-    }
+    getUpdatedAddressForm = (inputElementValue, inputElementKey) => {
+        const valid = this.isInputValid(inputElementValue, inputElementKey);
+        return {
+            ...this.state.addressForm,
+            [inputElementKey]: {
+                ...this.state.addressForm[inputElementKey],
+                value: inputElementValue,
+                valid: valid,
+                touched: true,
+            },
+        };
+    };
 
+    isInputValid = (inputElementValue, inputElementKey) => {
+        const validationRules = this.state.addressForm[inputElementKey]
+            .validationRules;
+        return utility.isInputValidByRules(inputElementValue, validationRules);
+    };
 
-    checkValidity = (input, rules) => {
-        let isValid = true
+    updateAddressFormValidity = () => {
+        this.setState((prevstate) => {
+            const allFieldsValid = this.isFormValid(prevstate.addressForm);
+            return { allFieldsValid: allFieldsValid, badAddressWarning: false };
+        });
+    };
 
-        let trimmedInput = input.trim()
-        let trimmedInputLength = trimmedInput.length
-
-        if (rules) {
-            if (rules.required) {
-                isValid = trimmedInput !== '';
-            }
-
-            if (rules.minLength) {
-                isValid = trimmedInputLength >= rules.minLength && isValid
-            }
-
-            if (rules.maxLength) {
-                isValid = trimmedInputLength <= rules.maxLength && isValid
-            }
-
-            if (rules.isEmail) {
-                const emailRegExp = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                isValid = emailRegExp.test(String(trimmedInput).toLowerCase()) && isValid
-            }
-            if (rules.isPostalcode) {
-                const postalCodeRegEx = /^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i;
-                isValid = postalCodeRegEx.test(String(trimmedInput).toLowerCase()) && isValid
-            }
-            if (rules.isMeters) {
-                const metersRegExp = /^(\d+(?:[.,]\d{1,2})?)$/;
-                isValid = metersRegExp.test(String(trimmedInput).toLowerCase()) && isValid
-            }
-            if (rules.isEuros) {
-                const euroCurrencyRegExp = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
-                isValid = euroCurrencyRegExp.test(String(trimmedInput).toLowerCase()) && isValid
-            }
-            if (rules.isLatitude) {
-                const latitudeRegExp = /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,20})?))$/;
-                isValid = latitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid
-            }
-            if (rules.isLongitude) {
-                const longitudeRegExp = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,20})?))$/;
-                isValid = longitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid
+    isFormValid = (addressForm) => {
+        let allFieldsValid = true;
+        for (let formElement of Object.values(addressForm)) {
+            if (formElement.validationRules) {
+                allFieldsValid = allFieldsValid && formElement.valid;
             }
         }
-        return isValid;
-    }
+        return allFieldsValid;
+    };
 
     submitForm = (event) => {
-        event.preventDefault()
-        this.setState({loading: true})
+        event.preventDefault();
+        this.setState({ loading: true });
 
         if (this.state.address && this.state.badAddressWarning) {
-            this.addAddress(this.state.address)
-            return
+            this.addAddress(this.state.address);
+            return;
         }
 
         const address = {
             street: this.state.addressForm.street.value,
             houseNumber: this.state.addressForm.houseNumber.value,
-            postalcode: this.state.addressForm.postalcode.value.split(" ").join(""),
+            postalcode: this.state.addressForm.postalcode.value
+                .split(" ")
+                .join(""),
             city: this.state.addressForm.city.value,
             country: this.state.addressForm.country.value,
             state: this.state.addressForm.state.value,
-        }
+        };
 
         queryAddressLatLong(address)
             .then(() => {
-                this.addAddress(address)
+                this.addAddress(address);
             })
             .catch(() => {
-                this.setState({address: address, badAddressWarning: true, loading: false})
-            })
-
-    }
+                this.setState({
+                    address: address,
+                    badAddressWarning: true,
+                    loading: false,
+                });
+            });
+    };
 
     addAddress = (address) => {
-        ApiService.post('address', address)
+        ApiService.post("address", address)
             .then(() => {
                 // reset the form
                 const UpdatedaddressForm = {
                     ...this.state.addressForm,
                     street: {
                         ...this.state.addressForm.street,
-                        value: ''
+                        value: "",
                     },
                     houseNumber: {
                         ...this.state.addressForm.houseNumber,
-                        value: ''
+                        value: "",
                     },
                     postalcode: {
                         ...this.state.addressForm.postalcode,
-                        value: ''
+                        value: "",
                     },
                     city: {
                         ...this.state.addressForm.city,
-                        value: ''
+                        value: "",
                     },
                     country: {
                         ...this.state.addressForm.country,
-                        value: 'NL'
+                        value: "NL",
                     },
                     state: {
                         ...this.state.addressForm.state,
-                        value: ''
+                        value: "",
                     },
-                }
-                this.setState({addressForm: UpdatedaddressForm, badAddressWarning: false, loading: false})
-                this.props.notifyAddressAdded()
+                };
+                this.setState({
+                    addressForm: UpdatedaddressForm,
+                    badAddressWarning: false,
+                    loading: false,
+                });
+                this.props.notifyAddressAdded();
             })
             .catch(() => {
-                ToastMaker.errorToast('Could not make a new address, look in the console for the error')
-            })
-    }
+                ToastMaker.errorToast(
+                    "Could not make a new address, look in the console for the error"
+                );
+            });
+    };
 
     render() {
-
-        const formElementsArray = []
+        const formElementsArray = [];
         for (let key in this.state.addressForm) {
-            if (key === "state" && this.state.addressForm.country.value !== "US") {
+            if (
+                key === "state" &&
+                this.state.addressForm.country.value !== "US"
+            ) {
                 continue;
             }
             formElementsArray.push({
                 id: key,
-                config: this.state.addressForm[key]
-            })
+                config: this.state.addressForm[key],
+            });
         }
 
         let form = (
             <form onSubmit={this.submitForm} className={classes.AddressForm}>
-                {formElementsArray.map(formElement => {
-                    return <Input
-                        key={formElement.id}
-
-                        // elelment 
-                        elementType={formElement.config.elementType}
-                        elementConfig={formElement.config.elementConfig}
-                        value={formElement.config.value}
-                        label={formElement.config.label}
-
-                        // validation
-                        shouldValidate={formElement.config.validation}
-                        invalid={!formElement.config.valid}
-                        validationWarning={formElement.config.validationWarning}
-                        touched={formElement.config.touched}
-
-                        styling={formElement.config.styling}
-                        changed={(event) => this.inputChangedHandler(event, formElement.id)}
-                    />
+                {formElementsArray.map((formElement) => {
+                    return (
+                        <Input
+                            key={formElement.id}
+                            // elelment
+                            elementType={formElement.config.elementType}
+                            elementConfig={formElement.config.elementConfig}
+                            value={formElement.config.value}
+                            label={formElement.config.label}
+                            // validation
+                            shouldValidate={formElement.config.validation}
+                            invalid={!formElement.config.valid}
+                            validationWarning={
+                                formElement.config.validationWarning
+                            }
+                            touched={formElement.config.touched}
+                            styling={formElement.config.styling}
+                            changed={(event) =>
+                                this.inputChangedHandler(event, formElement.id)
+                            }
+                        />
+                    );
                 })}
-                <div style={{width: "100%"}}>
-                    <Button
-                        disabled={!this.state.allFieldsValid}>{this.state.badAddressWarning ? "Yes continue" : "Add address"}</Button>
-
+                <div style={{ width: "100%" }}>
+                    <Button disabled={!this.state.allFieldsValid}>
+                        {this.state.badAddressWarning
+                            ? "Yes continue"
+                            : "Add address"}
+                    </Button>
                 </div>
             </form>
-        )
+        );
 
-        let loadingSpinner = this.state.loading ? <div className={classes.Spinner}><Spinner/></div> : null
+        let loadingSpinner = this.state.loading ? (
+            <div className={classes.Spinner}>
+                <Spinner />
+            </div>
+        ) : null;
 
         return (
             <div>
@@ -316,20 +314,21 @@ class AddAddress extends Component {
                     {loadingSpinner}
                     <h5>Add a new Address</h5>
                     {form}
-                    {this.state.badAddressWarning ?
-                        <p className={classes.Warning}>The address entered above could not be resolved do you want to
-                            continue anyway?</p> : null}
+                    {this.state.badAddressWarning ? (
+                        <p className={classes.Warning}>
+                            The address entered above could not be resolved do
+                            you want to continue anyway?
+                        </p>
+                    ) : null}
                 </div>
-
             </div>
-        )
+        );
     }
 }
 
 AddAddress.propTypes = {
     addAddress: PropTypes.func,
     notifyAddressAdded: PropTypes.func,
-
 };
 
 export default AddAddress;

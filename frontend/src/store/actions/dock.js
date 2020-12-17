@@ -1,119 +1,127 @@
-import * as actionTypes from '../actions/actionTypes';
-import ApiService from '../../components/shared/Api.service'
-
-
+import * as actionTypes from "../actions/actionTypes";
+import ApiService from "../../components/shared/Api.service";
 
 export const getUserDocks = () => {
-    return dispatch =>{
-        dispatch(getUserDocksStart())
-        ApiService.getJson('/userdocks')
-            .then(userDocks => {
-                dispatch(getUserDocksSuccess(userDocks))
+    return (dispatch) => {
+        dispatch(getUserDocksStart());
+        ApiService.getJson("/dock")
+            .then((userDocks) => {
+                const userDocksArray = [];
+
+                for (const [key, value] of Object.entries(userDocks)) {
+                    value.dockid = key;
+
+                    // const userDocksFacilitiesArray = [];
+
+                    // for (const facility in value.facilities) {
+                    //     userDocksFacilitiesArray.push(facility);
+                    // }
+                    // value.facilities = userDocksFacilitiesArray;
+
+                    userDocksArray.push(value);
+                }
+
+                dispatch(getUserDocksSuccess(userDocksArray));
             })
             .catch((error) => {
-                dispatch(getUserDocksFail(error))
-            })
-    }
-}
+                dispatch(getUserDocksFail(error));
+            });
+    };
+};
 export const getUserDocksStart = () => {
     return {
-        type: actionTypes.GET_USER_DOCKS_START
-    }
-}
+        type: actionTypes.GET_USER_DOCKS_START,
+    };
+};
 
 export const getUserDocksSuccess = (userDocks) => {
     return {
         type: actionTypes.GET_USER_DOCKS_SUCCESS,
-        userDocks: userDocks
-    }
-}
+        userDocks: userDocks,
+    };
+};
 
 export const getUserDocksFail = (error) => {
     return {
         type: actionTypes.GET_USER_DOCKS_FAIL,
-        error: error
-    }
-}
-
-
+        error: error,
+    };
+};
 
 export const removeDock = (dockid) => {
-    return dispatch => {
-        dispatch(removeDockStart())
+    return (dispatch) => {
+        dispatch(removeDockStart());
         ApiService.remove("/dock/" + dockid)
             .then(() => {
-                dispatch(removeDockSuccess(dockid))
+                dispatch(removeDockSuccess(dockid));
             })
             .catch((error) => {
-                dispatch(removeDockFail(error))
-            })
-    }
-}
+                dispatch(removeDockFail(error));
+            });
+    };
+};
 
 export const removeDockStart = () => {
     return {
         type: actionTypes.REMOVE_DOCK_START,
-    }
-}
+    };
+};
 
 export const removeDockSuccess = (dockid) => {
     return {
         type: actionTypes.REMOVE_DOCK_SUCCESS,
-        dockid: dockid
-    }
-}
+        dockid: dockid,
+    };
+};
 
 export const removeDockFail = (error) => {
     return {
         type: actionTypes.REMOVE_DOCK_FAIL,
-        error: error
-    }
-}
-
-
+        error: error,
+    };
+};
 
 export const addDock = (dock) => {
-    return dispatch => {
-        dispatch(addDockStart())
-        ApiService.post('/dock', dock)
-            .then(response => response.json())
-            .then(data => {
+    return (dispatch) => {
+        dispatch(addDockStart());
+        ApiService.post("/dock", dock)
+            .then((response) => response.json())
+            .then((data) => {
                 dock = {
                     ...dock,
-                    dockid: data.dockid
-                }
-                dispatch(addDockSuccess(dock))
+                    dockid: data.dockid,
+                };
+                dispatch(addDockSuccess(dock));
             })
-            .catch(error => {
-                dispatch(addDockFail(error))
-            })
-    }
-}
+            .catch((error) => {
+                dispatch(addDockFail(error));
+            });
+    };
+};
 
 export const addDockStart = () => {
     return {
         type: actionTypes.ADD_DOCK_START,
-    }
-}
+    };
+};
 
 export const addDockSuccess = (dock) => {
     return {
         type: actionTypes.ADD_DOCK_SUCCESS,
-        dock: dock
-    }
-}
+        dock: dock,
+    };
+};
 
 export const addDockFail = (error) => {
     return {
         type: actionTypes.ADD_DOCK_FAIL,
-        error: error
-    }
-}
-
+        error: error,
+    };
+};
 
 export const getDockById = (dockid) => {
     return {
         type: actionTypes.GET_DOCK_BY_ID,
-        dockid: dockid
-    }
-}
+        dockid: dockid,
+    };
+};

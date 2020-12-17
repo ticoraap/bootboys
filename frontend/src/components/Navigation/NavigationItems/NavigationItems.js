@@ -73,7 +73,7 @@ NavigationItems.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.token !== null,
         showSideDrawer: state.ux.showSideDrawer,
         showLoginModal: state.ux.showLoginModal,
         showRegisterModal: state.ux.showRegisterModal,

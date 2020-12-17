@@ -3,6 +3,7 @@ import classes from './Layout.module.css';
 import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
 import * as actionTypes from '../../store/actions/actionTypes'
 
 import Auxiliary from '../Auxiliary/Auxiliary';
@@ -20,6 +21,8 @@ import {ToastContainer} from 'react-toastify';
 class Layout extends Component {
 
     render() {
+
+        this.props.onAuthCheckState()
         return (
             <Auxiliary>
                 <div>
@@ -79,6 +82,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onAuthCheckState: () => dispatch(actions.authCheckState()),
         onToggleLoginModal: () => dispatch({type: actionTypes.TOGGLE_LOGIN_MODAL}),
         onToggleRegisterModal: () => dispatch({type: actionTypes.TOGGLE_REGISTER_MODAL}),
         onToggleForgotpasswordModal: () => dispatch({type: actionTypes.TOGGLE_FORGOTPASSWORD_MODAL}),

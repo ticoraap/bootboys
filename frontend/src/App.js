@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import DockCreator from './containers/DockCreator/DockCreator';
 import PageNotFound from "./components/PageNotFoundComponent/PageNotFound";
 import Layout from './HOC/Layout/Layout';
-import {PrivateRoute} from "./components/LoginComponent/PrivateRoute";
+import PrivateRoute from "./components/LoginComponent/PrivateRoute";
 import Account from "./components/AccountComponent/Account";
 import RentDockList from "./components/RentDockList/RentDockList";
 import Dock from './components/DockComponent/Dock'

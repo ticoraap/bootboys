@@ -48,12 +48,12 @@ export default class Account extends Component {
                 <div id="elementbox">
                     <h1>Account Details</h1>
                     <div id="textfields">
-                        <p id="ownP">Username: {this.state.user.username} <br/>
+                        {/* <p id="ownP">Username: {this.state.user.username} <br/>
                             Firstname: {this.state.user.firstname} <br/>
                             Surname: {this.state.user.surname} <br/>
                             Phonenumber: {this.state.user.phonenumber} <br/>
                             Email: {this.state.user.mail} <br/>
-                        </p>
+                        </p> */}
                     </div>
                     <button id="editbutton" onClick={this.onClickEditButton.bind(this)}>Edit Details</button>
                 </div>

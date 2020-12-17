@@ -2,10 +2,10 @@ import React, {Component} from "react";
 import './Login.css'
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import {sha256} from "js-sha256";
-import {authenticationService} from "./authentication.service";
+// import {sha256} from "js-sha256";
+// import {authenticationService} from "./authentication.service";
 import PropTypes from 'prop-types';
-import ToastMaker from "../shared/ToastMaker";
+// import ToastMaker from "../shared/ToastMaker";
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
@@ -48,21 +48,22 @@ export class Login extends Component {
 
     submitHandler = (event) => {
         event.preventDefault()
-        let {username, password} = this.state
-        password = sha256(password)
-        authenticationService.login(username, password)
-            .then(() => {
-                this.props.LoginModalToggle()
-                this.setState({
-                    username: '',
-                    password: ''
-                })
-                this.props.onLoginUser()
-                ToastMaker.successToast("login Succesfull!")
-            })
-            .catch(() => {
-                ToastMaker.errorToast("login failed")
-            })
+        this.props.onAuth(this.state.username, this.state.password)
+        // let {username, password} = this.state
+        // password = sha256(password)
+        // authenticationService.login(username, password)
+        //     .then(() => {
+        //         this.props.LoginModalToggle()
+        //         this.setState({
+        //             username: '',
+        //             password: ''
+        //         })
+        //         this.props.onLoginUser()
+        //         ToastMaker.successToast("login Succesfull!")
+        //     })
+        //     .catch(() => {
+        //         ToastMaker.errorToast("login failed")
+        //     })
     }
 
     handleOnChange(e) {
@@ -83,6 +84,7 @@ Login.propTypes = {
 
 const mapDispatchToProps = dispatch => {
     return {
+        onAuth: (email, password) => dispatch(actions.auth(email, password)),
         onLoginUser: () => dispatch(actions.loginUser()),
     }
 }

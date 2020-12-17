@@ -94,6 +94,7 @@ export default class DockMap extends Component {
         })
     }
 
+    // TODO delete
     getPositionFromIndex(index) {
         return [this.filteredDocks[index].latitude, this.filteredDocks[index].longitude]
     }

@@ -208,7 +208,6 @@ class AddAddress extends Component {
         }
 
         const address = {
-            addressid: Math.round(Math.random() * 10),
             street: this.state.createAddressForm.street.value,
             houseNumber: this.state.createAddressForm.houseNumber.value,
             postalcode: this.state.createAddressForm.postalcode.value.split(" ").join(""),
@@ -228,7 +227,7 @@ class AddAddress extends Component {
     }
 
     addAddress = (address) => {
-        ApiService.post('/address', address)
+        ApiService.post('address', address)
             .then(() => {
                 // reset the form
                 const UpdatedcreateAddressForm = {

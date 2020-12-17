@@ -19,6 +19,8 @@ export {
 } from './dock';
 
 export {
+    auth,
+    authCheckState,
     loginUser,
     logoutUser
 } from './auth'

@@ -27,6 +27,7 @@ export default class DockList extends Component {
                 state: {id: this.state.dockid}
             }}/>
         }
+        
         return(
             this.filteredDocks.map((value,index) =>{
                 return(
@@ -55,7 +56,7 @@ export default class DockList extends Component {
     }
 
     getAllDocks() {
-        ApiService.get('/availableDocks').then(response => response.json()).then(
+        ApiService.get('/dock').then(response => response.json()).then(
             (response) => {
                 this.addResponseToDocksArray(response)
             },
@@ -64,10 +65,14 @@ export default class DockList extends Component {
     }
 
     addResponseToDocksArray(response) {
-        for (let iterator = 0; iterator < response.length; iterator++) {
-            this.allDocks.push(response[iterator])
+        if (response == null ) return;
+       
+        for (const [key, value] of Object.entries(response)){
+            value.dockid = key
+            this.allDocks.push(value)
         }
-        this.setFilteredDocks()
+
+        this.setFilteredDocks() 
         this.setDockState()
         this.UpdateMap()
     }

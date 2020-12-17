@@ -1,29 +1,52 @@
-import * as actionTypes from '../actions/actionTypes';
-import {authenticationService} from "../../components/LoginComponent/authentication.service";
-
+import * as actionTypes from "../actions/actionTypes";
 
 const initialState = {
     token: null,
-    isAuthenticated: authenticationService.checkIfLoggedIn(),
-}
+    userId: null,
+    error: null,
+    loading: false,
+};
 
 const reducer = (state = initialState, action) => {
-    switch (action.type){
+    switch (action.type) {
+        case actionTypes.AUTH_START:
+            return {
+                ...state,
+                loading: true,
+            };
+        case actionTypes.AUTH_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                token: action.idToken,
+                userId: action.localId,
+            };
+        case actionTypes.AUTH_FAIL:
+            return {
+                ...state,
+                loading: false,
+            };
+        case actionTypes.AUTH_LOGOUT:
+            return {
+                ...state,
+                token: null,
+                userId: null,
+                error: null,
+                loading: false,
+            };
         case actionTypes.LOGIN_USER:
             return {
                 ...state,
-                isAuthenticated: true
+                isAuthenticated: true,
             };
         case actionTypes.LOGOUT_USER:
-            
             return {
                 ...state,
-                isAuthenticated: false
+                isAuthenticated: false,
             };
         default:
-            return state
+            return state;
     }
-}
-
+};
 
 export default reducer;

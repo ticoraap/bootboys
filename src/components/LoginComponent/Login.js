@@ -78,6 +78,7 @@ Login.propTypes = {
     LoginModalToggle: PropTypes.func,
     ForgotPasswordModalToggle: PropTypes.func,
     onLoginUser: PropTypes.func,
+    onAuth: PropTypes.func
 };
 
 

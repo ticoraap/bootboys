@@ -5,13 +5,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-frontend/node_modules
+/node_modules
 /.pnp
 .pnp.js
 
 # testing
 /coverage
-frontend/coverage
+coverage
 
 # production
 /build
@@ -158,6 +158,6 @@ dmypy.json
 cython_debug/
 report.xml
 
-frontend/result.json
+result.json
 
-backend/app/migrations/
+

@@ -334,7 +334,7 @@ export class DockCreator extends Component {
         if (formElementId === "address" && event.target.value !== "") {
             const address = this.state.addresses.find(
                 (address) =>
-                    parseInt(address.addressid) === parseInt(event.target.value)
+                    address.addressid === event.target.value
             );
             queryAddressLatLong(address)
             // console.log(address)

@@ -3,7 +3,6 @@ import {authHeaderToken} from "../LoginComponent/auth-header";
 
 export const ApiService = {
     post,
-    put,
     get,
     getJson,
     remove
@@ -20,10 +19,6 @@ function post(url, JSON) {
             'Authorization': authHeaderToken()
         }
     })
-}
-
-function put() {
-
 }
 
 function get(url) {

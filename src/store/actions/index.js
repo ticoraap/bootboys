@@ -19,6 +19,10 @@ export {
 } from './dock';
 
 export {
+    getUserAddresses
+} from './address'
+
+export {
     auth,
     authCheckState,
     loginUser,

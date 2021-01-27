@@ -178,12 +178,23 @@ class AddAddress extends Component {
         event.preventDefault();
         this.setState({ loading: true });
 
-        if (this.state.address && this.state.badAddressWarning) {
-            this.addAddress(this.state.address);
-            return;
-        }
+        if (this.state.badAddressWarning) {
+            this.submitWarnedAboutAddress();
+        } else {
+            const address = this.getAddressFromInputValues();
 
-        const address = {
+            queryAddressLatLong(address)
+                .then(() => {
+                    this.submitNewAddress(address);
+                })
+                .catch(() => {
+                    this.warnAboutAddress(address);
+                });
+        }
+    };
+
+    getAddressFromInputValues = () => {
+        return {
             street: this.state.addressForm.street.value,
             houseNumber: this.state.addressForm.houseNumber.value,
             postalcode: this.state.addressForm.postalcode.value
@@ -193,57 +204,25 @@ class AddAddress extends Component {
             country: this.state.addressForm.country.value,
             state: this.state.addressForm.state.value,
         };
-
-        queryAddressLatLong(address)
-            .then(() => {
-                this.addAddress(address);
-            })
-            .catch(() => {
-                this.setState({
-                    address: address,
-                    badAddressWarning: true,
-                    loading: false,
-                });
-            });
     };
 
-    addAddress = (address) => {
+    warnAboutAddress = (address) => {
+        this.setState({
+            address: address,
+            badAddressWarning: true,
+            loading: false,
+        });
+    };
+
+    submitWarnedAboutAddress = () => {
+        this.submitNewAddress(this.state.address);
+    };
+
+    submitNewAddress = (address) => {
         ApiService.post("address", address)
             .then(() => {
-                // reset the form
-                const UpdatedaddressForm = {
-                    ...this.state.addressForm,
-                    street: {
-                        ...this.state.addressForm.street,
-                        value: "",
-                    },
-                    houseNumber: {
-                        ...this.state.addressForm.houseNumber,
-                        value: "",
-                    },
-                    postalcode: {
-                        ...this.state.addressForm.postalcode,
-                        value: "",
-                    },
-                    city: {
-                        ...this.state.addressForm.city,
-                        value: "",
-                    },
-                    country: {
-                        ...this.state.addressForm.country,
-                        value: "NL",
-                    },
-                    state: {
-                        ...this.state.addressForm.state,
-                        value: "",
-                    },
-                };
-                this.setState({
-                    addressForm: UpdatedaddressForm,
-                    badAddressWarning: false,
-                    loading: false,
-                });
-                this.props.notifyAddressAdded();
+                this.resetAddressForm();
+                this.props.notifyDockCreatorAddressAdded();
             })
             .catch(() => {
                 ToastMaker.errorToast(
@@ -252,7 +231,73 @@ class AddAddress extends Component {
             });
     };
 
+    resetAddressForm = () => {
+        const UpdatedaddressForm = {
+            ...this.state.addressForm,
+            street: {
+                ...this.state.addressForm.street,
+                value: "",
+            },
+            houseNumber: {
+                ...this.state.addressForm.houseNumber,
+                value: "",
+            },
+            postalcode: {
+                ...this.state.addressForm.postalcode,
+                value: "",
+            },
+            city: {
+                ...this.state.addressForm.city,
+                value: "",
+            },
+            country: {
+                ...this.state.addressForm.country,
+                value: "NL",
+            },
+            state: {
+                ...this.state.addressForm.state,
+                value: "",
+            },
+        };
+        this.setState({
+            addressForm: UpdatedaddressForm,
+            badAddressWarning: false,
+            loading: false,
+        });
+    };
+
     render() {
+        let form = (
+            <form onSubmit={this.submitForm} className={classes.AddressForm}>
+                {this.renderFormElements()}
+                {this.renderSubmitButton()}
+            </form>
+        );
+
+        let loadingSpinner = this.state.loading && (
+            <div className={classes.Spinner}>
+                <Spinner />
+            </div>
+        );
+
+        return (
+            <div>
+                <div className={classes.AddressCreator}>
+                    {loadingSpinner}
+                    <h5>Add a new Address</h5>
+                    {form}
+                    {this.state.badAddressWarning && (
+                        <p className={classes.Warning}>
+                            The address entered above could not be resolved do
+                            you want to continue anyway?
+                        </p>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    renderFormElements = () => {
         const formElementsArray = [];
         for (let key in this.state.addressForm) {
             if (
@@ -267,68 +312,45 @@ class AddAddress extends Component {
             });
         }
 
-        let form = (
-            <form onSubmit={this.submitForm} className={classes.AddressForm}>
-                {formElementsArray.map((formElement) => {
-                    return (
-                        <Input
-                            key={formElement.id}
-                            // elelment
-                            elementType={formElement.config.elementType}
-                            elementConfig={formElement.config.elementConfig}
-                            value={formElement.config.value}
-                            label={formElement.config.label}
-                            // validation
-                            shouldValidate={formElement.config.validation}
-                            invalid={!formElement.config.valid}
-                            validationWarning={
-                                formElement.config.validationWarning
-                            }
-                            touched={formElement.config.touched}
-                            styling={formElement.config.styling}
-                            changed={(event) =>
-                                this.inputChangedHandler(event, formElement.id)
-                            }
-                        />
-                    );
-                })}
-                <div style={{ width: "100%" }}>
-                    <Button disabled={!this.state.allFieldsValid}>
-                        {this.state.badAddressWarning
-                            ? "Yes continue"
-                            : "Add address"}
-                    </Button>
-                </div>
-            </form>
-        );
+        return formElementsArray.map((formElement) => {
+            return (
+                <Input
+                    key={formElement.id}
+                    // elelment
+                    elementType={formElement.config.elementType}
+                    elementConfig={formElement.config.elementConfig}
+                    value={formElement.config.value}
+                    label={formElement.config.label}
+                    // validation
+                    shouldValidate={formElement.config.validation}
+                    invalid={!formElement.config.valid}
+                    validationWarning={formElement.config.validationWarning}
+                    touched={formElement.config.touched}
+                    styling={formElement.config.styling}
+                    changed={(event) =>
+                        this.inputChangedHandler(event, formElement.id)
+                    }
+                />
+            );
+        });
+    };
 
-        let loadingSpinner = this.state.loading ? (
-            <div className={classes.Spinner}>
-                <Spinner />
-            </div>
-        ) : null;
-
+    renderSubmitButton = () => {
         return (
-            <div>
-                <div className={classes.AddressCreator}>
-                    {loadingSpinner}
-                    <h5>Add a new Address</h5>
-                    {form}
-                    {this.state.badAddressWarning ? (
-                        <p className={classes.Warning}>
-                            The address entered above could not be resolved do
-                            you want to continue anyway?
-                        </p>
-                    ) : null}
-                </div>
+            <div style={{ width: "100%" }}>
+                <Button disabled={!this.state.allFieldsValid}>
+                    {this.state.badAddressWarning
+                        ? "Yes continue"
+                        : "Add address"}
+                </Button>
             </div>
         );
-    }
+    };
 }
 
 AddAddress.propTypes = {
     addAddress: PropTypes.func,
-    notifyAddressAdded: PropTypes.func,
+    notifyDockCreatorAddressAdded: PropTypes.func,
 };
 
 export default AddAddress;

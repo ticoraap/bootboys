@@ -8,8 +8,6 @@ const PERCENTAGE_TO_SHRINK = 0.7
 const MOBILE_WIDTH_PX = 750
 
 export default class DockMap extends Component {
-
-
     state = {
         BASE_LAT: 52.143929,
         BASE_LON: 4.5603223,
@@ -20,6 +18,15 @@ export default class DockMap extends Component {
         geolocationAllowed: false
     }
 
+    componentDidMount() {
+        window.addEventListener('scroll', this.handleScroll);
+        setMapHeight()
+        this.getGeoPermissions().then(
+            result => {
+                this.validateGeoPerms(result.state)
+            }
+        )
+    }
 
     render() {
         return (
@@ -33,15 +40,7 @@ export default class DockMap extends Component {
             />
         )
     }
-    componentDidMount() {
-        window.addEventListener('scroll', this.handleScroll);
-        setMapHeight()
-        this.getGeoPermissions().then(
-            result => {
-                this.validateGeoPerms(result.state)
-            }
-        )
-    }
+    
 
     getGeoPermissions() {
         return navigator.permissions.query({name: 'geolocation'}).then(function (result) {

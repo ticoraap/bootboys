@@ -119,7 +119,7 @@ export const dockCreatorForm = {
         validationRules: {
             required: false,
         },
-        valid: false,
+        valid: true,
         touched: false,
     },
     latitude: {

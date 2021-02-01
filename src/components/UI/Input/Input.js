@@ -2,33 +2,46 @@ import React from "react";
 import classes from "./Input.module.css";
 import PropTypes from "prop-types";
 
-const input = (props) => {
+const input = ({
+    wrapperClassName,
+    elementType,
+    elementConfig,
+    value,
+    valid,
+    validationRules,
+    touched,
+    label,
+    validationWarning,
+    styling,
+    changed,
+    ...props
+}) => {
     let inputElement = null;
     const inputClasses = [classes.InputElement];
 
-    if (props.invalid && props.shouldValidate && props.touched) {
+    if (!valid && validationRules && touched) {
         inputClasses.push(classes.Invalid);
     }
 
     let validationError = null;
-    if (props.invalid && props.touched) {
+    if (!valid && touched) {
         validationError = (
             <p className={classes.ValidationError}>
-                {props.validationWarning
-                    ? props.validationWarning
+                {validationWarning
+                    ? validationWarning
                     : "*Please enter a valid value"}
             </p>
         );
     }
 
-    switch (props.elementType) {
+    switch (elementType) {
         case "input":
             inputElement = (
                 <input
                     className={inputClasses.join(" ")}
-                    {...props.elementConfig}
-                    value={props.value}
-                    onChange={props.changed}
+                    {...elementConfig}
+                    value={value}
+                    onChange={changed}
                 />
             );
             break;
@@ -36,9 +49,9 @@ const input = (props) => {
             inputElement = (
                 <textarea
                     className={inputClasses.join(" ")}
-                    {...props.elementConfig}
-                    value={props.value}
-                    onChange={props.changed}
+                    {...elementConfig}
+                    value={value}
+                    onChange={changed}
                 />
             );
             break;
@@ -49,23 +62,23 @@ const input = (props) => {
             inputElement = (
                 <select
                     className={inputClasses.join(" ")}
-                    value={props.value}
-                    onChange={props.changed}
+                    value={value}
+                    onChange={changed}
                     disabled={
-                        !props.elementConfig.options.length ||
-                        props.elementConfig.disabled
+                        !elementConfig.options.length ||
+                        elementConfig.disabled
                     }
                 >
-                    {props.elementConfig.options.length ? (
+                    {elementConfig.options.length ? (
                         <option value="" defaultValue>
-                            {props.elementConfig.placeholder}
+                            {elementConfig.placeholder}
                         </option>
                     ) : (
                         <option defaultValue key="" value="">
-                            {props.elementConfig.emptyPlaceholder}
+                            {elementConfig.emptyPlaceholder}
                         </option>
                     )}
-                    {props.elementConfig.options.map((option) => {
+                    {elementConfig.options.map((option) => {
                         return (
                             <option key={option.value} value={option.value}>
                                 {option.displayValue}
@@ -79,21 +92,21 @@ const input = (props) => {
             inputElement = (
                 <input
                     className={inputClasses.join(" ")}
-                    {...props.elementConfig}
-                    value={props.value}
-                    onChange={props.changed}
+                    {...elementConfig}
+                    value={value}
+                    onChange={changed}
                 />
             );
     }
 
     let wrapperClassNames = [classes.Input];
 
-    if (props.wrapperClassName) {
-        wrapperClassNames.push(classes[props.wrapperClassName]);
+    if (wrapperClassName) {
+        wrapperClassNames.push(classes[wrapperClassName]);
     }
 
     return (
-        <div className={wrapperClassNames.join(" ")} style={props.styling}>
+        <div className={wrapperClassNames.join(" ")} style={styling}>
             <label className={classes.Label}>{props.label}</label>
             {inputElement}
             {validationError}
@@ -102,8 +115,8 @@ const input = (props) => {
 };
 
 input.propTypes = {
-    invalid: PropTypes.bool,
-    shouldValidate: PropTypes.object,
+    valid: PropTypes.bool,
+    validationRules: PropTypes.object,
     touched: PropTypes.bool,
     validationWarning: PropTypes.string,
     elementType: PropTypes.string,

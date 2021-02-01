@@ -45,7 +45,6 @@ export class DockCreator extends Component {
 
     componentDidUpdate(prevProps) {
         // reload the addresses in the address selector form
-        console.log(this.state);
         if (
             prevProps.userAddresses.length !== this.props.userAddresses.length
         ) {
@@ -81,17 +80,13 @@ export class DockCreator extends Component {
     };
 
     selectAddressHandler = (event, inputElementKey) => {
-        this.inputChangedHandler(event, inputElementKey)
-        this.updateFormWithAddressId(event,inputElementKey)
-    }
+        this.inputFieldChangedHandler(event, inputElementKey);
+        this.updateFormWithAddressId(event.target.value);
+    };
 
-    inputChangedHandler = (event, inputElementKey) => {
+    inputFieldChangedHandler = (event, inputElementKey) => {
         this.updateInputField(event.target.value, inputElementKey);
         this.updateDockFormSubmitValidity();
-
-        if (inputElementKey === "address") {
-            this.updateFormWithAddressId(event.target.value);
-        }
     };
 
     updateInputField = (inputElementValue, inputElementKey) => {
@@ -124,11 +119,11 @@ export class DockCreator extends Component {
 
     updateDockFormSubmitValidity = () => {
         this.setState((prevstate) => ({
-            allInputFieldsAreValid: this.isFormValid(prevstate.dockForm),
+            allInputFieldsAreValid: this.isTheFormValid(prevstate.dockForm),
         }));
     };
 
-    isFormValid = (dockForm) => {
+    isTheFormValid = (dockForm) => {
         let allInputFieldsAreValid = true;
         for (let formElement of Object.values(dockForm)) {
             if (formElement.validationRules) {
@@ -142,29 +137,40 @@ export class DockCreator extends Component {
     dragMarkerHandler = (event) => {
         if (!event.target._latlng) return;
 
-        let lat = event.target._latlng.lat;
-        let lon = event.target._latlng.lng;
+        let latlon = {
+            lat: event.target._latlng.lat,
+            lon: event.target._latlng.lng,
+        };
 
-        lon = this.keepLongitudeInBounds(lon);
+        latlon = this.keepLatLonInBounds(latlon);
 
-        const latlon = { lat: lat, lon: lon };
         this.updateDockFormElementsLatLon(latlon);
     };
 
-    keepLongitudeInBounds = (lon) => {
-        if (lon > 180) {
-            lon = 180;
+    keepLatLonInBounds = (latlon) => {
+        if (latlon.lon > 180) {
+            latlon.lon = 180;
         }
-        if (lon < -180) {
-            lon = -180;
+        if (latlon.lon < -180) {
+            latlon.lon = -180;
         }
-        return lon;
+        return latlon;
     };
 
     updateFormWithAddressId = (addressid) => {
         if (!addressid) return;
         const address = this.getAddressFromId(addressid);
         this.getLatLonFromAddress(address);
+    };
+
+    getLatLonFromAddress = (address) => {
+        queryAddressLatLong(address)
+            .then((latlon) => {
+                this.updateDockFormElementsLatLon(latlon);
+            })
+            .catch(() => {
+                this.showToastErrorMessage(MSG_ADDRESS_NOT_FOUND);
+            });
     };
 
     updateDockFormElementsLatLon = (latlon) => {
@@ -177,16 +183,6 @@ export class DockCreator extends Component {
         return this.props.userAddresses.find(
             (address) => address.addressid === addressid
         );
-    };
-
-    getLatLonFromAddress = (address) => {
-        queryAddressLatLong(address)
-            .then((latlon) => {
-                this.updateDockFormElementsLatLon(latlon);
-            })
-            .catch(() => {
-                this.showToastErrorMessage(MSG_ADDRESS_NOT_FOUND);
-            });
     };
 
     updateMapMarkerPosition(latlon) {
@@ -235,8 +231,8 @@ export class DockCreator extends Component {
         this.toggleAddressModal();
     };
 
-    updateFacilities = (facilities) => {
-        this.setState({ facilities: facilities });
+    setNewFacilityList = (facilityList) => {
+        this.setState({ addedFacilities: facilityList });
     };
 
     showToastErrorMessage = (errorMessage) => {
@@ -247,12 +243,12 @@ export class DockCreator extends Component {
         if (event) {
             event.preventDefault();
         }
-        const dock = this.mapInputvaluesToDock();
+        const dock = this.getDockFromInputValues();
         this.props.onAddDock(dock);
         this.props.dockManagerToMap();
     };
 
-    mapInputvaluesToDock = () => {
+    getDockFromInputValues = () => {
         return {
             name: this.state.dockForm.name.value,
             addressid: this.state.dockForm.address.value,
@@ -277,17 +273,20 @@ export class DockCreator extends Component {
         return (
             <Input
                 key={key}
-                wrapperClassName={this.state.dockForm[key].wrapperClassName}
-                elementType={this.state.dockForm[key].elementType}
-                elementConfig={this.state.dockForm[key].elementConfig}
-                value={this.state.dockForm[key].value}
-                invalid={!this.state.dockForm[key].valid}
-                shouldValidate={this.state.dockForm[key].validationRules}
-                touched={this.state.dockForm[key].touched}
-                label={this.state.dockForm[key].label}
-                validationWarning={this.state.dockForm[key].validationWarning}
-                styling={this.state.dockForm[key].styling}
-                changed={(event) => this.inputChangedHandler(event, key)}
+                {...this.state.dockForm[key]}
+                changed={(event) => this.inputFieldChangedHandler(event, key)}
+            >
+                {children}
+            </Input>
+        );
+    };
+
+    createSelectField = (key, children) => {
+        return (
+            <Input
+                key={key}
+                {...this.state.dockForm[key]}
+                changed={(event) => this.selectAddressHandler(event, key)}
             >
                 {children}
             </Input>
@@ -303,7 +302,7 @@ export class DockCreator extends Component {
             </h5>
         );
         const name = this.createInputField("name");
-        const address = this.createInputField("address");
+        const address = this.createSelectField("address");
         const newAddressButton = (
             <div key={"newAddressButton"} style={{ width: "15%" }}>
                 <Button btnType="Form" clicked={this.toggleAddressModal}>
@@ -316,7 +315,7 @@ export class DockCreator extends Component {
             "facilityCreator",
             <FacilityCreator
                 facilities={this.state.addedFacilities}
-                updateFacilities={this.updateFacilities}
+                setNewFacilityList={this.setNewFacilityList}
             />
         );
         const length = this.createInputField("length");

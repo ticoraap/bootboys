@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import React, {Component} from "react"
 import './DockMap.css'
-import ToastMaker from "../../shared/ToastMaker";
-import Map from '../../Dock/Map/Map';
+
+import ToastMaker from "../shared/ToastMaker";
+import Map from '../Dock/Map/Map';
 
 const EXTRA_SPACE_AT_TOP = 25
 const PERCENTAGE_TO_SHRINK = 0.7

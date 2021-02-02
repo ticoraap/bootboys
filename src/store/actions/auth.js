@@ -2,7 +2,6 @@ import * as actionTypes from "../actions/actionTypes";
 import ToastMaker from "../../components/shared/ToastMaker";
 import * as actions from "./index";
 import axios from "axios";
-// import { dispatch } from "rxjs/internal/observable/pairs";
 
 export const auth = (email, password) => {
     return (dispatch) => {
@@ -68,9 +67,12 @@ export const loginUser = () => {
 };
 
 export const logoutUser = (history) => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationDate");
+    localStorage.removeItem("userId");
     ToastMaker.infoToast("Successfully logged out");
     history.push("/");
     return {
-        type: actionTypes.LOGOUT_USER,
+        type: actionTypes.AUTH_LOGOUT,
     };
 };

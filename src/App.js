@@ -6,7 +6,9 @@ import PageNotFound from "./components/PageNotFoundComponent/PageNotFound";
 import Layout from './HOC/Layout/Layout';
 import PrivateRoute from "./components/LoginComponent/PrivateRoute";
 import Account from "./components/AccountComponent/Account";
-import RentDockList from "./components/RentDockList/RentDockList";
+
+// containers
+import DockSearcher from './containers/DockSearcher/DockSearcher';
 import Dock from './components/DockComponent/Dock'
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,10 +28,10 @@ class App extends Component {
                     <BrowserRouter>
                         <Layout LoginModalToggle={this.toggleLoginModal} ForgotPasswordModalToggle={this.toggleForgotPasswordModal} RegisterModalToggle={this.toggleRegisterModal} >
                             <Switch>
-                                <Route exact path="/" component={RentDockList}/>
+                                <Route exact path="/" component={DockSearcher}/>
                                 <Route exact path="/create-dock" component={DockCreator}/>
                                 <PrivateRoute exact path="/Account" component={Account}/>
-                                <Route exact path='/rent-dock' component={RentDockList}/>
+                                <Route exact path='/rent-dock' component={DockSearcher}/>
                                 <Route exact path='/contact' component={() => <h1>Test123</h1>}/>
                                 <Route exact path='/facilitys' component={FacilityCreator}/>
                                 <Route exact path='/dock' component={Dock}/>

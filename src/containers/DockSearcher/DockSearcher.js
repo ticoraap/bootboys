@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import DockList from "./DockList/DockList";
-import "./RentDockList.css";
+import "./DockSearcher.css";
+import { Api } from "../../api/index";
+
+import DockList from '../../components/DockList/DockList';
+import DockMap from '../../components/DockMap/DockMap';
 import TextField from "@material-ui/core/TextField";
-import DockMap from "./DockMap/DockMap";
-import httpService from "../../shared/httpService";
-import { Api } from "../../api";
 
-
-class RentDockList extends Component {
+class DockSearcher extends Component {
     state = {
         dockName: "",
         price: "",
@@ -60,6 +59,7 @@ class RentDockList extends Component {
                     satisfiesFilter;
 
                 if (satisfiesFilter) {
+                    dock.dockid = dockid
                     newFilteredDocks.push(dock);
                 }
             }
@@ -148,4 +148,4 @@ class RentDockList extends Component {
     }
 }
 
-export default RentDockList;
+export default DockSearcher

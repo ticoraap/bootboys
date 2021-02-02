@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, {Component} from "react"
 import './DockMap.css'
 import ToastMaker from "../../shared/ToastMaker";
@@ -14,7 +15,6 @@ export default class DockMap extends Component {
         lat: 52.143929,
         lon: 4.5603223,
         zoom: 11,
-        filteredDocks: [],
         geolocationAllowed: false
     }
 
@@ -28,19 +28,17 @@ export default class DockMap extends Component {
         )
     }
 
-    render() {
-        return (
-            <Map 
-                defaultOptions
-                id={'dockMap'} 
-                center={[this.state.lat, this.state.lon]} 
-                zoom={this.state.zoom} 
-                docks={this.state.filteredDocks}
-                bounds={!this.state.geolocationAllowed}
-            />
-        )
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
     }
-    
+
+    handleScroll() {
+        if (isNotOnMobileResolution()) {
+            document.getElementById('dockMap').style.marginTop = addSuffix((window.scrollY + EXTRA_SPACE_AT_TOP), "px")
+            setMapHeight()
+        }
+    }
+
 
     getGeoPermissions() {
         return navigator.permissions.query({name: 'geolocation'}).then(function (result) {
@@ -76,41 +74,23 @@ export default class DockMap extends Component {
     }
 
     setDefaultMapCenter() {
-        this.setMapCenter(this.state.BASE_LAT, this.state.BASE_LON)
-    }
-
-    setMapCenter(lat, lon){
         this.setState({
-            lat: lat,
-            long: lon,
+            lat: this.state.BASE_LAT,
+            long: this.state.BASE_LON,
         })
     }
 
-    setDataForMarkers(filteredDocksInput) {
-        this.filteredDocks = filteredDocksInput
-        this.setState({
-            filteredDocks: filteredDocksInput
-        })
-    }
-
-    // TODO delete
-    getPositionFromIndex(index) {
-        return [this.filteredDocks[index].latitude, this.filteredDocks[index].longitude]
-    }
-
-    getFieldFromFilterdDocks(index, field) {
-        return this.filteredDocks[index][field]
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
-
-    handleScroll() {
-        if (isNotOnMobileResolution()) {
-            document.getElementById('dockMap').style.marginTop = addSuffix((window.scrollY + EXTRA_SPACE_AT_TOP), "px")
-            setMapHeight()
-        }
+    render() {
+        return (
+            <Map 
+                defaultOptions
+                id={'dockMap'} 
+                center={[this.state.lat, this.state.lon]} 
+                zoom={this.state.zoom} 
+                docks={this.props.docks}
+                bounds={!this.state.geolocationAllowed}
+            />
+        )
     }
 }
 
@@ -125,3 +105,8 @@ function setMapHeight() {
 function isNotOnMobileResolution() {
     return window.innerWidth > MOBILE_WIDTH_PX
 }
+
+
+DockMap.propTypes = {
+    docks: PropTypes.array
+};

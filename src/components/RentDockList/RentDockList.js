@@ -4,6 +4,8 @@ import "./RentDockList.css";
 import TextField from "@material-ui/core/TextField";
 import DockMap from "./DockMap/DockMap";
 import httpService from "../../shared/httpService";
+import { Api } from "../../api";
+
 
 class RentDockList extends Component {
     state = {
@@ -20,22 +22,75 @@ class RentDockList extends Component {
     }
 
     fetchAllDocks() {
-        httpService
-            .getAllDocks()
+        Api.dock.getAll()
             .then((docks) => {
-                this.setState({ docks: docks, filteredDocks: docks });
+                this.setState({ docks: docks });
+                this.filterDocks();
             })
             .catch((error) => {
                 console.log(error);
             });
     }
 
-    constructor() {
-        super();
-        this.DockListElement = React.createRef();
-        this.DockMapElement = React.createRef();
-        this.updateMap = this.updateMap.bind(this);
+    handleOnChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+
+        this.filterDocks();
     }
+
+    filterDocks = () => {
+        this.setState((oldState) => {
+            const newFilteredDocks = [];
+            for (const [dockid, dock] of Object.entries(this.state.docks)) {
+                let satisfiesFilter = true;
+
+                satisfiesFilter =
+                    this.isInputInDockName(dock, oldState.dockName) &&
+                    satisfiesFilter;
+                satisfiesFilter =
+                    this.isDockPriceWithinMaxPrice(dock, oldState.price) &&
+                    satisfiesFilter;
+                satisfiesFilter =
+                    this.isDockLengthWithinMaxLength(dock, oldState.length) &&
+                    satisfiesFilter;
+                satisfiesFilter =
+                    this.isDockWidthWithinMaxWidth(dock, oldState.width) &&
+                    satisfiesFilter;
+
+                if (satisfiesFilter) {
+                    newFilteredDocks.push(dock);
+                }
+            }
+            return { filteredDocks: newFilteredDocks };
+        });
+    };
+
+    isInputInDockName = (dock, nameInput) => {
+        return dock.name.toLowerCase().includes(nameInput);
+    };
+
+    isDockPriceWithinMaxPrice = (dock, priceInput) => {
+        if (priceInput === "") {
+            return true;
+        }
+        return dock.price <= priceInput;
+    };
+
+    isDockLengthWithinMaxLength = (dock, lengthInput) => {
+        if (lengthInput === "") {
+            return true;
+        }
+        return dock.length <= lengthInput;
+    };
+
+    isDockWidthWithinMaxWidth = (dock, widthInput) => {
+        if (widthInput === "") {
+            return true;
+        }
+        return dock.width <= widthInput;
+    };
 
     render() {
         return (
@@ -46,7 +101,6 @@ class RentDockList extends Component {
                         value={this.state.dockName}
                         name={"dockName"}
                         label={"Name of dock"}
-                        onKeyUp={this.searchDock.bind(this)}
                         size={"medium"}
                         className={"searchDock"}
                     />
@@ -82,96 +136,15 @@ class RentDockList extends Component {
                 <div id={"wrapper"}>
                     <div>
                         <DockList
-                            mapUpdate={this.updateMap}
-                            ref={this.DockListElement}
-                            id={"RentableDocks"}
+                            docks={this.state.filteredDocks}
                         />
                     </div>
                     <div id={"mapDocks"}>
-                        <DockMap ref={this.DockMapElement} />
+                        <DockMap docks={this.state.filteredDocks} />
                     </div>
                 </div>
             </div>
         );
-    }
-
-    handleOnChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value,
-        });
-
-        this.searchDock();
-        this.filterDocks();
-    }
-
-    filterDocks = () => {
-        this.setState((oldState) => {
-            const newFilteredDocks = {};
-            for (const [dockid, dock] of Object.entries(this.state.docks)) {
-                let satisfiesFilter = true;
-
-                satisfiesFilter =
-                    this.isInputInDockName(dock, oldState.dockName) &&
-                    satisfiesFilter;
-                satisfiesFilter =
-                    this.isDockPriceWithinMaxPrice(dock, oldState.price) &&
-                    satisfiesFilter;
-                satisfiesFilter =
-                    this.isDockLengthWithinMaxLength(dock, oldState.length) &&
-                    satisfiesFilter;
-                satisfiesFilter =
-                    this.isDockWidthWithinMaxWidth(dock, oldState.width) &&
-                    satisfiesFilter;
-
-                if (satisfiesFilter) {
-                    newFilteredDocks[dockid] = dock;
-                }
-            }
-            return { filteredDocks: newFilteredDocks };
-        });
-    };
-
-    isInputInDockName = (dock, nameInput) => {
-        return dock.name.toLowerCase().includes(nameInput);
-    };
-
-    isDockPriceWithinMaxPrice = (dock, priceInput) => {
-        if (priceInput === "") {
-            return true;
-        }
-        return dock.price <= priceInput;
-    };
-
-    isDockLengthWithinMaxLength = (dock, lengthInput) => {
-        if (lengthInput === "") {
-            return true;
-        }
-        return dock.length <= lengthInput;
-    };
-
-    isDockWidthWithinMaxWidth = (dock, widthInput) => {
-        if (widthInput === "") {
-            return true;
-        }
-        return dock.width <= widthInput;
-    };
-
-    searchDock(event) {
-        this.DockListElement.current.filterDocks(
-            event,
-            this.state.dockName,
-            this.state.length,
-            this.state.price,
-            this.state.width
-        );
-    }
-
-    updateMap() {
-        this.DockMapElement.current.setDataForMarkers(this.getFilteredDocks());
-    }
-
-    getFilteredDocks() {
-        return this.DockListElement.current.filteredDocks;
     }
 }
 

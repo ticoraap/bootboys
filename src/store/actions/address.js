@@ -38,3 +38,24 @@ export const getUserAddressesFail = (error) => {
         error: error,
     };
 };
+
+export const addUserAddress = (address) => {
+    return (dispatch) => {
+        dispatch({ type: actionTypes.ADD_USER_ADDRESS_START });
+        Api.address
+            .add(address)
+            .then(() => {
+                dispatch({ type: actionTypes.ADD_USER_ADDRESS_SUCCESS });
+                dispatch(getUserAddresses())
+            })
+            .catch(() => {
+                dispatch({ type: actionTypes.ADD_USER_ADDRESS_FAIL });
+            });
+    };
+};
+
+export const addAddressSuccessReceived = () => {
+    return (dispatch) => {
+        dispatch({type: actionTypes.ADD_ADDRESS_SUCCESS_RECEIVED})
+    }
+}

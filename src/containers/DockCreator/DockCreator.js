@@ -226,7 +226,6 @@ export class DockCreator extends Component {
     };
 
     notifyAddressAdded = () => {
-        this.props.onLoadUserAddresses();
         this.toggleAddressModal();
     };
 

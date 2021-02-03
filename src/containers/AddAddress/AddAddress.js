@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { addressForm } from "./AddAddressForm";
 
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+
 import * as utility from "../../shared/utility";
 
 import Input from "../../components/UI/Input/Input";
@@ -9,9 +12,7 @@ import classes from "./AddAddress.module.css";
 
 import { queryAddressLatLong } from "./LocationQuery";
 import PropTypes from "prop-types";
-import { ApiService } from "../../components/shared/Api.service";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import ToastMaker from "../../components/shared/ToastMaker";
 
 class AddAddress extends Component {
     state = {
@@ -21,6 +22,14 @@ class AddAddress extends Component {
         address: null,
         badAddressWarning: false,
     };
+
+    componentDidUpdate() {
+        if (this.props.addressAddedSuccess) {
+            this.resetAddressForm();
+            this.props.notifyDockCreatorAddressAdded();
+            this.props.onAddAddressSuccessReceived()
+        }
+    }
 
     inputFieldChangedHandler = (event, inputElementKey) => {
         this.updateAddressFormElement(event.target.value, inputElementKey);
@@ -116,16 +125,7 @@ class AddAddress extends Component {
     };
 
     submitNewAddress = (address) => {
-        ApiService.post("address", address)
-            .then(() => {
-                this.resetAddressForm();
-                this.props.notifyDockCreatorAddressAdded();
-            })
-            .catch(() => {
-                ToastMaker.errorToast(
-                    "Could not make a new address, look in the console for the error"
-                );
-            });
+        this.props.onAddUserAddress(address);
     };
 
     resetAddressForm = () => {
@@ -203,7 +203,6 @@ class AddAddress extends Component {
             ) {
                 continue;
             }
-            console.log(key);
             formElementsArray.push(this.createInputField(key));
         }
 
@@ -236,6 +235,24 @@ class AddAddress extends Component {
 AddAddress.propTypes = {
     addAddress: PropTypes.func,
     notifyDockCreatorAddressAdded: PropTypes.func,
+    onAddUserAddress: PropTypes.func,
+    addressAddedSuccess: PropTypes.bool,
+    onAddAddressSuccessReceived: PropTypes.func
 };
 
-export default AddAddress;
+const mapStateToProps = (state) => {
+    return {
+        addressAddedSuccess: state.address.addressAddedSuccess,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onAddUserAddress: (address) =>
+            dispatch(actions.addUserAddress(address)),
+        onAddAddressSuccessReceived: () =>
+            dispatch(actions.addAddressSuccessReceived()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddAddress);

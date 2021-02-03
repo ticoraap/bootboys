@@ -19,7 +19,9 @@ export {
 } from './dock';
 
 export {
-    getUserAddresses
+    getUserAddresses,
+    addUserAddress,
+    addAddressSuccessReceived
 } from './address'
 
 export {

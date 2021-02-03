@@ -8,7 +8,6 @@ import * as actions from "../../../store/actions/index";
 import * as actionTypes from "../../../store/actions/actionTypes";
 
 import NavigationItem from "./NavigationItem/NavigationItem";
-import { authenticationService } from "../../Login/authentication.service";
 
 export class NavigationItems extends Component {
     onLoginLogout = () => {
@@ -16,7 +15,6 @@ export class NavigationItems extends Component {
             this.toggleSideDrawerIfMobileLayout();
         }
         if (this.props.isAuthenticated) {
-            authenticationService.logout();
             this.props.onLogoutUser(this.props.history);
         } else {
             this.props.onToggleLoginModal();

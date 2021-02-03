@@ -5,6 +5,7 @@ const initialState = {
     userAddresses: [],
     userAddressesLoading: false,
     addAddressLoading: false,
+    addressAddedSuccess: false
 };
 
 const getUserAddressesStart = (state) => {
@@ -35,6 +36,7 @@ const addAddressStart = (state) => {
 const addAddressSuccess = (state) => {
     return updateObject(state, {
         addAddressLoading: false,
+        addressAddedSuccess: true
     });
 };
 
@@ -43,6 +45,12 @@ const addAddressFail = (state) => {
         addAddressLoading: false,
     });
 };
+
+const addAddressSuccessReceived = (state) => {
+    return updateObject(state, {
+        addressAddedSuccess: false
+    })
+}
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -59,6 +67,8 @@ const reducer = (state = initialState, action) => {
             return addAddressSuccess(state, action);
         case actionTypes.ADD_USER_ADDRESS_FAIL:
             return addAddressFail(state, action);
+        case actionTypes.ADD_ADDRESS_SUCCESS_RECEIVED:
+            return addAddressSuccessReceived(state, action);
         default:
             return state;
     }

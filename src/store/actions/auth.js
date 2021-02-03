@@ -61,7 +61,7 @@ export const authCheckState = () => {
                     name: name,
                 });
             } else {
-                dispatch({ type: actionTypes.AUTH_LOGOUT });
+                dispatch(logoutUser());
             }
         }
     };
@@ -80,7 +80,9 @@ export const logoutUser = (history) => {
     localStorage.removeItem("userId");
     localStorage.removeItem("email");
     localStorage.removeItem("name");
-    history.push("/");
+    if(history){
+        history.push("/");
+    }
     return {
         type: actionTypes.AUTH_LOGOUT,
     };

@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import "./DockSearcher.css";
-import { Api } from "../../api/index";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import * as actions from "../../store/actions/index";
 
-import DockList from '../../components/DockList/DockList';
-import DockMap from '../../components/DockMap/DockMap';
+import DockList from "../../components/DockList/DockList";
+import DockMap from "../../components/DockMap/DockMap";
 import TextField from "@material-ui/core/TextField";
 
 class DockSearcher extends Component {
@@ -17,54 +19,40 @@ class DockSearcher extends Component {
     };
 
     componentDidMount() {
-        this.fetchAllDocks();
-    }
-
-    fetchAllDocks() {
-        Api.dock.getAll()
-            .then((docks) => {
-                this.setState({ docks: docks });
-                this.filterDocks();
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        this.props.onGetUserDocks();
+        this.getFilteredDocks();
     }
 
     handleOnChange(event) {
         this.setState({
             [event.target.name]: event.target.value,
         });
-
-        this.filterDocks();
     }
 
-    filterDocks = () => {
-        this.setState((oldState) => {
-            const newFilteredDocks = [];
-            for (const [dockid, dock] of Object.entries(this.state.docks)) {
-                let satisfiesFilter = true;
+    getFilteredDocks = () => {
+        const newFilteredDocks = [];
+        for (const [dockid, dock] of Object.entries(this.props.docks)) {
+            let satisfiesFilter = true;
 
-                satisfiesFilter =
-                    this.isInputInDockName(dock, oldState.dockName) &&
-                    satisfiesFilter;
-                satisfiesFilter =
-                    this.isDockPriceWithinMaxPrice(dock, oldState.price) &&
-                    satisfiesFilter;
-                satisfiesFilter =
-                    this.isDockLengthWithinMaxLength(dock, oldState.length) &&
-                    satisfiesFilter;
-                satisfiesFilter =
-                    this.isDockWidthWithinMaxWidth(dock, oldState.width) &&
-                    satisfiesFilter;
+            satisfiesFilter =
+                this.isInputInDockName(dock, this.state.dockName) &&
+                satisfiesFilter;
+            satisfiesFilter =
+                this.isDockPriceWithinMaxPrice(dock, this.state.price) &&
+                satisfiesFilter;
+            satisfiesFilter =
+                this.isDockLengthWithinMaxLength(dock, this.state.length) &&
+                satisfiesFilter;
+            satisfiesFilter =
+                this.isDockWidthWithinMaxWidth(dock, this.state.width) &&
+                satisfiesFilter;
 
-                if (satisfiesFilter) {
-                    dock.dockid = dockid
-                    newFilteredDocks.push(dock);
-                }
+            if (satisfiesFilter) {
+                dock.dockid = dockid;
+                newFilteredDocks.push(dock);
             }
-            return { filteredDocks: newFilteredDocks };
-        });
+        }
+        return newFilteredDocks
     };
 
     isInputInDockName = (dock, nameInput) => {
@@ -93,6 +81,9 @@ class DockSearcher extends Component {
     };
 
     render() {
+
+        const filteredDocks = this.getFilteredDocks()
+
         return (
             <div>
                 <div id={"inputs"}>
@@ -135,12 +126,10 @@ class DockSearcher extends Component {
 
                 <div id={"wrapper"}>
                     <div>
-                        <DockList
-                            docks={this.state.filteredDocks}
-                        />
+                        <DockList docks={filteredDocks} />
                     </div>
                     <div id={"mapDocks"}>
-                        <DockMap docks={this.state.filteredDocks} />
+                        <DockMap docks={filteredDocks} />
                     </div>
                 </div>
             </div>
@@ -148,4 +137,21 @@ class DockSearcher extends Component {
     }
 }
 
-export default DockSearcher
+DockSearcher.propTypes = {
+    docks: PropTypes.any,
+    onGetUserDocks: PropTypes.func,
+};
+
+const mapStateToProps = (state) => {
+    return {
+        docks: state.dock.userDocks,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onGetUserDocks: () => dispatch(actions.getUserDocks()),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DockSearcher);

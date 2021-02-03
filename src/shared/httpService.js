@@ -1,4 +1,4 @@
-import { authHeaderToken } from "../components/LoginComponent/auth-header";
+import { getAuthToken } from "./utility";
 
 const applicationTypeJSON = "application/json";
 const httpMethodPOST = "POST";
@@ -6,31 +6,41 @@ const httpMethodGET = "GET";
 const httpMethodDELETE = "DELETE";
 
 export const httpService = {
+    getDock,
     getAllDocks,
     addDock,
     removeDock,
+    getAddress,
     addAddress,
-    getAddressesFromUser
+    getAddressesFromUser,
 };
 
 function getAllDocks() {
     return getJson("dock");
 }
 
-function addDock(dock){
-    return post("dock", dock)
+function addDock(dock) {
+    return post("dock", dock);
 }
 
-function removeDock(dockid){
-    return remove("dock/", dockid)
+function getDock(dockid) {
+    return getJson("dock/" + dockid);
 }
 
-function getAddressesFromUser(){
-    return getJson("address")
+function removeDock(dockid) {
+    return remove("dock/", dockid);
 }
 
-function addAddress(address){
-    return post("address", address)
+function getAddress(addressid) {
+    return getJson("address/" + addressid)
+}
+
+function getAddressesFromUser() {
+    return getJson("address");
+}
+
+function addAddress(address) {
+    return post("address", address);
 }
 
 function post(url, JSON) {
@@ -41,7 +51,6 @@ function post(url, JSON) {
         body: stringifyData(JSON),
         headers: {
             "Content-Type": applicationTypeJSON,
-            Authorization: authHeaderToken(),
         },
     });
 }
@@ -50,9 +59,6 @@ function get(resourceLocation) {
     const URL = composeApiURL(resourceLocation);
     return fetch(URL, {
         method: httpMethodGET,
-        headers: {
-            Authorization: authHeaderToken(),
-        },
     });
 }
 
@@ -60,9 +66,6 @@ function remove(resourceLocation) {
     const URL = composeApiURL(resourceLocation);
     return fetch(URL, {
         method: httpMethodDELETE,
-        headers: {
-            Authorization: authHeaderToken(),
-        },
     });
 }
 
@@ -82,8 +85,13 @@ function getJson(resourceLocation) {
 }
 
 const composeApiURL = (resourceLocation) => {
-    return getBaseURL() + resourceLocation + ".json";
+    return getBaseURL() + resourceLocation + ".json" + getAuthString();
 };
+
+const getAuthString = () => {
+    if (getAuthToken()) return "?auth=" + getAuthToken()
+    return ""
+}
 
 const getBaseURL = () => {
     return "" + process.env.REACT_APP_BASE_URL;

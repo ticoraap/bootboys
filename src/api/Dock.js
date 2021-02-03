@@ -1,19 +1,23 @@
-export function getDockApi(httpClient) {
+export function getDockApi(httpService) {
+    function get(dockid) {
+        return httpService.getDock(dockid)
+    }
+    
     function getAll() {
-        return httpClient.getAllDocks()
+        return httpService.getAllDocks()
     }
 
     function getAllOwned() {
-        return httpClient.getAllDocks()
+        return httpService.getAllDocks()
     }
     
     function add(dock) {
-        return httpClient.addDock(dock);
+        return httpService.addDock(dock);
     }
 
     function remove(dockid) {
-        return httpClient.removeDock(dockid);
+        return httpService.removeDock(dockid);
     }
 
-    return Object.freeze({ getAll, getAllOwned, add, remove });
+    return Object.freeze({ get, getAll, getAllOwned, add, remove });
 }

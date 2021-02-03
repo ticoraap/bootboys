@@ -1,12 +1,10 @@
 .DockCard {
     max-width: unset;
-    /* margin-right: 1%; */
-    
     transition: all 0.3s ease;
 }
 
 @media (min-width: 1000px) {
-    .DockCard{
+    .DockCard {
         min-width: 300px;
         max-width: 320px;
     }
@@ -15,9 +13,6 @@
 .DockCard:hover {
     background-color: var(--gray-lighterer);
 }
-
-
-
 
 .DockCard p {
     margin-top: 2px;
@@ -34,5 +29,4 @@
 .DockManager {
     border-top: groove;
     border-bottom: groove;
-    /* border-right: groove; */
 }

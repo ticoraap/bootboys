@@ -26,5 +26,7 @@ export {
     auth,
     authCheckState,
     loginUser,
-    logoutUser
+    logoutUser,
+    changePassword,
+    createAccount
 } from './auth'

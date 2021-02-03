@@ -8,12 +8,12 @@ import * as actions from "../../../store/actions/index";
 import * as actionTypes from "../../../store/actions/actionTypes";
 
 import NavigationItem from "./NavigationItem/NavigationItem";
-import { authenticationService } from "../../../components/LoginComponent/authentication.service";
+import { authenticationService } from "../../Login/authentication.service";
 
 export class NavigationItems extends Component {
-    loginLogout = () => {
+    onLoginLogout = () => {
         if (this.props.NavigationType === "SideDrawer") {
-            this.newToggleSideDrawer();
+            this.toggleSideDrawerIfMobileLayout();
         }
         if (this.props.isAuthenticated) {
             authenticationService.logout();
@@ -23,71 +23,59 @@ export class NavigationItems extends Component {
         }
     };
 
-    register = () => {
+    onRegister = () => {
         if (this.props.NavigationType === "SideDrawer") {
-            this.newToggleSideDrawer();
+            this.toggleSideDrawerIfMobileLayout();
         }
         this.props.onToggleRegisterModal();
     };
 
-    newToggleSideDrawer = () => {
+    toggleSideDrawerIfMobileLayout = () => {
         if (this.props.NavigationType === "SideDrawer") {
             this.props.onToggleSideDrawer();
         }
-    };
-
-    showAccount = () => {
-        return (
-            <NavigationItem
-                closeSidedrawer={this.newToggleSideDrawer}
-                link="/Account"
-                exact
-            >
-                Account
-            </NavigationItem>
-        );
-    };
-
-    showRegister = () => {
-        return (
-            <span className={classes.NavigationItem} onClick={this.register}>
-                <p>Register</p>
-            </span>
-        );
     };
 
     render() {
         return (
             <ul className={classes.NavigationItem}>
                 <NavigationItem
-                    closeSidedrawer={this.newToggleSideDrawer}
-                    link="/"
+                    closeSidedrawer={this.toggleSideDrawerIfMobileLayout}
+                    link="/rent-dock"
                     exact
                 >
-                    Home
+                    Rent Dock
                 </NavigationItem>
                 {this.props.isAuthenticated ? (
                     <NavigationItem
-                        closeSidedrawer={this.newToggleSideDrawer}
+                        closeSidedrawer={this.toggleSideDrawerIfMobileLayout}
                         link="/manage-docks"
                         exact
                     >
                         Manage Docks
                     </NavigationItem>
                 ) : null}
-                <NavigationItem
-                    closeSidedrawer={this.newToggleSideDrawer}
-                    link="/rent-dock"
-                    exact
-                >
-                    Rent Dock
-                </NavigationItem>
-                {this.props.isAuthenticated
-                    ? this.showAccount()
-                    : this.showRegister()}
+
+                {this.props.isAuthenticated ? (
+                    <NavigationItem
+                        closeSidedrawer={this.toggleSideDrawerIfMobileLayout}
+                        link="/Account"
+                        exact
+                    >
+                        Account
+                    </NavigationItem>
+                ) : null}
+                {!this.props.isAuthenticated ? (
+                    <span
+                        className={classes.NavigationItem}
+                        onClick={this.onRegister}
+                    >
+                        <p>Register</p>
+                    </span>
+                ) : null}
                 <span
                     className={classes.NavigationItem}
-                    onClick={this.loginLogout}
+                    onClick={this.onLoginLogout}
                 >
                     <p>{this.props.isAuthenticated ? "Logout" : "Login"}</p>
                 </span>
@@ -112,7 +100,6 @@ const mapStateToProps = (state) => {
         showSideDrawer: state.ux.showSideDrawer,
         showLoginModal: state.ux.showLoginModal,
         showRegisterModal: state.ux.showRegisterModal,
-        showForgotpasswordModal: state.ux.showForgotpasswordModal,
     };
 };
 

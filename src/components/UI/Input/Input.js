@@ -107,7 +107,7 @@ const input = ({
 
     return (
         <div className={wrapperClassNames.join(" ")} style={styling}>
-            <label className={classes.Label}>{props.label}</label>
+            <label className={classes.Label}>{label}</label>
             {inputElement}
             {validationError}
         </div>

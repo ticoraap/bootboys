@@ -5,13 +5,11 @@ import PropTypes from "prop-types";
 
 export default class DockList extends Component {
     state = {
-        Docks: [],
         filteredDocks: [],
         redirect: false,
         dockid: 0,
     };
 
-    
     onClickDockHandler(id) {
         this.setState({ dockid: id, redirect: true });
     }
@@ -47,10 +45,9 @@ export default class DockList extends Component {
             );
         });
     }
-
 }
 
 DockList.propTypes = {
     mapUpdate: PropTypes.func,
-    docks: PropTypes.array
+    docks: PropTypes.array,
 };

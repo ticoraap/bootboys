@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import {latLngBounds, latLng} from 'leaflet'
 import {Map, Marker, Popup, TileLayer} from "react-leaflet";
-import Auxilary from '../../../HOC/Auxiliary/Auxiliary'
+import Auxilary from '../../HOC/Auxiliary/Auxiliary'
 
 const map = ( props ) => {
 

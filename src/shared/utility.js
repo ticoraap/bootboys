@@ -74,3 +74,7 @@ export const parseFloatFromMetersInput = (metersInputString) => {
 export const parseFloatFromEurosInput = (eurosInputString) => {
     return parseFloat(eurosInputString.replace(",", ".").replace("€", ""));
 };
+
+export const getAuthToken = () => {
+    return localStorage.getItem("token")
+}

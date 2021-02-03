@@ -1,12 +1,12 @@
 import React, { Component } from "react";
+import { addressForm } from "./AddAddressForm";
 
 import * as utility from "../../shared/utility";
 
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import classes from "./AddAddress.module.css";
-import countryCodes from "./countryCodes";
-import stateCodes from "./stateCodes";
+
 import { queryAddressLatLong } from "./LocationQuery";
 import PropTypes from "prop-types";
 import { ApiService } from "../../components/shared/Api.service";
@@ -15,117 +15,14 @@ import ToastMaker from "../../components/shared/ToastMaker";
 
 class AddAddress extends Component {
     state = {
-        addressForm: {
-            street: {
-                styling: {
-                    width: "80%",
-                },
-                label: "Street",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                    maxLength: 100,
-                },
-                validationWarning: "*required",
-                valid: false,
-                touched: false,
-            },
-            houseNumber: {
-                styling: {
-                    width: "20%",
-                },
-                label: "Number",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                    maxLength: 100,
-                },
-                validationWarning: "*required",
-                valid: false,
-                touched: false,
-            },
-            postalcode: {
-                styling: {
-                    width: "50%",
-                },
-                label: "Postal code",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                    isPostalcode: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            city: {
-                styling: {
-                    width: "50%",
-                },
-                label: "City",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            country: {
-                styling: {
-                    width: "50%",
-                },
-                label: "Country",
-                elementType: "select",
-                elementConfig: {
-                    options: countryCodes(),
-                },
-                value: "NL",
-                validationRules: {
-                    required: true,
-                },
-                valid: true,
-                touched: true,
-            },
-            state: {
-                styling: {
-                    width: "50%",
-                },
-                label: "US State",
-                elementType: "select",
-                elementConfig: {
-                    options: stateCodes(),
-                    placeholder: "Select a State",
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                },
-                valid: true,
-                touched: true,
-            },
-        },
+        addressForm: { ...addressForm },
         allFieldsValid: false,
         loading: false,
         address: null,
         badAddressWarning: false,
     };
 
-    inputChangedHandler = (event, inputElementKey) => {
+    inputFieldChangedHandler = (event, inputElementKey) => {
         this.updateAddressFormElement(event.target.value, inputElementKey);
         this.updateAddressFormValidity();
     };
@@ -306,33 +203,21 @@ class AddAddress extends Component {
             ) {
                 continue;
             }
-            formElementsArray.push({
-                id: key,
-                config: this.state.addressForm[key],
-            });
+            console.log(key);
+            formElementsArray.push(this.createInputField(key));
         }
 
-        return formElementsArray.map((formElement) => {
-            return (
-                <Input
-                    key={formElement.id}
-                    // elelment
-                    elementType={formElement.config.elementType}
-                    elementConfig={formElement.config.elementConfig}
-                    value={formElement.config.value}
-                    label={formElement.config.label}
-                    // validation
-                    shouldValidate={formElement.config.validation}
-                    invalid={!formElement.config.valid}
-                    validationWarning={formElement.config.validationWarning}
-                    touched={formElement.config.touched}
-                    styling={formElement.config.styling}
-                    changed={(event) =>
-                        this.inputChangedHandler(event, formElement.id)
-                    }
-                />
-            );
-        });
+        return formElementsArray;
+    };
+
+    createInputField = (key) => {
+        return (
+            <Input
+                key={key}
+                {...this.state.addressForm[key]}
+                changed={(event) => this.inputFieldChangedHandler(event, key)}
+            ></Input>
+        );
     };
 
     renderSubmitButton = () => {

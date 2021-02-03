@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import classes from "./DockCreator.module.css";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
 
 import { dockCreatorForm } from "./DockCreatorForm";
 
 import * as utility from "../../shared/utility";
-
-import { connect } from "react-redux";
-import * as actions from "../../store/actions/index";
 
 import AddAddress from "../AddAddress/AddAddress";
 import Button from "../../components/UI/Button/Button";

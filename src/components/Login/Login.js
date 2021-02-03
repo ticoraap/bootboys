@@ -2,10 +2,8 @@ import React, {Component} from "react";
 import './Login.css'
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-// import {sha256} from "js-sha256";
-// import {authenticationService} from "./authentication.service";
+
 import PropTypes from 'prop-types';
-// import ToastMaker from "../shared/ToastMaker";
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
@@ -36,14 +34,8 @@ export class Login extends Component {
                     <Button type={'submit'} variant={'contained'} color={'primary'} size={'large'}
                             id={'submitLogin'}>Login</Button>
                 </form>
-                <span id={'forgotPassword'} onClick={this.openForgotPassword.bind(this)}>Forgot password?</span>
             </div>
         )
-    }
-
-    openForgotPassword() {
-        this.props.LoginModalToggle()
-        this.props.ForgotPasswordModalToggle()
     }
 
     submitHandler = (event) => {
@@ -76,7 +68,6 @@ export class Login extends Component {
 
 Login.propTypes = {
     LoginModalToggle: PropTypes.func,
-    ForgotPasswordModalToggle: PropTypes.func,
     onLoginUser: PropTypes.func,
     onAuth: PropTypes.func
 };

@@ -1,5 +1,5 @@
 import sharedMethods from "./SharedMethods";
-import {authHeaderToken} from "../LoginComponent/auth-header";
+import {authHeaderToken} from "../Login/auth-header";
 
 export const ApiService = {
     post,

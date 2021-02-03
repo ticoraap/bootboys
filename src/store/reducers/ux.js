@@ -5,7 +5,6 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
     showSideDrawer: false,
     showLoginModal: false,
-    showForgotpasswordModal: false,
     showRegisterModal: false,
 }
 
@@ -25,11 +24,6 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 showRegisterModal: !state.showRegisterModal
-            }
-        case actionTypes.TOGGLE_FORGOTPASSWORD_MODAL:
-            return {
-                ...state,
-                showForgotpasswordModal: !state.showForgotpasswordModal
             }
         default:
             return state

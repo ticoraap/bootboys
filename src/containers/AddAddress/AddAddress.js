@@ -1,23 +1,8 @@
 import React, { Component } from "react";
 import { addressForm } from "./AddAddressForm";
 
-<<<<<<< HEAD
-import { checkInputValidity } from '../../shared/utility'
-
-import Input from '../../components/UI/Input/Input';
-import Button from '../../components/UI/Button/Button';
-import classes from './AddAddress.module.css';
-import countryCodes from './countryCodes';
-import stateCodes from './stateCodes';
-import {queryAddressLatLong} from './LocationQuery';
-import PropTypes from 'prop-types';
-import {ApiService} from '../../components/shared/Api.service';
-import Spinner from '../../components/UI/Spinner/Spinner';
-import ToastMaker from "../../components/shared/ToastMaker";
-=======
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
->>>>>>> 1f1c5b5c760ea33f77ebb4a09c24fcd428c41aaa
 
 import * as utility from "../../shared/utility";
 
@@ -35,53 +20,6 @@ class AddAddress extends Component {
         allFieldsValid: false,
         loading: false,
         address: null,
-<<<<<<< HEAD
-        badAddressWarning: false
-    }
-
-    inputChangedHandler = (event, formElementId) => {
-        this.updateAddressFormElement(event.target.value, formElementId)
-        this.updateAddressFormValidity()
-    }
-
-    updateAddressFormElement = (inputElementValue, inputElementId) => {
-        const updatedAddressForm = this.getUpdatedAddressForm(inputElementValue, inputElementId)
-        this.setState({addressForm: updatedAddressForm})
-    }
-
-    getUpdatedAddressForm = (inputElementValue, inputElementId) => {
-        const validationRules = this.state.addressForm[inputElementId].validationRules
-        const isValidInput = checkInputValidity(inputElementValue, validationRules)
-
-        const updatedAddressForm = {
-            ...this.state.addressForm,
-            [inputElementId]: {
-                ...this.state.addressForm[inputElementId],
-                value: inputElementValue,
-                valid: isValidInput,
-                touched :true,
-            }
-        }
-        return updatedAddressForm
-    }
-
-    updateAddressFormValidity = () => {
-        this.setState(recentState => {
-            const allFieldsValid = this.isFormValid(recentState.addressForm)
-            return {allFieldsValid: allFieldsValid, badAddressWarning: false} 
-        })
-    }
-
-    isFormValid = (addressForm) => {
-        let allFieldsValid = true
-        for (let formElement of Object.values(addressForm)) {
-            if (formElement.validationRules) {
-                allFieldsValid = allFieldsValid && formElement.valid 
-            }
-        }
-        return allFieldsValid
-    }
-=======
         badAddressWarning: false,
     };
 
@@ -141,7 +79,6 @@ class AddAddress extends Component {
         }
         return allFieldsValid;
     };
->>>>>>> 1f1c5b5c760ea33f77ebb4a09c24fcd428c41aaa
 
     submitForm = (event) => {
         event.preventDefault();

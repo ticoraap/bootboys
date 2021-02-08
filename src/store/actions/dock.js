@@ -1,23 +1,15 @@
 import * as actionTypes from "../actions/actionTypes";
-import ApiService from "../../components/shared/Api.service";
+import { Api } from "../../api";
 
 export const getUserDocks = () => {
     return (dispatch) => {
         dispatch(getUserDocksStart());
-        ApiService.getJson("/dock")
+        Api.dock
+            .getAllOwned()
             .then((userDocks) => {
                 const userDocksArray = [];
-
                 for (const [key, value] of Object.entries(userDocks)) {
                     value.dockid = key;
-
-                    // const userDocksFacilitiesArray = [];
-
-                    // for (const facility in value.facilities) {
-                    //     userDocksFacilitiesArray.push(facility);
-                    // }
-                    // value.facilities = userDocksFacilitiesArray;
-
                     userDocksArray.push(value);
                 }
 
@@ -51,7 +43,8 @@ export const getUserDocksFail = (error) => {
 export const removeDock = (dockid) => {
     return (dispatch) => {
         dispatch(removeDockStart());
-        ApiService.remove("/dock/" + dockid)
+        Api.dock
+            .remove(dockid)
             .then(() => {
                 dispatch(removeDockSuccess(dockid));
             })
@@ -84,7 +77,8 @@ export const removeDockFail = (error) => {
 export const addDock = (dock) => {
     return (dispatch) => {
         dispatch(addDockStart());
-        ApiService.post("/dock", dock)
+        Api.dock
+            .add(dock)
             .then((response) => response.json())
             .then((data) => {
                 dock = {

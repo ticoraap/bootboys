@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
 import DockCreator from '../DockCreator/DockCreator';
-import DockCard from '../../components/Dock/DockCard/DockCard';
+import DockCard from '../../components/DockCard/DockCard';
 import Button from '../../components/UI/Button/Button';
 import Modal from '../../components/UI/Modal/Modal';
 import ConfirmationQuestion from '../../components/ConfirmationQuestion/ConfirmationQuestion';
-import Map from '../../components/Dock/Map/Map';
+import Map from '../../components/Map/Map';
 
 export class DockManager extends Component{
 

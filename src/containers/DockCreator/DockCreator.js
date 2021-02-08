@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import classes from "./DockCreator.module.css";
 import PropTypes from "prop-types";
-
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
+
+import { dockCreatorForm } from "./DockCreatorForm";
+
+import * as utility from "../../shared/utility";
 
 import AddAddress from "../AddAddress/AddAddress";
 import Button from "../../components/UI/Button/Button";
@@ -11,173 +14,18 @@ import Input from "../../components/UI/Input/Input";
 import Modal from "../../components/UI/Modal/Modal";
 import { Map, Marker, TileLayer } from "react-leaflet";
 import { queryAddressLatLong } from "../AddAddress/LocationQuery";
-import { ApiService } from "../../components/shared/Api.service";
 import FacilityCreator from "../FacilityCreator/FacilityCreator";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import ToastMaker from "../../components/shared/ToastMaker";
+
+const MSG_ADDRESS_NOT_FOUND =
+    "Could not resolve the address on the map. \nYou need to manually drag te marker to the location of the dock";
+const MSG_MARKER_SET =
+    "We have pre-selected the location of the dock based on the chosen address, you can drag the marker to the exact location of the dock";
 export class DockCreator extends Component {
     state = {
-        dockForm: {
-            name: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Title/Name of the Dock",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Title/Name of the Dock",
-                },
-                value: "",
-                validationWarning:
-                    "Please enter a Title/Name not greater then 80 chars",
-                validationRules: {
-                    required: true,
-                    maxLength: 80,
-                },
-                valid: false,
-                touched: false,
-            },
-            address: {
-                wrapperClassName: "Wrapperclass35",
-                label: "Address",
-                elementType: "select",
-                elementConfig: {
-                    options: [],
-                    placeholder: "Select a address",
-                    emptyPlaceholder: "Please add a new address",
-                },
-                value: "",
-                validationWarning: "Please choose a address or create a new",
-                validationRules: {
-                    required: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            description: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Description of the Dock",
-                elementType: "textArea",
-                elementConfig: {
-                    type: "text",
-                    placeholder:
-                        "A safe dock 300m from the nearest trainstation...",
-                },
-                value: "",
-                validationWarning:
-                    "Please enter a short description max 500 characters",
-                validationRules: {
-                    required: true,
-                    maxLength: 500,
-                },
-                valid: false,
-                touched: false,
-            },
-            facilityCreator: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Add/Remove Facility's",
-                elementType: "passChildElement",
-            },
-            length: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Length of the dock",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Length in meters",
-                },
-                value: "",
-                validationWarning: "This field is required",
-                validationRules: {
-                    required: true,
-                    isMeters: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            width: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Width of the dock",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Width in meters",
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                    isMeters: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            price: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Price in euros per night",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Example: 25 or €29,99",
-                },
-                value: "",
-                validationWarning: "Price in euros Example: 25 or €29,99",
-                validationRules: {
-                    required: true,
-                    isEuros: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            place: {
-                wrapperClassName: "WrapperclassFull",
-                label: "Label for place",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Example: A or C12",
-                },
-                value: "",
-                validationRules: {
-                    required: false,
-                },
-                valid: false,
-                touched: false,
-            },
-            latitude: {
-                wrapperClassName: "Wrapperclass35",
-                label: "Latitude",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Latitude",
-                    disabled: true,
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                    isLatitude: true,
-                },
-                valid: false,
-                touched: false,
-            },
-            longitude: {
-                wrapperClassName: "Wrapperclass35",
-                label: "Longitude",
-                elementType: "input",
-                elementConfig: {
-                    type: "text",
-                    placeholder: "Longitude",
-                    disabled: true,
-                },
-                value: "",
-                validationRules: {
-                    required: true,
-                    isLongitude: true,
-                },
-                valid: false,
-                touched: false,
-            },
-        },
-        allFieldsValid: false,
+        dockForm: { ...dockCreatorForm },
+        allInputFieldsAreValid: false,
         mapcenter: {
             lat: 52.16121472938702,
             lon: 4.501615852518094,
@@ -186,200 +34,162 @@ export class DockCreator extends Component {
             lat: 52.16121472938702,
             lon: 4.501615852518094,
         },
-        addresses: null,
-        facilities: [],
+        addedFacilities: [],
     };
 
     componentDidMount() {
-        this.loadAddresses();
+        this.props.onLoadUserAddresses();
+        this.addAddressesToSelectForm();
     }
 
-    loadAddresses = () => {
-        ApiService.getJson("/address")
-            .then((data) => {
-                console.log(data);
-
-                if (data) {
-                    const addressArray = [];
-                    for (const [key, value] of Object.entries(data)) {
-                        console.log(key,value)
-                        value.addressid = key;
-                        addressArray.push(value)
-                    }
-                    const newAddressess = addressArray.map((resultAddress) => {
-                        return {
-                            addressid: resultAddress.addressid,
-                            street: resultAddress.street,
-                            houseNumber: resultAddress.houseNumber,
-                            postalcode: resultAddress.postalcode,
-                            city: resultAddress.city,
-                            country: resultAddress.country,
-                            state: resultAddress.state,
-                        };
-                    });
-
-                    console.log(newAddressess)
-                    const newAddressOptions = newAddressess.map((address) => {
-                        return {
-                            value: address.addressid,
-                            displayValue:
-                                address.street + " " + address.houseNumber,
-                        };
-                    });
-
-                    const updatedDockForm = {
-                        ...this.state.dockForm,
-                        address: {
-                            ...this.state.dockForm.address,
-                            elementConfig: {
-                                ...this.state.dockForm.address
-                                    .elementConfig,
-                                options: newAddressOptions,
-                            },
-                        },
-                    };
-
-                    this.setState({
-                        addresses: newAddressess,
-                        dockForm: updatedDockForm,
-                    });
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-
-    checkValidity = (input, rules) => {
-        let isValid = true;
-        let trimmedInput = String(input).trim();
-        let trimmedInputLength = trimmedInput.length;
-
-        if (rules) {
-            if (rules.required) {
-                isValid = trimmedInput !== "";
-            }
-            if (rules.minLength) {
-                isValid = trimmedInputLength >= rules.minLength && isValid;
-            }
-            if (rules.maxLength) {
-                isValid = trimmedInputLength <= rules.maxLength && isValid;
-            }
-            if (rules.isEmail) {
-                const emailRegExp = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                isValid =
-                    emailRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
-            }
-            if (rules.isPostalcode) {
-                const postalCodeRegEx = /^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i;
-                isValid =
-                    postalCodeRegEx.test(String(trimmedInput).toLowerCase()) && isValid;
-            }
-            if (rules.isMeters) {
-                const metersRegExp = /^(\d+(?:[.,]\d{1,2})?['m']?)$/;
-                isValid =
-                    metersRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
-            }
-            if (rules.isEuros) {
-                const euroCurrencyRegExp = /^(\u20AC)?[0-9]+(,[0-9]{1,2})?$/;
-                isValid =
-                    euroCurrencyRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
-            }
-            if (rules.isLatitude) {
-                const latitudeRegExp = /^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,20})?))$/;
-                isValid =
-                    latitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
-            }
-            if (rules.isLongitude) {
-                const longitudeRegExp = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,20})?))$/;
-                isValid =
-                    longitudeRegExp.test(String(trimmedInput).toLowerCase()) && isValid;
-            }
+    componentDidUpdate(prevProps) {
+        // reload the addresses in the address selector form
+        if (
+            prevProps.userAddresses.length !== this.props.userAddresses.length
+        ) {
+            this.addAddressesToSelectForm();
         }
-        return isValid;
+    }
+
+    addAddressesToSelectForm = () => {
+        const selectOptions = this.mapAddressesToSelectOptions();
+        this.setAddressSelectFormOptions(selectOptions);
     };
 
-    inputChangedHandler = (event, formElementId) => {
-        const updatedDockForm = {
+    mapAddressesToSelectOptions = () => {
+        return this.props.userAddresses.map((address) => ({
+            value: address.addressid,
+            displayValue: address.street + " " + address.houseNumber,
+        }));
+    };
+
+    setAddressSelectFormOptions = (addressSelectOptions) => {
+        this.setState({
+            dockForm: {
+                ...this.state.dockForm,
+                address: {
+                    ...this.state.dockForm.address,
+                    elementConfig: {
+                        ...this.state.dockForm.address.elementConfig,
+                        options: addressSelectOptions,
+                    },
+                },
+            },
+        });
+    };
+
+    selectAddressHandler = (event, inputElementKey) => {
+        this.inputFieldChangedHandler(event, inputElementKey);
+        this.updateFormWithAddressId(event.target.value);
+    };
+
+    inputFieldChangedHandler = (event, inputElementKey) => {
+        this.updateInputField(event.target.value, inputElementKey);
+        this.updateDockFormSubmitValidity();
+    };
+
+    updateInputField = (inputElementValue, inputElementKey) => {
+        this.setState({
+            dockForm: this.getUpdatedDockForm(
+                inputElementValue,
+                inputElementKey
+            ),
+        });
+    };
+
+    getUpdatedDockForm = (inputElementValue, inputElementKey) => {
+        const valid = this.isInputValid(inputElementValue, inputElementKey);
+        return {
             ...this.state.dockForm,
-            [formElementId]: {
-                ...this.state.dockForm[formElementId],
-                value: event.target.value,
-                valid: this.checkValidity(
-                    event.target.value,
-                    this.state.dockForm[formElementId].validationRules
-                ),
+            [inputElementKey]: {
+                ...this.state.dockForm[inputElementKey],
+                value: inputElementValue,
+                valid: valid,
                 touched: true,
             },
         };
-
-        let allFieldsValid = true;
-        for (let dockFormId in updatedDockForm) {
-            if (!updatedDockForm[dockFormId].validationRules) {
-                continue;
-            }
-            allFieldsValid =
-                updatedDockForm[dockFormId].valid && allFieldsValid;
-        }
-
-        this.setState((oldState) => {
-            return {
-                ...oldState,
-                dockForm: updatedDockForm,
-                allFieldsValid: allFieldsValid,
-            };
-        });
-
-        // check if selected address exists, update latlong and center the map around it
-        if (formElementId === "address" && event.target.value !== "") {
-            const address = this.state.addresses.find(
-                (address) =>
-                    parseInt(address.addressid) === parseInt(event.target.value)
-            );
-            queryAddressLatLong(address)
-            // console.log(address)
-                .then((latlon) => {
-                    this.updateLatitudeLongitude(latlon);
-                    this.setState({ mapcenter: latlon });
-                })
-                .catch(() => {
-                    ToastMaker.errorToast(
-                        "Could not resolve the address on the map. \nYou need to manually drag te marker to the location of the dock"
-                    );
-                });
-        }
     };
 
-    updateMarkerPosition = (event) => {
-        console.log(event.target);
-        console.log(event.target.getLatLng());
-        if (event.target._latlng) {
-            let lat = event.target._latlng.lat;
-            let lon = event.target._latlng.lng;
-
-            // fix out of bounds longitude
-            if (lon > 180) {
-                lon = 180;
-            }
-            if (lon < -180) {
-                lon = -180;
-            }
-
-            const latlon = { lat: lat, lon: lon };
-            this.updateLatitudeLongitude(latlon);
-        }
+    isInputValid = (inputElementValue, inputElementKey) => {
+        const validationRules = this.state.dockForm[inputElementKey]
+            .validationRules;
+        return utility.isInputValidByRules(inputElementValue, validationRules);
     };
 
-    updateLatitudeLongitude = (latlon) => {
-        const fakeLatitudeEvent = { target: { value: latlon.lat } };
-        const fakeLongitudeEvent = { target: { value: latlon.lon } };
-        this.inputChangedHandler(fakeLatitudeEvent, "latitude");
-        this.inputChangedHandler(fakeLongitudeEvent, "longitude");
+    updateDockFormSubmitValidity = () => {
+        this.setState((prevstate) => ({
+            allInputFieldsAreValid: this.isTheFormValid(prevstate.dockForm),
+        }));
+    };
 
+    isTheFormValid = (dockForm) => {
+        let allInputFieldsAreValid = true;
+        for (let formElement of Object.values(dockForm)) {
+            if (formElement.validationRules) {
+                allInputFieldsAreValid =
+                    allInputFieldsAreValid && formElement.valid;
+            }
+        }
+        return allInputFieldsAreValid;
+    };
+
+    dragMarkerHandler = (event) => {
+        if (!event.target._latlng) return;
+
+        let latlon = {
+            lat: event.target._latlng.lat,
+            lon: event.target._latlng.lng,
+        };
+
+        latlon = this.keepLatLonInBounds(latlon);
+
+        this.updateDockFormElementsLatLon(latlon);
+    };
+
+    keepLatLonInBounds = (latlon) => {
+        if (latlon.lon > 180) {
+            latlon.lon = 180;
+        }
+        if (latlon.lon < -180) {
+            latlon.lon = -180;
+        }
+        return latlon;
+    };
+
+    updateFormWithAddressId = (addressid) => {
+        if (!addressid) return;
+        const address = this.getAddressFromId(addressid);
+        this.getLatLonFromAddress(address);
+    };
+
+    getLatLonFromAddress = (address) => {
+        queryAddressLatLong(address)
+            .then((latlon) => {
+                this.updateDockFormElementsLatLon(latlon);
+            })
+            .catch(() => {
+                this.showToastErrorMessage(MSG_ADDRESS_NOT_FOUND);
+            });
+    };
+
+    updateDockFormElementsLatLon = (latlon) => {
+        this.updateInputField(latlon.lat, "latitude");
+        this.updateInputField(latlon.lon, "longitude");
+        this.updateMapMarkerPosition(latlon);
+    };
+
+    getAddressFromId = (addressid) => {
+        return this.props.userAddresses.find(
+            (address) => address.addressid === addressid
+        );
+    };
+
+    updateMapMarkerPosition(latlon) {
         this.setState({
             markerPosition: latlon,
+            mapcenter: latlon,
         });
-    };
+    }
 
     toggleAddressModal = (event) => {
         if (event) {
@@ -416,96 +226,65 @@ export class DockCreator extends Component {
     };
 
     notifyAddressAdded = () => {
-        this.loadAddresses();
         this.toggleAddressModal();
     };
 
-    updateFacilities = (facilities) => {
-        this.setState({ facilities: facilities });
+    setNewFacilityList = (facilityList) => {
+        this.setState({ addedFacilities: facilityList });
+    };
+
+    showToastErrorMessage = (errorMessage) => {
+        ToastMaker.errorToast(errorMessage);
     };
 
     addDockHandler = (event) => {
         if (event) {
             event.preventDefault();
         }
+        const dock = this.getDockFromInputValues();
+        this.props.onAddDock(dock);
+        this.props.dockManagerToMap();
+    };
 
-        const dock = {
+    getDockFromInputValues = () => {
+        return {
             name: this.state.dockForm.name.value,
             addressid: this.state.dockForm.address.value,
             description: this.state.dockForm.description.value,
-            length: parseFloat(
+            length: utility.parseFloatFromMetersInput(
                 this.state.dockForm.length.value
-                    .replace(",", ".")
-                    .replace("m", "")
-                    .replace("M", "")
             ),
-            width: parseFloat(
+            width: utility.parseFloatFromMetersInput(
                 this.state.dockForm.width.value
-                    .replace(",", ".")
-                    .replace("m", "")
-                    .replace("M", "")
             ),
-            price: parseFloat(
+            price: utility.parseFloatFromEurosInput(
                 this.state.dockForm.price.value
-                    .replace(",", ".")
-                    .replace("€", "")
             ),
             place: this.state.dockForm.place.value,
             latitude: parseFloat(this.state.dockForm.latitude.value),
             longitude: parseFloat(this.state.dockForm.longitude.value),
-            facilities: this.state.facilities,
+            facilities: this.state.addedFacilities,
         };
-
-        this.props.onAddDock(dock);
-        this.props.dockManagerToMap();
-        this.resetDockForm();
-    };
-
-    resetDockForm = () => {
-        const resetDockForm = { ...this.state.dockForm };
-        for (let inputIdentifier in this.state.dockForm) {
-            if (resetDockForm[inputIdentifier].value) {
-                resetDockForm[inputIdentifier].value = "";
-                resetDockForm[inputIdentifier].valid = false;
-                resetDockForm[inputIdentifier].touched = false;
-            }
-        }
-
-        this.setState({
-            dockForm: resetDockForm,
-            allFieldsValid: false,
-            facilities: [],
-            loading: false,
-            mapcenter: {
-                lat: 52.16121472938702,
-                lon: 4.501615852518094,
-            },
-            markerPosition: {
-                lat: 52.16121472938702,
-                lon: 4.501615852518094,
-            },
-        });
     };
 
     createInputField = (key, children) => {
         return (
             <Input
                 key={key}
-                wrapperClassName={
-                    this.state.dockForm[key].wrapperClassName
-                }
-                elementType={this.state.dockForm[key].elementType}
-                elementConfig={this.state.dockForm[key].elementConfig}
-                value={this.state.dockForm[key].value}
-                invalid={!this.state.dockForm[key].valid}
-                shouldValidate={this.state.dockForm[key].validationRules}
-                touched={this.state.dockForm[key].touched}
-                label={this.state.dockForm[key].label}
-                validationWarning={
-                    this.state.dockForm[key].validationWarning
-                }
-                styling={this.state.dockForm[key].styling}
-                changed={(event) => this.inputChangedHandler(event, key)}
+                {...this.state.dockForm[key]}
+                changed={(event) => this.inputFieldChangedHandler(event, key)}
+            >
+                {children}
+            </Input>
+        );
+    };
+
+    createSelectField = (key, children) => {
+        return (
+            <Input
+                key={key}
+                {...this.state.dockForm[key]}
+                changed={(event) => this.selectAddressHandler(event, key)}
             >
                 {children}
             </Input>
@@ -521,7 +300,7 @@ export class DockCreator extends Component {
             </h5>
         );
         const name = this.createInputField("name");
-        const address = this.createInputField("address");
+        const address = this.createSelectField("address");
         const newAddressButton = (
             <div key={"newAddressButton"} style={{ width: "15%" }}>
                 <Button btnType="Form" clicked={this.toggleAddressModal}>
@@ -533,22 +312,16 @@ export class DockCreator extends Component {
         const facilityCreator = this.createInputField(
             "facilityCreator",
             <FacilityCreator
-                facilities={this.state.facilities}
-                updateFacilities={this.updateFacilities}
+                facilities={this.state.addedFacilities}
+                setNewFacilityList={this.setNewFacilityList}
             />
         );
         const length = this.createInputField("length");
         const width = this.createInputField("width");
         const price = this.createInputField("price");
         const place = this.createInputField("place");
-        const locationTitle = <h5 key={"locationTitle"}>{"Location"}</h5>;
-        const locationSubText = (
-            <p key={"locationSubText"}>
-                {
-                    "We have pre-selected the location of the dock based on the chosen address, you can drag the marker to the exact location of the dock"
-                }
-            </p>
-        );
+        const locationTitle = <h5 key={"locationTitle"}>Location</h5>;
+        const locationSubText = <p key={"locationSubText"}>{MSG_MARKER_SET}</p>;
         const latitude = this.createInputField("latitude");
         const longitude = this.createInputField("longitude");
         const manualFillLatLonButton = (
@@ -572,7 +345,7 @@ export class DockCreator extends Component {
                     <Marker
                         position={this.state.markerPosition}
                         draggable
-                        onDragend={this.updateMarkerPosition}
+                        onDragend={this.dragMarkerHandler}
                     ></Marker>
                 </Map>
             </div>
@@ -580,7 +353,7 @@ export class DockCreator extends Component {
         const submitDockButton = (
             <Button
                 clicked={this.addDockHandler}
-                disabled={!this.state.allFieldsValid}
+                disabled={!this.state.allInputFieldsAreValid}
             >
                 Submit new Dock
             </Button>
@@ -598,7 +371,9 @@ export class DockCreator extends Component {
                     show={this.state.addingAddress}
                     modalClosed={this.toggleAddressModal}
                 >
-                    <AddAddress notifyAddressAdded={this.notifyAddressAdded} />
+                    <AddAddress
+                        notifyDockCreatorAddressAdded={this.notifyAddressAdded}
+                    />
                 </Modal>
                 <div className={classes.DockCreator}>
                     <div className={classes.DockForm}>
@@ -634,6 +409,8 @@ DockCreator.propTypes = {
     onAddDock: PropTypes.func,
     addDockLoading: PropTypes.bool,
     dockManagerToMap: PropTypes.func,
+    onLoadUserAddresses: PropTypes.func,
+    userAddresses: PropTypes.array,
 };
 
 const mapStateToProps = (state) => {
@@ -641,12 +418,17 @@ const mapStateToProps = (state) => {
         userDocks: state.dock.userDocks,
         userDocksLoading: state.dock.userDocksLoading,
         addDockLoading: state.dock.addDockLoading,
+
+        userAddresses: state.address.userAddresses,
+        userAddressesLoading: state.address.userAddressesLoading,
+        addAddressLoading: state.address.addAddressLoading,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onAddDock: (dock) => dispatch(actions.addDock(dock)),
+        onLoadUserAddresses: () => dispatch(actions.getUserAddresses()),
     };
 };
 

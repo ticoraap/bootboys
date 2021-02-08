@@ -19,8 +19,16 @@ export {
 } from './dock';
 
 export {
+    getUserAddresses,
+    addUserAddress,
+    addAddressSuccessReceived
+} from './address'
+
+export {
     auth,
     authCheckState,
     loginUser,
-    logoutUser
+    logoutUser,
+    changePassword,
+    createAccount
 } from './auth'

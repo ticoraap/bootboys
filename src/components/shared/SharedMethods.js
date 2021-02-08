@@ -4,21 +4,6 @@ export default class sharedMethods {
     static sendMethodGET = 'GET'
     static sendMethodDELETE = 'DELETE'
 
-    static close(key, elementid) {
-        sessionStorage.setItem(key, 'false')
-        document.getElementById(elementid).style.display = 'none';
-        document.body.style.backgroundColor = sessionStorage.getItem('backgroundColor')
-        document.body.style.backgroundColor = 'rgba(0,0,0,0)'
-    }
-
-    static open(key, elementId) {
-        sessionStorage.setItem(key, 'true')
-        sessionStorage.setItem('backgroundColor', document.body.style.backgroundColor);
-        document.body.style.backgroundColor = 'rgba(0,0,0,0.4)'
-        document.getElementById(elementId).style.display = 'block';
-        document.getElementById(elementId).style.backgroundColor = 'white';
-    }
-
     static getURL(path) {
         return '' + process.env.REACT_APP_BASE_URL + path + ".json";
     }

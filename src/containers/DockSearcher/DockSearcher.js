@@ -19,7 +19,7 @@ class DockSearcher extends Component {
     };
 
     componentDidMount() {
-        this.props.onGetUserDocks();
+        this.props.onGetAllDocks();
         this.getFilteredDocks();
     }
 
@@ -139,18 +139,18 @@ class DockSearcher extends Component {
 
 DockSearcher.propTypes = {
     docks: PropTypes.any,
-    onGetUserDocks: PropTypes.func,
+    onGetAllDocks: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
     return {
-        docks: state.dock.userDocks,
+        docks: state.dock.allDocks,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onGetUserDocks: () => dispatch(actions.getUserDocks()),
+        onGetAllDocks: () => dispatch(actions.getAllDocks()),
     };
 };
 

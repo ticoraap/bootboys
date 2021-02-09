@@ -11,8 +11,8 @@ export function getDockApi(httpService) {
         return httpService.getAllDocks()
     }
     
-    function add(dock) {
-        return httpService.addDock(dock);
+    function add(id, dock) {
+        return httpService.addDock(id, dock);
     }
 
     function remove(dockid) {

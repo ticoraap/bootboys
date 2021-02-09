@@ -1,8 +1,8 @@
 export {
-    getUserDocks,
-    getUserDocksStart,
-    getUserDocksSuccess,
-    getUserDocksFail,
+    getAllDocks,
+    getAllDocksStart,
+    getAllDocksSuccess,
+    getAllDocksFail,
     
     removeDock,
     removeDockStart,
@@ -32,3 +32,10 @@ export {
     changePassword,
     createAccount
 } from './auth'
+
+export {
+    getUserDocks,
+    removeUserDockStart,
+    removeUserDockSuccess,
+    removeUserDockFail
+} from "./user";

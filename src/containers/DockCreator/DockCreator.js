@@ -243,7 +243,7 @@ export class DockCreator extends Component {
         }
         const dock = this.getDockFromInputValues();
         this.props.onAddDock(dock);
-        this.props.dockManagerToMap();
+        this.props.notifyDockManagerDockCreated();
     };
 
     getDockFromInputValues = () => {
@@ -407,8 +407,9 @@ export class DockCreator extends Component {
 
 DockCreator.propTypes = {
     onAddDock: PropTypes.func,
+    onAddUserDock: PropTypes.func,
     addDockLoading: PropTypes.bool,
-    dockManagerToMap: PropTypes.func,
+    notifyDockManagerDockCreated: PropTypes.func,
     onLoadUserAddresses: PropTypes.func,
     userAddresses: PropTypes.array,
 };

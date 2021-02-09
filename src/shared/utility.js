@@ -78,3 +78,7 @@ export const parseFloatFromEurosInput = (eurosInputString) => {
 export const getAuthToken = () => {
     return localStorage.getItem("token")
 }
+
+export const getUserId = () => {
+    return localStorage.getItem("userId")
+}

@@ -1,24 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import * as serviceWorker from "./serviceWorker";
 import App from "./App";
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import authReducer from './store/reducers/auth';
-import uxReducer from './store/reducers/ux';
-import dockReducer from './store/reducers/dock';
-import addressReducer from './store/reducers/address';
-import thunk from 'redux-thunk';
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import authReducer from "./store/reducers/auth";
+import uxReducer from "./store/reducers/ux";
+import dockReducer from "./store/reducers/dock";
+import addressReducer from "./store/reducers/address";
+import userReducer from "./store/reducers/user";
+import thunk from "redux-thunk";
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     auth: authReducer,
     ux: uxReducer,
     dock: dockReducer,
-    address: addressReducer
-})
+    address: addressReducer,
+    user: userReducer,
+});
 
 const store = createStore(
     rootReducer,
@@ -28,13 +30,12 @@ const store = createStore(
 ReactDOM.render(
     <Provider store={store}>
         <React.StrictMode>
-            <App/>
+            <App />
         </React.StrictMode>
     </Provider>,
 
-    document.getElementById('root')
+    document.getElementById("root")
 );
-
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

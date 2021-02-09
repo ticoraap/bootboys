@@ -7,9 +7,9 @@ export const getUserAddresses = () => {
         dispatch(getUserAddressesStart());
         Api.address
             .getAllFromUser()
-            .then((addressesJSON) => {
+            .then((response) => {
                 const addresses = utility.JSONtoObjectArrary(
-                    addressesJSON,
+                    response.data,
                     "addressid"
                 );
                 dispatch(getUserAddressesSuccess(addresses));

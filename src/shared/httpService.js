@@ -1,104 +1,115 @@
-import { getAuthToken } from "./utility";
-
-const applicationTypeJSON = "application/json";
-const httpMethodPOST = "POST";
-const httpMethodGET = "GET";
-const httpMethodDELETE = "DELETE";
+import axios from "axios";
+import { getAuthToken, getUserId } from "./utility";
 
 export const httpService = {
     getDock,
     getAllDocks,
     addDock,
     removeDock,
+    
+    addUserDock,
+    getUserDocks,
+    removeUserDock,
+
     getAddress,
     addAddress,
     getAddressesFromUser,
 };
 
+// docks
 function getAllDocks() {
-    return getJson("dock");
+    return get("dock");
 }
 
-function addDock(dock) {
-    return post("dock", dock);
+function addDock(id, dock) {
+    return put("dock/" + id, dock);
 }
 
 function getDock(dockid) {
-    return getJson("dock/" + dockid);
+    return get("dock/" + dockid);
 }
 
 function removeDock(dockid) {
     return remove("dock/", dockid);
 }
 
+// user
+function addUserDock(dock) {
+    const userId = getUserId();
+    const userDock = {
+        addressid: dock.addressid,
+        name: dock.name,
+        description: dock.description,
+        numfacilities: dock.facilities.length,
+        price: dock.price,
+        latitude: dock.latitude,
+        longitude: dock.longitude,
+        length: dock.length,
+        width: dock.width
+    };
+
+    return post("users/" + userId + "/userDocks", userDock);
+}
+
+function getUserDocks() {
+    const userId = getUserId();
+    return get("users/" + userId + "/userDocks")
+}
+
+function removeUserDock(dockid) {
+    const userId = getUserId();
+    return remove("users/" + userId + "/userDocks/" + dockid)
+}
+
+// address
 function getAddress(addressid) {
-    return getJson("address/" + addressid)
+    return get("address/" + addressid);
 }
 
 function getAddressesFromUser() {
-    return getJson("address");
+    return get("address");
 }
 
 function addAddress(address) {
     return post("address", address);
 }
 
+
+
+// http functions
 function post(url, JSON) {
     const URL = composeApiURL(url);
+    return axios.post(URL, JSON);
+}
 
-    return fetch(URL, {
-        method: httpMethodPOST,
-        body: stringifyData(JSON),
-        headers: {
-            "Content-Type": applicationTypeJSON,
-        },
-    });
+function put(url, JSON) {
+    const URL = composeApiURL(url);
+    return axios.put(URL, JSON);
 }
 
 function get(resourceLocation) {
     const URL = composeApiURL(resourceLocation);
-    return fetch(URL, {
-        method: httpMethodGET,
-    });
+    return axios.get(URL)
 }
 
 function remove(resourceLocation) {
     const URL = composeApiURL(resourceLocation);
-    return fetch(URL, {
-        method: httpMethodDELETE,
-    });
+    return axios.delete(URL)
 }
 
-function getJson(resourceLocation) {
-    return new Promise((resolve, reject) => {
-        get(resourceLocation)
-            .then((response) => {
-                response
-                    .json()
-                    .then((json) => {
-                        resolve(json);
-                    })
-                    .catch((error) => reject(error));
-            })
-            .catch((error) => reject(error));
-    });
-}
 
 const composeApiURL = (resourceLocation) => {
     return getBaseURL() + resourceLocation + ".json" + getAuthString();
 };
 
 const getAuthString = () => {
-    if (getAuthToken()) return "?auth=" + getAuthToken()
-    return ""
-}
+    if (getAuthToken()) return "?auth=" + getAuthToken();
+    return "";
+};
 
 const getBaseURL = () => {
     return "" + process.env.REACT_APP_BASE_URL;
 };
 
-const stringifyData = (data) => {
-    return JSON.stringify(data);
-};
 
 export default httpService;

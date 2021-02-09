@@ -53,7 +53,7 @@ export class DockManager extends Component{
                         length={dock.length}
                         width={dock.width}
                         price={dock.price}
-                        numFacilities={dock.facilities?.length}
+                        numFacilities={dock.numfacilities}
                         edit={() => this.editDock(dock)}
                         remove={() => this.removeDock(dock)}
                         styleName='DockManager'
@@ -108,7 +108,7 @@ export class DockManager extends Component{
                     
             
                     <div className={classes.DockManagerCreator} >
-                    {this.state.editNew ? <DockCreator dockManagerToMap={this.toMap} /> : <Map bounds center={[52.16121472938702, 4.501615852518094]} zoom={5} docks={this.props.userDocks}/> }
+                    {this.state.editNew ? <DockCreator notifyDockManagerDockCreated={this.toMap} /> : <Map bounds center={[52.16121472938702, 4.501615852518094]} zoom={5} docks={this.props.userDocks}/> }
                     </div>
                 </div>
             </div>
@@ -126,8 +126,8 @@ DockManager.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        userDocks: state.dock.userDocks,
-        userDocksLoading: state.dock.userDocksLoading
+        userDocks: state.user.userDocks,
+        userDocksLoading: state.user.userDocksLoading
     }
 }
 

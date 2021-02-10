@@ -30,6 +30,7 @@ export const auth = (email, password) => {
                     email: response.data.email,
                     name: response.data.displayName,
                 });
+                dispatch({type: actionTypes.TOGGLE_LOGIN_MODAL})
             })
             .catch((error) => {
                 dispatch({
@@ -127,11 +128,11 @@ export const createAccount = (email, password) => {
         axios
             .post(url, createPasswordPayload)
             .then((response) => {
-                console.log(response)
                 dispatch({
                     type: actionTypes.AUTH_CREATE_ACCOUNT_SUCCESS,
                     response: response,
                 });
+                dispatch({type: actionTypes.TOGGLE_REGISTER_MODAL})
             })
             .catch((error) => {
                 dispatch({

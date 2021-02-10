@@ -416,8 +416,6 @@ DockCreator.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        userDocks: state.dock.userDocks,
-        userDocksLoading: state.dock.userDocksLoading,
         addDockLoading: state.dock.addDockLoading,
 
         userAddresses: state.address.userAddresses,

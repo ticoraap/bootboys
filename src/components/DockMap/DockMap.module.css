@@ -1,15 +1,14 @@
-#dockMap {
+.Map {
     height: 750px;
     width: 80%;
     top: 0;
     z-index: 1;
-    position: sticky;
+    position: absolute;
     margin: 25px auto auto auto;
-    border: solid 1px black;
 }
 
 @media (max-width: 750px) {
-    #dockMap {
+    .Map {
         height: 300px;
     }
 }

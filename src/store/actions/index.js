@@ -37,5 +37,8 @@ export {
     getUserDocks,
     removeUserDockStart,
     removeUserDockSuccess,
-    removeUserDockFail
+    removeUserDockFail,
+    addUserDockStart,
+    addUserDockSuccess,
+    addUserDockFail
 } from "./user";

@@ -23,7 +23,7 @@ const getAllDocksSuccess = (state, action) => {
 
 const getAllDocksFail = (state) => {
     return updateObject(state, {
-        allDocks: false,
+        allDocksLoading: false,
     });
 };
 

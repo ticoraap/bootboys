@@ -37,10 +37,10 @@ export class DockManager extends Component{
             return
         }
         this.props.onremoveDock(this.state.dockToRemove.dockid)
-        this.cancelRemove()
+        this.cancelRemoveWarning()
     }
 
-    cancelRemove = () => {
+    cancelRemoveWarning = () => {
         this.setState({removeWarning: false, dockToRemove: null})
     }
 
@@ -70,13 +70,13 @@ export class DockManager extends Component{
     render(){
         const listOfDockCards = this.getListOfDockCards(this.props.userDocks)
         const confirmDeleteModal = (
-            <Modal show={this.state.removeWarning} modalClosed={this.cancelRemove}>
+            <Modal show={this.state.removeWarning} modalClosed={this.cancelRemoveWarning}>
                 <ConfirmationQuestion
                     question={"Are you sure you want to remove this dock?"}
                     acceptLabel="Yes remove"
                     declineLabel="Cancel"
                     accept={this.removeDock}
-                    decline={this.cancelRemove}
+                    decline={this.cancelRemoveWarning}
                 />
             </Modal>
         )

@@ -24,7 +24,6 @@
 }
 
 .rent{
-    margin-top: 1%;
     text-align: left;
     width: 25%;
     border-style: groove;
@@ -69,10 +68,8 @@
 .listItem{
     font-size: 15px;
     font-style: normal;
-    display:inline-block;
     text-align: left;
     vertical-align: top;
-    width: 50%;
 }
 
 @media (max-width: 699px) {

@@ -1,6 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
 import { Api } from "../../api";
-import * as actions from "./"
+import * as actions from "./";
 
 export const getAllDocks = () => {
     return (dispatch) => {
@@ -8,13 +8,17 @@ export const getAllDocks = () => {
         Api.dock
             .getAllOwned()
             .then((response) => {
-                const docksArray = [];
-                for (const [key, value] of Object.entries(response.data)) {
-                    value.dockid = key;
-                    docksArray.push(value);
-                }
+                if (response.data != null) {
+                    const docksArray = [];
+                    for (const [key, value] of Object.entries(response.data)) {
+                        value.dockid = key;
+                        docksArray.push(value);
+                    }
 
-                dispatch(getAllDocksSuccess(docksArray));
+                    dispatch(getAllDocksSuccess(docksArray));
+                } else {
+                    throw new Error();
+                }
             })
             .catch((error) => {
                 dispatch(getAllDocksFail(error));
@@ -44,21 +48,24 @@ export const getAllDocksFail = (error) => {
 
 export const removeDock = (dockid) => {
     return (dispatch) => {
-        dispatch(actions.removeUserDockStart())
-        Api.user.removeDock(dockid).then(() => {
-            dispatch(actions.removeUserDockSuccess)
-            dispatch(removeDockStart());
-            Api.dock
+        dispatch(actions.removeUserDockStart());
+        Api.user
+            .removeDock(dockid)
+            .then(() => {
+                dispatch(removeDockStart());
+                Api.dock
                 .remove(dockid)
-                .then(() => {
-                    dispatch(removeDockSuccess(dockid));
-                })
-                .catch((error) => {
-                    dispatch(removeDockFail(error));
-                });
-        }).catch(()=> {
-            dispatch(actions.removeUserDockFail)
-        })
+                    .then(() => {
+                        dispatch(actions.removeUserDockSuccess(dockid));
+                        dispatch(removeDockSuccess(dockid));
+                    })
+                    .catch((error) => {
+                        dispatch(removeDockFail(error));
+                    });
+            })
+            .catch(() => {
+                dispatch(actions.removeUserDockFail);
+            });
     };
 };
 
@@ -84,17 +91,20 @@ export const removeDockFail = (error) => {
 
 export const addDock = (dock) => {
     return (dispatch) => {
+        dispatch(actions.addUserDockStart());
         Api.user
             .addDock(dock)
             .then((response) => {
                 dispatch(addDockStart());
                 Api.dock
                     .add(response.data.name, dock)
-                    .then((response) => {
+                    .then((secondResponse) => {
+
                         dock = {
                             ...dock,
-                            dockid: response.data.dockid,
+                            dockid: response.data.name,
                         };
+                        dispatch(actions.addUserDockSuccess(dock));
                         dispatch(addDockSuccess(dock));
                     })
                     .catch((error) => {
@@ -102,7 +112,7 @@ export const addDock = (dock) => {
                     });
             })
             .catch((error) => {
-                console.log(error);
+                dispatch(actions.addUserDockFail(error));
             });
     };
 };

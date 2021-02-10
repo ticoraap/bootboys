@@ -30,7 +30,7 @@ function getDock(dockid) {
 }
 
 function removeDock(dockid) {
-    return remove("dock/", dockid);
+    return remove("dock/" + dockid);
 }
 
 // user
@@ -82,9 +82,10 @@ function post(url, JSON) {
     return axios.post(URL, JSON);
 }
 
-function put(url, JSON) {
+function put(url, dock) {
+    dock.userid = getUserId()
     const URL = composeApiURL(url);
-    return axios.put(URL, JSON);
+    return axios.put(URL, dock);
 }
 
 function get(resourceLocation) {

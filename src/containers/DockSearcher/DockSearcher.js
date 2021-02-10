@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./DockSearcher.css";
+import classes from "./DockSearcher.module.css";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import * as actions from "../../store/actions/index";
@@ -20,7 +20,6 @@ class DockSearcher extends Component {
 
     componentDidMount() {
         this.props.onGetAllDocks();
-        this.getFilteredDocks();
     }
 
     handleOnChange(event) {
@@ -31,69 +30,62 @@ class DockSearcher extends Component {
 
     getFilteredDocks = () => {
         const newFilteredDocks = [];
-        for (const [dockid, dock] of Object.entries(this.props.docks)) {
+        for (const dock of this.props.docks) {
             let satisfiesFilter = true;
 
+            satisfiesFilter = this.isInputInDockName(dock) && satisfiesFilter;
             satisfiesFilter =
-                this.isInputInDockName(dock, this.state.dockName) &&
-                satisfiesFilter;
+                this.isDockPriceWithinMaxPrice(dock) && satisfiesFilter;
             satisfiesFilter =
-                this.isDockPriceWithinMaxPrice(dock, this.state.price) &&
-                satisfiesFilter;
+                this.isDockLengthWithinMaxLength(dock) && satisfiesFilter;
             satisfiesFilter =
-                this.isDockLengthWithinMaxLength(dock, this.state.length) &&
-                satisfiesFilter;
-            satisfiesFilter =
-                this.isDockWidthWithinMaxWidth(dock, this.state.width) &&
-                satisfiesFilter;
+                this.isDockWidthWithinMaxWidth(dock) && satisfiesFilter;
 
             if (satisfiesFilter) {
-                dock.dockid = dockid;
-                newFilteredDocks.push(dock);
+                newFilteredDocks.push({...dock});
             }
         }
-        return newFilteredDocks
+        return newFilteredDocks;
     };
 
-    isInputInDockName = (dock, nameInput) => {
-        return dock.name.toLowerCase().includes(nameInput);
+    isInputInDockName = (dock) => {
+        return dock.name.toLowerCase().includes(this.state.dockName);
     };
 
-    isDockPriceWithinMaxPrice = (dock, priceInput) => {
-        if (priceInput === "") {
+    isDockPriceWithinMaxPrice = (dock) => {
+        if (this.state.price === "") {
             return true;
         }
-        return dock.price <= priceInput;
+        return dock.price <= this.state.price;
     };
 
-    isDockLengthWithinMaxLength = (dock, lengthInput) => {
-        if (lengthInput === "") {
+    isDockLengthWithinMaxLength = (dock) => {
+        if (this.state.length === "") {
             return true;
         }
-        return dock.length <= lengthInput;
+        return dock.length <= this.state.length;
     };
 
-    isDockWidthWithinMaxWidth = (dock, widthInput) => {
-        if (widthInput === "") {
+    isDockWidthWithinMaxWidth = (dock) => {
+        if (this.state.width === "") {
             return true;
         }
-        return dock.width <= widthInput;
+        return dock.width <= this.state.width;
     };
 
     render() {
-
-        const filteredDocks = this.getFilteredDocks()
+        const filteredDocks = this.getFilteredDocks();
 
         return (
             <div>
-                <div id={"inputs"}>
+                <div className={classes.Inputs}>
                     <TextField
                         onChange={(event) => this.handleOnChange(event)}
                         value={this.state.dockName}
                         name={"dockName"}
                         label={"Name of dock"}
                         size={"medium"}
-                        className={"searchDock"}
+                        className={classes.SearchDock}
                     />
                     <TextField
                         onChange={(event) => this.handleOnChange(event)}
@@ -102,7 +94,7 @@ class DockSearcher extends Component {
                         label={"Maximum price in euro's"}
                         size={"medium"}
                         type={"number"}
-                        className={"searchDock"}
+                        className={classes.SearchDock}
                     />
                     <TextField
                         onChange={(event) => this.handleOnChange(event)}
@@ -111,7 +103,7 @@ class DockSearcher extends Component {
                         label={"Minimum length in meters"}
                         size={"medium"}
                         type={"number"}
-                        className={"searchDock"}
+                        className={classes.SearchDock}
                     />
                     <TextField
                         onChange={(event) => this.handleOnChange(event)}
@@ -120,15 +112,15 @@ class DockSearcher extends Component {
                         label={"Minimum width in meters"}
                         size={"medium"}
                         type={"number"}
-                        className={"searchDock"}
+                        className={classes.SearchDock}
                     />
                 </div>
 
-                <div id={"wrapper"}>
+                <div className={classes.Wrapper}>
                     <div>
                         <DockList docks={filteredDocks} />
                     </div>
-                    <div id={"mapDocks"}>
+                    <div className={classes.MapDocks}>
                         <DockMap docks={filteredDocks} />
                     </div>
                 </div>

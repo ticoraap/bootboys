@@ -1,13 +1,11 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import "./DockMap.css";
+import classes from "./DockMap.module.css";
 
 import ToastMaker from "../shared/ToastMaker";
 import Map from "../Map/Map";
 
-const EXTRA_SPACE_AT_TOP = 25;
-const PERCENTAGE_TO_SHRINK = 0.7;
-const MOBILE_WIDTH_PX = 750;
+
 
 class DockMap extends Component {
     state = {
@@ -20,32 +18,9 @@ class DockMap extends Component {
     };
 
     componentDidMount() {
-        this.addWindowScrollEventListener()
-        this.setMapHeight();
         this.getGeoPermissions();
     }
 
-    componentWillUnmount() {
-        this.removeWindowScrollEventListener()
-    }
-
-    addWindowScrollEventListener = () => {
-        window.addEventListener("scroll", this.handleScroll);
-    }
-
-    removeWindowScrollEventListener = () => {
-        window.removeEventListener("scroll", this.handleScroll);
-    }
-    
-    handleScroll = () => {
-        if (this.isNotOnMobileResolution()) {
-            document.getElementById("dockMap").style.marginTop = this.addSuffix(
-                window.scrollY + EXTRA_SPACE_AT_TOP,
-                "px"
-            );
-            this.setMapHeight();
-        }
-    }
 
     getGeoPermissions = () => {
         navigator.permissions
@@ -94,24 +69,16 @@ class DockMap extends Component {
         });
     }
 
-    isNotOnMobileResolution = () => {
-        return window.innerWidth > MOBILE_WIDTH_PX;
-    }
 
     addSuffix = (input, suffix) => {
         return input + suffix;
-    }
-    
-    setMapHeight = () => {
-        document.getElementById("dockMap").style.height =
-            window.innerHeight * PERCENTAGE_TO_SHRINK + "px";
     }
 
     render() {
         return (
             <Map
+                className={classes.Map}
                 defaultOptions
-                id={"dockMap"}
                 center={[this.state.lat, this.state.lon]}
                 zoom={this.state.zoom}
                 docks={this.props.docks}

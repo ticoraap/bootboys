@@ -1,6 +1,28 @@
 import * as actionTypes from "../actions/actionTypes";
 import { Api } from "../../api";
 
+export const addUserDockStart = () => {
+    return {
+        type: actionTypes.ADD_USER_DOCK_START,
+    };
+};
+
+export const addUserDockSuccess = (dock) => {
+    return {
+        type: actionTypes.ADD_USER_DOCK_SUCCESS,
+        userDock: {
+            ...dock,
+            numfacilities: dock.facilities.length,
+            facilities: null
+        },
+    };
+};
+
+export const addUserDockFail = () => {
+    return {
+        type: actionTypes.ADD_USER_DOCK_FAIL,
+    };
+};
 
 export const getUserDocks = () => {
     return (dispatch) => {
@@ -30,7 +52,7 @@ export const getUserDockStart = () => {
 export const getUserDockSuccess = (userDocks) => {
     return {
         type: actionTypes.GET_USER_DOCKS_SUCCESS,
-        userDocks: userDocks
+        userDocks: userDocks,
     };
 };
 

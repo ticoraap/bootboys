@@ -1,16 +1,19 @@
 import React from "react";
 import classes from "./Dock.module.css";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+
 import "./calendar.css";
 import { Calendar } from "react-calendar";
 import ToastMaker from "../../components/shared/ToastMaker";
-import PropTypes from "prop-types";
 import { Button } from "@material-ui/core";
 
 // components
 import Map from "../../components/Map/Map";
 import { Api } from "../../api";
 
-export default class Dock extends React.Component {
+class Dock extends React.Component {
     MILISECONDS_IN_DAY = 86400000;
 
     state = {
@@ -23,20 +26,22 @@ export default class Dock extends React.Component {
     };
 
     componentDidMount() {
-        this.loadDock(this.props.location.state.id);
-    }
+        if (this.props.allDocks.length === 0) {
+            this.props.onLoadAllDocks();
+        }
 
-    loadDock = (dockid) => {
-        Api.dock.get(dockid).then((dock) => {
-            Api.address.get(dock.addressid).then((address) => {
-                dock.dockid = dockid;
-                this.setState({
-                    dock: dock,
-                    address: address,
+        for (const dock of this.props.allDocks){
+            if (dock.dockid === this.props.location.state.id){
+                Api.address.get(dock.addressid).then((response) => {
+                    this.setState({
+                        dock: dock,
+                        address: response.data,
+                    });
                 });
-            });
-        });
-    };
+                this.setState({dock: dock})
+            }
+        }
+    }
 
     reserveDock() {
         ToastMaker.infoToast("Docks cannot be reserved at this moment");
@@ -44,7 +49,6 @@ export default class Dock extends React.Component {
 
     dateRangeSelectedHandler = ([beginday, endday]) => {
         if (!this.isDateRangeAvailable(beginday, endday)) return;
-        console.log("daterangeisok");
         this.setState({
             selectedDateRange: [beginday, endday],
             nights: this.calculateNumberOfNightsInDateRange(beginday, endday),
@@ -105,13 +109,16 @@ export default class Dock extends React.Component {
     }
 
     buildFacilitiesList() {
-        return this.state.dock?.facilities.map((facility) => {
-            return (
-                <li className={classes.listItem} key={facility.id}>
-                    {facility.description}
-                </li>
-            );
-        });
+        if (this.state.dock != null) {
+            return this.state.dock.facilities.map((facility) => {
+                return (
+                    <li className={classes.listItem} key={facility.id}>
+                        {facility.description} €{facility.price}
+                    </li>
+                    
+                );
+            });
+        }
     }
 
     render() {
@@ -207,6 +214,20 @@ export default class Dock extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        allDocks: state.dock.allDocks,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onLoadAllDocks: (dock) => dispatch(actions.getAllDocks()),
+    };
+};
+
 Dock.propTypes = {
     location: PropTypes.any,
 };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dock);

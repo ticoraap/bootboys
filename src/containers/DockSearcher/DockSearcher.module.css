@@ -1,0 +1,38 @@
+.SearchDock {
+    width: 220px;
+    display: inline-block;
+}
+
+.Wrapper {
+    width: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.MapDocks {
+    height: 80%;
+    width: 40%;
+    position: fixed;
+    margin-left: 35%;
+    margin-top: 25px;
+    border: solid 1px black;
+}
+
+.Inputs {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 750px) {
+    .Wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .MapDocks {
+        width: 70vw;
+        height: 30vw;
+        margin-left: 10vw;
+      
+        margin-top: 60vw;
+    }
+}

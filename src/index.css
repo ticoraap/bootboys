@@ -41,6 +41,8 @@ code {
 }
 
 h4 {
+    margin-top: 10px;
+    margin-bottom: 10px;
     font-size: 30px;
     text-align: left;
     font-weight: lighter;

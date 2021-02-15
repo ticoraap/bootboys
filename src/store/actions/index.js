@@ -14,7 +14,10 @@ export {
     addDockSuccess,
     addDockFail,
 
-    getDockById,
+    getDockWithAddressById,
+    getDockWithAddressByIdStart,
+    getDockWithAddressByIdFail,
+    getDockWithAddressByIdSuccess
 
 } from './dock';
 

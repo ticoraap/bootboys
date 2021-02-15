@@ -10,7 +10,7 @@ export default class DockList extends Component {
         dockid: 0,
     };
 
-    onClickDockHandler(id) {
+    onClickDockHandler = (id) => {
         this.setState({ dockid: id, redirect: true });
     }
 
@@ -19,7 +19,7 @@ export default class DockList extends Component {
             return (
                 <Redirect
                     to={{
-                        pathname: "/dock",
+                        pathname: "/dock/" + this.state.dockid,
                         state: { id: this.state.dockid },
                     }}
                 />

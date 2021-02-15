@@ -3,9 +3,11 @@ import { updateObject } from "../utility";
 
 const initialState = {
     allDocks: [],
+    dockWithAddress: null,
     allDocksLoading: false,
     removeLoading: false,
     addDockLoading: false,
+    getDockWithAddressLoading: false,
 };
 
 const getAllDocksStart = (state) => {
@@ -56,13 +58,32 @@ const addDockStart = (state) => {
 };
 const addDockSuccess = (state) => {
     return updateObject(state, {
-        allDocksLoading: false,
+        addDockLoading: false,
     });
 };
 
 const addDockFail = (state) => {
     return updateObject(state, {
         addDockLoading: false,
+    });
+};
+
+const getDockWithAddressByIdStart = (state) => {
+    return updateObject(state, {
+        getDockWithAddressLoading: true,
+    });
+};
+const getDockWithAddressByIdSuccess = (state, action) => {
+    return updateObject(state, {
+        getDockWithAddressLoading: false,
+        dockWithAddress: action.dockWithAddress
+    });
+};
+
+const getDockWithAddressByIdFail = (state, action) => {
+    return updateObject(state, {
+        getDockWithAddressLoading: false,
+        error: action.error
     });
 };
 
@@ -86,6 +107,12 @@ const reducer = (state = initialState, action) => {
             return addDockSuccess(state, action);
         case actionTypes.ADD_DOCK_FAIL:
             return addDockFail(state, action);
+        case actionTypes.GET_DOCK_WITH_ADDRESS_BY_ID_START:
+            return getDockWithAddressByIdStart(state, action);
+        case actionTypes.GET_DOCK_WITH_ADDRESS_BY_ID_SUCCESS:
+            return getDockWithAddressByIdSuccess(state, action);
+        case actionTypes.GET_DOCK_WITH_ADDRESS_BY_ID_FAIL:
+            return getDockWithAddressByIdFail(state, action);
         default:
             return state;
     }

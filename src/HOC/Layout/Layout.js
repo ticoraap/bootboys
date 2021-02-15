@@ -1,41 +1,50 @@
-import React, {Component} from 'react';
-import classes from './Layout.module.css';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import classes from "./Layout.module.css";
+import PropTypes from "prop-types";
 
-import { connect } from 'react-redux';
-import * as actions from '../../store/actions/index';
-import * as actionTypes from '../../store/actions/actionTypes'
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+import * as actionTypes from "../../store/actions/actionTypes";
 
-import Auxiliary from '../Auxiliary/Auxiliary';
-import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
-import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
+import Auxiliary from "../Auxiliary/Auxiliary";
+import Toolbar from "../../components/Navigation/Toolbar/Toolbar";
+import SideDrawer from "../../components/Navigation/SideDrawer/SideDrawer";
 
-import Register from "../../components/RegisterComponent/Register";
-import Login from '../../components/Login/Login'
-import Modal from '../../components/UI/Modal/Modal';
-import {ToastContainer} from 'react-toastify';
-
-
+import Register from "../../components/Register/Register";
+import Login from "../../components/Login/Login";
+import Modal from "../../components/UI/Modal/Modal";
+import { ToastContainer } from "react-toastify";
 
 class Layout extends Component {
-
-    componentDidMount(){
-        this.props.onAuthCheckState()
+    componentDidMount() {
+        this.props.onAuthCheckState();
     }
 
     render() {
         return (
             <Auxiliary>
                 <div>
-                    <Toolbar/>
-                    <SideDrawer/>
+                    <Toolbar />
+                    <SideDrawer />
 
-                    <Modal onlyBackdrop show={this.props.showLoginModal} modalClosed={this.props.onToggleLoginModal}>
-                        <Login LoginModalToggle={this.props.onToggleLoginModal} />
+                    <Modal
+                        onlyBackdrop
+                        show={this.props.showLoginModal}
+                        modalClosed={this.props.onToggleLoginModal}
+                    >
+                        <Login
+                            LoginModalToggle={this.props.onToggleLoginModal}
+                        />
                     </Modal>
 
-                    <Modal onlyBackdrop show={this.props.showRegisterModal} modalClosed={this.props.onToggleRegisterModal}>
-                        <Register toggleModal={this.props.onToggleRegisterModal} />
+                    <Modal
+                        onlyBackdrop
+                        show={this.props.showRegisterModal}
+                        modalClosed={this.props.onToggleRegisterModal}
+                    >
+                        <Register
+                            toggleModal={this.props.onToggleRegisterModal}
+                        />
                     </Modal>
 
                     <ToastContainer
@@ -50,11 +59,9 @@ class Layout extends Component {
                         pauseOnHover
                     />
                 </div>
-                <main className={classes.Content}>
-                    {this.props.children}
-                </main>
+                <main className={classes.Content}>{this.props.children}</main>
             </Auxiliary>
-        )
+        );
     }
 }
 
@@ -68,19 +75,21 @@ Layout.propTypes = {
     showRegisterModal: PropTypes.bool,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         showLoginModal: state.ux.showLoginModal,
         showRegisterModal: state.ux.showRegisterModal,
-    }
-}
+    };
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
         onAuthCheckState: () => dispatch(actions.authCheckState()),
-        onToggleLoginModal: () => dispatch({type: actionTypes.TOGGLE_LOGIN_MODAL}),
-        onToggleRegisterModal: () => dispatch({type: actionTypes.TOGGLE_REGISTER_MODAL}),
-    }
-}
+        onToggleLoginModal: () =>
+            dispatch({ type: actionTypes.TOGGLE_LOGIN_MODAL }),
+        onToggleRegisterModal: () =>
+            dispatch({ type: actionTypes.TOGGLE_REGISTER_MODAL }),
+    };
+};
 
-export default connect(mapStateToProps,mapDispatchToProps)(Layout);
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

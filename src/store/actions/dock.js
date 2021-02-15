@@ -54,7 +54,7 @@ export const removeDock = (dockid) => {
             .then(() => {
                 dispatch(removeDockStart());
                 Api.dock
-                .remove(dockid)
+                    .remove(dockid)
                     .then(() => {
                         dispatch(actions.removeUserDockSuccess(dockid));
                         dispatch(removeDockSuccess(dockid));
@@ -99,7 +99,6 @@ export const addDock = (dock) => {
                 Api.dock
                     .add(response.data.name, dock)
                     .then((secondResponse) => {
-
                         dock = {
                             ...dock,
                             dockid: response.data.name,
@@ -137,9 +136,45 @@ export const addDockFail = (error) => {
     };
 };
 
-export const getDockById = (dockid) => {
+export const getDockWithAddressById = (dockid) => {
+    return (dispatch) => {
+        dispatch(getDockWithAddressByIdStart());
+        Api.dock
+            .get(dockid)
+            .then((dockResponse) => {
+                Api.address
+                    .get(dockResponse.data.addressid)
+                    .then((addressResponse) => {
+                        const dockWithAddress = dockResponse.data;
+                        dockWithAddress.address = addressResponse.data;
+                        dockWithAddress.dockid = dockid;
+                        dispatch(
+                            getDockWithAddressByIdSuccess(dockWithAddress)
+                        );
+                    })
+                    .catch((error) => {
+                        dispatch(getDockWithAddressByIdFail(error));
+                    });
+            })
+            .catch((error) => {
+                dispatch(getDockWithAddressByIdFail(error));
+            });
+    };
+};
+export const getDockWithAddressByIdStart = () => {
     return {
-        type: actionTypes.GET_DOCK_BY_ID,
-        dockid: dockid,
+        type: actionTypes.GET_DOCK_WITH_ADDRESS_BY_ID_START,
+    };
+};
+export const getDockWithAddressByIdSuccess = (dockWithAddress) => {
+    return {
+        type: actionTypes.GET_DOCK_WITH_ADDRESS_BY_ID_SUCCESS,
+        dockWithAddress: dockWithAddress,
+    };
+};
+export const getDockWithAddressByIdFail = (error) => {
+    return {
+        type: actionTypes.GET_DOCK_WITH_ADDRESS_BY_ID_FAIL,
+        error: error,
     };
 };

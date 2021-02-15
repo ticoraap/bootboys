@@ -1,21 +1,18 @@
 import React, { Component } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import PageNotFound from "./components/PageNotFoundComponent/PageNotFound";
 import Layout from "./HOC/Layout/Layout";
 import PrivateRoute from "./components/Login/PrivateRoute";
+import "react-toastify/dist/ReactToastify.css";
 
 // containers
 import Account from "./containers/Account/Account";
 import DockSearcher from "./containers/DockSearcher/DockSearcher";
 import Dock from "./containers/Dock/Dock";
-import DockCreator from "./containers/DockCreator/DockCreator";
-
-import "react-toastify/dist/ReactToastify.css";
-
 import DockManager from "./containers/DockManager/DockManager";
-import FacilityCreator from "./containers/FacilityCreator/FacilityCreator";
 
+// components
+import PageNotFound from "./components/PageNotFound/PageNotFound";
 
 class App extends Component {
     render() {
@@ -27,30 +24,15 @@ class App extends Component {
                             <Route exact path="/" component={DockSearcher} />
                             <Route
                                 exact
-                                path="/create-dock"
-                                component={DockCreator}
+                                path="/rent-dock"
+                                component={DockSearcher}
                             />
                             <PrivateRoute
                                 exact
                                 path="/Account"
                                 component={Account}
                             />
-                            <Route
-                                exact
-                                path="/rent-dock"
-                                component={DockSearcher}
-                            />
-                            <Route
-                                exact
-                                path="/contact"
-                                component={() => <h1>Test123</h1>}
-                            />
-                            <Route
-                                exact
-                                path="/facilitys"
-                                component={FacilityCreator}
-                            />
-                            <Route exact path="/dock" component={Dock} />
+                            <Route exact path="/dock/:dockid" component={Dock} />
                             <PrivateRoute
                                 exact
                                 path="/manage-docks"

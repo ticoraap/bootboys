@@ -44,7 +44,7 @@ const map = ( props ) => {
     })
     
     let renderMap = (
-        <Map  id={props.id} center={props.center} zoom={props.zoom} {...options}>
+        <Map id={props.id} center={props.center} zoom={props.zoom} {...options}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
             {markers}
         </Map>

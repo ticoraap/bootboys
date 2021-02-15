@@ -11,7 +11,6 @@ import { Button } from "@material-ui/core";
 
 // components
 import Map from "../../components/Map/Map";
-import { Api } from "../../api";
 
 class Dock extends React.Component {
     MILISECONDS_IN_DAY = 86400000;
@@ -26,21 +25,7 @@ class Dock extends React.Component {
     };
 
     componentDidMount() {
-        if (this.props.allDocks.length === 0) {
-            this.props.onLoadAllDocks();
-        }
-
-        for (const dock of this.props.allDocks){
-            if (dock.dockid === this.props.location.state.id){
-                Api.address.get(dock.addressid).then((response) => {
-                    this.setState({
-                        dock: dock,
-                        address: response.data,
-                    });
-                });
-                this.setState({dock: dock})
-            }
-        }
+        this.props.onGetDockWithAddressById(this.props.match.params.dockid)
     }
 
     reserveDock() {
@@ -97,7 +82,7 @@ class Dock extends React.Component {
     };
 
     calculateConsumerPrice() {
-        return this.state.dock?.price * this.state.nights;
+        return this.props.dockWithAddress?.price * this.state.nights;
     }
 
     calculateServiceFee() {
@@ -109,13 +94,12 @@ class Dock extends React.Component {
     }
 
     buildFacilitiesList() {
-        if (this.state.dock != null) {
-            return this.state.dock.facilities.map((facility) => {
+        if (this.props.dockWithAddress != null) {
+            return this.props.dockWithAddress.facilities.map((facility) => {
                 return (
                     <li className={classes.listItem} key={facility.id}>
                         {facility.description} €{facility.price}
                     </li>
-                    
                 );
             });
         }
@@ -127,22 +111,22 @@ class Dock extends React.Component {
                 <div className={classes.sidebyside}>
                     <div className={classes.details}>
                         <h1 className={classes.title}>
-                            {this.state.dock?.name}
+                            {this.props.dockWithAddress?.name}
                         </h1>
                         <p>
                             Description: <br />
-                            {this.state.dock?.description}
+                            {this.props.dockWithAddress?.description}
                         </p>
                         <p>facilities:</p>
                         <ul>{this.buildFacilitiesList()}</ul>
                         <p>
-                            Lenght of the dock: {this.state.dock?.length} Meters{" "}
+                            Lenght of the dock: {this.props.dockWithAddress?.length} Meters{" "}
                             <br />
-                            Width of the dock: {this.state.dock?.width} Meters
+                            Width of the dock: {this.props.dockWithAddress?.width} Meters
                         </p>
                     </div>
                     <div className={classes.rent}>
-                        <h2>&euro;{this.state.dock?.price}/Night</h2>
+                        <h2>&euro;{this.props.dockWithAddress?.price}/Night</h2>
                         <Calendar
                             selectRange={true}
                             maxDetail="month"
@@ -156,12 +140,12 @@ class Dock extends React.Component {
                         />
                         <div className={classes.sidebyside}>
                             <span>
-                                &euro;{this.state.dock?.price} *{" "}
+                                &euro;{this.props.dockWithAddress?.price} *{" "}
                                 {this.state.nights} nights
                             </span>
                             <span className={classes.result}>
                                 &euro;
-                                {this.state.dock &&
+                                {this.props.dockWithAddress &&
                                     this.calculateConsumerPrice()}
                             </span>
                         </div>
@@ -186,25 +170,25 @@ class Dock extends React.Component {
                 <div className={classes.location}>
                     <div className={classes.locationDetails}>
                         <p>
-                            Country: {this.state.address?.country} <br />
-                            City: {this.state.address?.city}
+                            Country: {this.props.dockWithAddress?.address?.country} <br />
+                            City: {this.props.dockWithAddress?.address?.city}
                             <br />
-                            Street: {this.state.address?.street}
+                            Street: {this.props.dockWithAddress?.address?.street}
                             <br />
-                            Housenumber: {this.state.address?.houseNumber}
+                            Housenumber: {this.props.dockWithAddress?.address?.houseNumber}
                             <br />
-                            postalcode: {this.state.address?.postalcode}
+                            postalcode: {this.props.dockWithAddress?.address?.postalcode}
                             <br />
-                            {this.state.address?.state}
+                            {this.props.dockWithAddress?.address?.state}
                         </p>
                     </div>
                     <div className={classes.locationMap}>
-                        {this.state.dock && (
+                        {this.props.dockWithAddress && (
                             <Map
                                 bounds
                                 center={[52.16121472938702, 4.501615852518094]}
                                 zoom={5}
-                                docks={[this.state.dock]}
+                                docks={[this.props.dockWithAddress]}
                             />
                         )}
                     </div>
@@ -216,18 +200,21 @@ class Dock extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        allDocks: state.dock.allDocks,
+        dockWithAddress: state.dock.dockWithAddress,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLoadAllDocks: (dock) => dispatch(actions.getAllDocks()),
+        onGetDockWithAddressById: (dockid) => dispatch(actions.getDockWithAddressById(dockid)),
     };
 };
 
 Dock.propTypes = {
     location: PropTypes.any,
+    match: PropTypes.any,
+    onGetDockWithAddressById: PropTypes.func,
+    dockWithAddress: PropTypes.any
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dock);

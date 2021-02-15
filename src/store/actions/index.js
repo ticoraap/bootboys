@@ -27,7 +27,6 @@ export {
 export {
     auth,
     authCheckState,
-    loginUser,
     logoutUser,
     changePassword,
     createAccount

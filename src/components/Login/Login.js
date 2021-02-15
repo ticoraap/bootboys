@@ -79,14 +79,12 @@ export class Login extends Component {
 
 Login.propTypes = {
     LoginModalToggle: PropTypes.func,
-    onLoginUser: PropTypes.func,
     onAuth: PropTypes.func,
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onAuth: (email, password) => dispatch(actions.auth(email, password)),
-        onLoginUser: () => dispatch(actions.loginUser()),
     };
 };
 

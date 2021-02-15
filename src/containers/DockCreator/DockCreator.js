@@ -16,7 +16,7 @@ import { Map, Marker, TileLayer } from "react-leaflet";
 import { queryAddressLatLong } from "../AddAddress/LocationQuery";
 import FacilityCreator from "../FacilityCreator/FacilityCreator";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import ToastMaker from "../../components/shared/ToastMaker";
+import ToastMaker from "../../shared/toastMaker";
 
 const MSG_ADDRESS_NOT_FOUND =
     "Could not resolve the address on the map. \nYou need to manually drag te marker to the location of the dock";

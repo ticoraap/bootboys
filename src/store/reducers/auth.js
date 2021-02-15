@@ -6,10 +6,9 @@ const initialState = {
     email: "",
     name: "",
     error: null,
-    loading: false,
+    loginLoading: false,
     loadingPasswordChange: false,
     loadingCreatingAccount: false,
-    newAccountCreated: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -22,7 +21,7 @@ const reducer = (state = initialState, action) => {
         case actionTypes.AUTH_SUCCESS:
             return {
                 ...state,
-                loading: false,
+                loginLoading: false,
                 token: action.idToken,
                 userId: action.localId,
                 email: action.email,
@@ -31,7 +30,8 @@ const reducer = (state = initialState, action) => {
         case actionTypes.AUTH_FAIL:
             return {
                 ...state,
-                loading: false,
+                loginLoading: false,
+                error: action.error
             };
         case actionTypes.AUTH_LOGOUT:
             return {
@@ -41,17 +41,7 @@ const reducer = (state = initialState, action) => {
                 email: "",
                 name: "",
                 error: null,
-                loading: false,
-            };
-        case actionTypes.LOGIN_USER:
-            return {
-                ...state,
-                isAuthenticated: true,
-            };
-        case actionTypes.LOGOUT_USER:
-            return {
-                ...state,
-                isAuthenticated: false,
+                loginLoading: false,
             };
         case actionTypes.AUTH_CHANGE_PASSWORD_START:
             return {
@@ -82,7 +72,6 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 loadingCreatingAccount: false,
-                newAccountCreated: true
             };
         default:
             return state;

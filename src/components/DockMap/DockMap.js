@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import classes from "./DockMap.module.css";
 
-import ToastMaker from "../shared/ToastMaker";
+import ToastMaker from "../../shared/toastMaker";
 import Map from "../Map/Map";
 
 

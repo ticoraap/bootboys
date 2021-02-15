@@ -1,6 +1,6 @@
 import * as actionTypes from "../actions/actionTypes";
-import * as actions from "./index";
 import axios from "axios";
+import ToastMaker from "../../shared/toastMaker";
 
 export const auth = (email, password) => {
     return (dispatch) => {
@@ -30,7 +30,8 @@ export const auth = (email, password) => {
                     email: response.data.email,
                     name: response.data.displayName,
                 });
-                dispatch({type: actionTypes.TOGGLE_LOGIN_MODAL})
+                dispatch({ type: actionTypes.TOGGLE_LOGIN_MODAL });
+                ToastMaker.infoToast("Logged in as " + response.data.email);
             })
             .catch((error) => {
                 dispatch({
@@ -54,6 +55,7 @@ export const authCheckState = () => {
                 const userId = localStorage.getItem("userId");
                 const email = localStorage.getItem("email");
                 const name = localStorage.getItem("name");
+                ToastMaker.infoToast("Logged in as " + email);
                 dispatch({
                     type: actionTypes.AUTH_SUCCESS,
                     idToken: token,
@@ -68,20 +70,14 @@ export const authCheckState = () => {
     };
 };
 
-export const loginUser = () => {
-    return (dispatch) => {
-        dispatch({ type: actionTypes.LOGIN_USER });
-        dispatch(actions.getUserDocks());
-    };
-};
-
 export const logoutUser = (history) => {
     localStorage.removeItem("token");
     localStorage.removeItem("expirationDate");
     localStorage.removeItem("userId");
     localStorage.removeItem("email");
     localStorage.removeItem("name");
-    if(history){
+    ToastMaker.infoToast("Logged out");
+    if (history) {
         history.push("/");
     }
     return {
@@ -128,11 +124,18 @@ export const createAccount = (email, password) => {
         axios
             .post(url, createPasswordPayload)
             .then((response) => {
+                const expirationDate = new Date(
+                    new Date().getTime() + response.data.expiresIn * 1000
+                );
+                localStorage.setItem("token", response.data.idToken);
+                localStorage.setItem("expirationDate", expirationDate);
+                localStorage.setItem("email", email);
+                ToastMaker.infoToast("Created New Account");
+          
                 dispatch({
                     type: actionTypes.AUTH_CREATE_ACCOUNT_SUCCESS,
-                    response: response,
                 });
-                dispatch({type: actionTypes.TOGGLE_REGISTER_MODAL})
+                dispatch({ type: actionTypes.TOGGLE_REGISTER_MODAL });
             })
             .catch((error) => {
                 dispatch({

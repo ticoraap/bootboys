@@ -27,8 +27,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onToggleSideDrawer: () => dispatch({type: actionTypes.TOGGLE_SIDEDRAWER}),
-        onLoginUser: (username,password) => dispatch({type: actionTypes.LOGIN_USER, username: username, password: password}),
-        onLogoutUser: () => dispatch({type: actionTypes.LOGOUT_USER})
     }
 }
 

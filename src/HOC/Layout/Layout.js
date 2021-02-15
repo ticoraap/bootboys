@@ -19,8 +19,11 @@ import {ToastContainer} from 'react-toastify';
 
 class Layout extends Component {
 
-    render() {
+    componentDidMount(){
         this.props.onAuthCheckState()
+    }
+
+    render() {
         return (
             <Auxiliary>
                 <div>

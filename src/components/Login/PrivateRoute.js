@@ -11,11 +11,10 @@ const PrivateRoute = ({ component: Component, isAuthenticated, ...props }) => (
                 return (
                     <Redirect
                         to={{
-                            pathname: "login",
-                            state: { from: props.location },
+                            pathname: "/",
                         }}
                     />
-                ); //eslint-disable-line
+                );
             }
             return <Component {...props} />;
         }}

@@ -6,7 +6,7 @@ import * as actions from "../../store/actions/index";
 
 import "./calendar.css";
 import { Calendar } from "react-calendar";
-import ToastMaker from "../../components/shared/ToastMaker";
+import ToastMaker from "../../shared/toastMaker";
 import { Button } from "@material-ui/core";
 
 // components

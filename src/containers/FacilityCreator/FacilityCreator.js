@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+
 import Facility from "./Facility/Facility";
 import classes from "./FacilityCreator.module.css";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
-import sharedMethods from "../../components/shared/SharedMethods";
 import PropTypes from "prop-types";
 import { facilityCreatorForm } from "./FacilityCreatorForm";
 import * as utility from "../../shared/utility";
@@ -78,8 +78,7 @@ class FacilityCreator extends Component {
 
     getFacilityFromInputValues = () => {
         return {
-            // TODO is deze generateRandomString wel echt nodig
-            id: sharedMethods.generateRandomString(),
+            id: Date.now(),
             price: parseFloat(
                 this.state.facilityForm.price.value
                     .replace(",", ".")

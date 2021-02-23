@@ -1,18 +1,17 @@
 import React, { Component } from "react";
-import "./DockList.css";
+import classes from "./DockList.module.css";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
 export default class DockList extends Component {
     state = {
-        filteredDocks: [],
         redirect: false,
         dockid: 0,
     };
 
     onClickDockHandler = (id) => {
         this.setState({ dockid: id, redirect: true });
-    }
+    };
 
     render() {
         if (this.state.redirect) {
@@ -20,7 +19,6 @@ export default class DockList extends Component {
                 <Redirect
                     to={{
                         pathname: "/dock/" + this.state.dockid,
-                        state: { id: this.state.dockid },
                     }}
                 />
             );
@@ -29,7 +27,7 @@ export default class DockList extends Component {
         return this.props.docks.map((value, index) => {
             return (
                 <div
-                    className={"rentableDockItem"}
+                    className={classes.RentableDockItem}
                     key={index}
                     onClick={() => this.onClickDockHandler(value.dockid)}
                 >

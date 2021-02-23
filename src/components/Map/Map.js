@@ -1,80 +1,83 @@
-import React from 'react';
-import PropTypes from 'prop-types'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { latLngBounds, latLng } from "leaflet";
+import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 
-import {latLngBounds, latLng} from 'leaflet'
-import {Map, Marker, Popup, TileLayer} from "react-leaflet";
-import Auxilary from '../../HOC/Auxiliary/Auxiliary'
+class ReactMap extends Component {
+    makeBoundingBox = (boundMapToMarkers, docks) => {
+        console.log("madeBoundingBox")
+        if (boundMapToMarkers && docks.length) {
+            const boundingBox = latLngBounds(
+                latLng(docks[0].latitude, docks[0].longitude),
+                latLng(docks[0].latitude, docks[0].longitude)
+            );
+            docks.forEach((dock) => {
+                console.log("for each dock")
+                boundingBox.extend(latLng(dock.latitude, dock.longitude));
+            });
+            return boundingBox;
+        }
+        return null;
+    };
 
-const map = ( props ) => {
+    createMarkerArray = (docks) => {
+        return docks.map((dock) => {
+            console.log("createMarkerArray")
+            return (
+                <Marker
+                    key={dock.dockid}
+                    position={{ lat: dock.latitude, lng: dock.longitude }}
+                >
+                    <Popup>
+                        Name dock: {dock.name} <br />
+                        Length: {dock.length} meter <br />
+                        Width: {dock.width} meter <br />
+                        Price: &euro; {dock.price}
+                    </Popup>
+                </Marker>
+            );
+        });
+    };
 
-    let options = {
-        doubleClickZoom: false, 
-        closePopupOnClick: false, 
-        dragging: true, 
-        zoomSnap: false, 
-        zoomDelta: true, 
-        trackResize: true,
-        touchZoom: true,
-        scrollWheelZoom: false,
-    }
+    render() {
+        let boundingBox = this.makeBoundingBox(
+            this.props.boundMapToMarkers,
+            this.props.docks
+        );
+        let markers = this.createMarkerArray(this.props.docks);
 
-    if (props.defaultOptions){
-        options = {}
-    }
+        let mapOptions = {
+            doubleClickZoom: false,
+            closePopupOnClick: false,
+            dragging: true,
+            zoomSnap: false,
+            zoomDelta: true,
+            trackResize: true,
+            touchZoom: true,
+            scrollWheelZoom: false,
+        };
 
-    let bounds = null
-    if (props.bounds && props.docks.length){
-        bounds = latLngBounds(latLng(props.docks[0].latitude,props.docks[0].longitude),latLng(props.docks[0].latitude,props.docks[0].longitude))
-        props.docks.forEach(dock => {
-            bounds.extend(latLng(dock.latitude,dock.longitude))
-        })
-    }
-
-    let markers = props.docks.map(dock => {
         return (
-            <Marker key={dock.dockid} position={{lat: dock.latitude, lng: dock.longitude}}>
-                <Popup>
-                    Name dock: {dock.name} <br/>
-                    Length: {dock.length} meter <br/>
-                    Width: {dock.width} meter <br/>
-                    Price: &euro; {dock.price}
-                </Popup>
-            </Marker>
-        )        
-    })
-    
-    let renderMap = (
-        <Map id={props.id} center={props.center} zoom={props.zoom} {...options}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-            {markers}
-        </Map>
-    )
-
-    if (bounds !== null){
-
-        renderMap = (
-            <Map bounds={bounds} id={props.id} {...options} boundsOptions={{padding: [70, 70]}}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+            <Map
+                center={this.props.center}
+                zoom={this.props.zoom}
+                bounds={boundingBox}
+                {...mapOptions}
+                boundsOptions={{ padding: [150, 150] }}
+            >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {markers}
             </Map>
-        )
-    } 
-
-    return(
-        <Auxilary>
-            {renderMap}
-        </Auxilary>
-    )
+        );
+    }
 }
 
-map.propTypes = {
-    center: PropTypes.array,
-    id: PropTypes.string,
-    zoom: PropTypes.number,
+ReactMap.propTypes = {
     docks: PropTypes.array,
-    dockids: PropTypes.string,
-    defaultOptions: PropTypes.bool,
+    boundMapToMarkers: PropTypes.bool,
+    center: PropTypes.array,
+    zoom: PropTypes.number,
     bounds: PropTypes.bool,
 };
 
-export default map;
+export default ReactMap;

@@ -1,4 +1,4 @@
-.rentableDockItem {
+.RentableDockItem {
     width: 60%;
     left: 0;
     font-weight: bolder;
@@ -10,7 +10,7 @@
     border: solid black 1px;
 }
 
-.rentableDockItem:last-child {
+.RentableDockItem:last-child {
     margin-bottom: 40px;
 }
 

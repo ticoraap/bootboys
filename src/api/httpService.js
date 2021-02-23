@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAuthToken, getUserId } from "./utility";
+import { getAuthToken, getUserId } from "../shared/utility";
 
 export const httpService = {
     getDock,

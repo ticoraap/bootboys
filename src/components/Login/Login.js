@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Login.css";
+import classes from "./Login.module.css";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
@@ -12,24 +12,23 @@ export class Login extends Component {
         username: "",
         password: "",
     };
-   
+
     submitHandler = (event) => {
         event.preventDefault();
         this.props.onAuth(this.state.username, this.state.password);
     };
 
-    handleOnChange = (event) => {
+    inputChangedHandler = (event) => {
         this.setState({
             [event.target.name]: event.target.value,
         });
-    }
+    };
 
     render() {
         return (
-            <div id={"modalLogin"}>
+            <div className={classes.ModalLogin}>
                 <span
-                    id={"closeLogin"}
-                    className={"closeModal"}
+                    className={classes.CloseModal}
                     onClick={this.props.LoginModalToggle}
                 >
                     &times;
@@ -39,25 +38,23 @@ export class Login extends Component {
                 <form autoComplete="off" onSubmit={this.submitHandler}>
                     <TextField
                         required
-                        id={"loginUsername"}
                         type={"text"}
                         label={"Username"}
                         variant={"outlined"}
                         autoFocus={true}
                         value={this.state.username}
-                        onChange={this.handleOnChange}
+                        onChange={this.inputChangedHandler}
                         name={"username"}
                         margin={"normal"}
                     />
                     <br />
                     <TextField
                         required
-                        id={"loginPassword"}
                         type={"password"}
                         label={"Password"}
                         variant={"outlined"}
                         value={this.state.password}
-                        onChange={this.handleOnChange}
+                        onChange={this.inputChangedHandler}
                         name={"password"}
                         margin={"normal"}
                     />
@@ -67,7 +64,6 @@ export class Login extends Component {
                         variant={"contained"}
                         color={"primary"}
                         size={"large"}
-                        id={"submitLogin"}
                     >
                         Login
                     </Button>

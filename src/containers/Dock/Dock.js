@@ -185,9 +185,7 @@ class Dock extends React.Component {
                     <div className={classes.locationMap}>
                         {this.props.dockWithAddress && (
                             <Map
-                                bounds
-                                center={[52.16121472938702, 4.501615852518094]}
-                                zoom={5}
+                                boundMapToMarkers
                                 docks={[this.props.dockWithAddress]}
                             />
                         )}

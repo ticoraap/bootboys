@@ -1,6 +1,7 @@
 .DockCard {
     max-width: unset;
     transition: all 0.3s ease;
+    border-bottom: groove;
 }
 
 @media (min-width: 1000px) {
@@ -15,18 +16,14 @@
 }
 
 .DockCard p {
-    margin-top: 2px;
+    margin-top: 0px;
     margin-bottom: 2px;
     margin-left: 10px;
 }
 
-.DockCard p:first-of-type {
+.CardTitle {
+    padding-top: 8px;
     font-weight: bold;
     font-size: larger;
-    padding-bottom: 10px;
-}
-
-.DockManager {
-    border-top: groove;
-    border-bottom: groove;
+    padding-bottom: 5px;
 }

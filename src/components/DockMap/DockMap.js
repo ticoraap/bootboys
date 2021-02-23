@@ -5,15 +5,11 @@ import classes from "./DockMap.module.css";
 import ToastMaker from "../../shared/toastMaker";
 import Map from "../Map/Map";
 
-
-
 class DockMap extends Component {
     state = {
-        BASE_LAT: 52.143929,
-        BASE_LON: 4.5603223,
         lat: 52.143929,
         lon: 4.5603223,
-        zoom: 11,
+        zoom: 14,
         geolocationAllowed: false,
     };
 
@@ -21,17 +17,11 @@ class DockMap extends Component {
         this.getGeoPermissions();
     }
 
-
     getGeoPermissions = () => {
-        navigator.permissions
-            .query({ name: "geolocation" })
-            .then(function (result) {
-                return result;
-            })
-            .then((result) => {
-                this.validateGeoPerms(result.state);
-            });
-    }
+        navigator.permissions.query({ name: "geolocation" }).then((result) => {
+            this.validateGeoPerms(result.state);
+        });
+    };
 
     validateGeoPerms = (geoPermission) => {
         if (geoPermission === "granted" || geoPermission === "prompt") {
@@ -40,7 +30,7 @@ class DockMap extends Component {
             this.setDefaultMapCenter();
             ToastMaker.errorToast("Geolocation perms not granted");
         }
-    }
+    };
 
     getGeoLocation() {
         navigator.geolocation.getCurrentPosition(
@@ -64,31 +54,25 @@ class DockMap extends Component {
 
     setDefaultMapCenter = () => {
         this.setState({
-            lat: this.state.BASE_LAT,
-            long: this.state.BASE_LON,
+            lat: 52.143929,
+            long: 4.5603223,
         });
-    }
-
-
-    addSuffix = (input, suffix) => {
-        return input + suffix;
-    }
+    };
 
     render() {
         return (
             <Map
                 className={classes.Map}
-                defaultOptions
                 center={[this.state.lat, this.state.lon]}
                 zoom={this.state.zoom}
                 docks={this.props.docks}
-                bounds={!this.state.geolocationAllowed}
+                boundMapToMarkers={!this.state.geolocationAllowed}
             />
         );
     }
 }
 
-export default DockMap
+export default DockMap;
 
 DockMap.propTypes = {
     docks: PropTypes.array,

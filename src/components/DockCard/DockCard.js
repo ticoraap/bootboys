@@ -5,28 +5,22 @@ import Button from "../UI/Button/Button";
 import PropTypes from "prop-types";
 
 const dockCard = (props) => {
-    let classNames = [classes.DockCard];
-
-    if (props.styleName) {
-        classNames.push(classes[props.styleName]);
-    }
-
     return (
-        <div className={classNames.join(" ")}>
+        <div className={classes.DockCard}>
             <div>
-                <p>{props.name}</p>
-                <p>{props.description.substr(0, 90) + "..."}</p>
+                <p className={classes.CardTitle}>{props.dock.name}</p>
+                <p>{getshortenedDescription(props.dock.description)}</p>
                 <p>
-                    <b>length</b> {props.length}
+                    <b>length</b> {props.dock.length}
                 </p>
                 <p>
-                    <b>width</b> {props.width}
+                    <b>width</b> {props.dock.width}
                 </p>
                 <p>
-                    <b>price</b> €{props.price}
+                    <b>price</b> €{props.dock.price}
                 </p>
                 <p>
-                    <b>facilities</b> {props.numFacilities}
+                    <b>facilities</b> {props.dock.numFacilities}
                 </p>
             </div>
             <div>
@@ -38,14 +32,15 @@ const dockCard = (props) => {
     );
 };
 
+const getshortenedDescription = (description) => {
+    if (description.length > 90){
+        return description.substr(0, 90) + "...";
+    }
+    return description
+}
+
 dockCard.propTypes = {
-    name: PropTypes.string,
-    description: PropTypes.string,
-    length: PropTypes.number,
-    width: PropTypes.number,
-    price: PropTypes.number,
-    numFacilities: PropTypes.number,
-    styleName: PropTypes.string,
+    dock: PropTypes.object,
     remove: PropTypes.func,
 };
 

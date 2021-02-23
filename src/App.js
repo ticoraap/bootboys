@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Layout from "./HOC/Layout/Layout";
-import PrivateRoute from "./components/Login/PrivateRoute";
+import PrivateRoute from "./shared/PrivateRoute";
 import "react-toastify/dist/ReactToastify.css";
 
 // containers

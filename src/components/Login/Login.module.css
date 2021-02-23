@@ -1,4 +1,4 @@
-#modalLogin {
+.ModalLogin {
     position: fixed;
     z-index: 500;
     width: 20%;
@@ -14,24 +14,31 @@
     height: fit-content;
 }
 
-#submitLogin {
+.SubmitLogin {
     margin: 10px auto 10px auto;
     background-color: #0202C7;
     box-shadow: 10px 10px 5px -5px rgba(0, 0, 0, 0.29);
 }
 
-#submitLogin:hover {
+.SubmitLogin:hover {
     background-color: #010195;
 }
 
-#submitLogin:active {
+.SubmitLogin:active {
     background-color: #010195;
     box-shadow: 0 6px 5px -5px rgba(0, 0, 0, 0.29);
     transform: translateY(4px);
 }
 
+.CloseModal {
+    cursor: pointer;
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+}
+
 @media (max-width: 1380px) {
-    #modalLogin {
+    .ModalLogin {
         width: 40%;
         left: 30%;
         top: 15%;
@@ -39,7 +46,7 @@
 }
 
 @media (max-width: 1250px) {
-    #modalLogin {
+    .ModalLogin {
         width: 40%;
         left: 18%;
         top: 20%;
@@ -47,7 +54,7 @@
 }
 
 @media (max-width: 1000px) {
-    #modalLogin {
+    .ModalLogin {
         width: 50%;
         left: 22%;
         margin-left: 0;
@@ -63,7 +70,7 @@
 }
 
 @media (max-width: 750px) {
-    #modalLogin {
+    .ModalLogin {
         left: 22%;
         top: 5%;
         bottom: 5%;
@@ -72,7 +79,7 @@
 }
 
 @media (max-width: 500px) {
-    #modalLogin {
+    .ModalLogin {
         left: 20%;
         top: 11%;
         bottom: 0;

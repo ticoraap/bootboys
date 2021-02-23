@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from 'react-redux';
 import { Redirect, Route } from "react-router-dom";
 
-//eslint-disable-line
 const PrivateRoute = ({ component: Component, isAuthenticated, ...props }) => (
     <Route
         {...props}

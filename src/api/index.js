@@ -1,4 +1,4 @@
-import httpService from "../shared/httpService";
+import httpService from "./httpService";
 import { getAddressApi } from "./Adress";
 import { getDockApi } from "./Dock";
 import { getUserApi } from "./User";

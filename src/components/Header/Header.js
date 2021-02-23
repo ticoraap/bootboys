@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import Logo from '../../assets/images/boatLogo.png';
-import './Header.css';
+import classes from './Header.css';
 
 export default class Header extends Component {
     render() {
@@ -8,7 +8,7 @@ export default class Header extends Component {
             <header>
                 <a>
                     <img src={Logo} alt={'Logo of a boat'} width={'100px'}/>
-                    <p id={'nameLogo'}>BoatBnB</p>
+                    <p className={classes.NameLogo}>BoatBnB</p>
                 </a>
             </header>
         );

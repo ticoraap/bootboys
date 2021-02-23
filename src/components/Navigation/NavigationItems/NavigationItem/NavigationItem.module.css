@@ -1,25 +1,19 @@
 .NavigationItem {
+    cursor: pointer;
     margin: 10px 0;
-    /* padding-left: 10px; */
     box-sizing: border-box;
     display: block;
     width: 100%;
 }
 
-.NavigationItem a {
-    color: #d6d6d6;
+.NavigationItem a,
+.NavigationItem p {
+    color: var(--grey-darker);
     text-decoration: none;
     width: 100%;
     box-sizing: border-box;
-    display: block;
-    transition: all 0.3s ease;
     font-size: 16px;
-}
-
-.NavigationItem a:hover,
-.NavigationItem a:active,
-.NavigationItem a.active {
-    color: var(--primary);
+    margin: 0;
 }
 
 @media (min-width: 500px) {
@@ -31,7 +25,8 @@
         align-items: center;
     }
 
-    .NavigationItem a {
+    .NavigationItem a,
+    .NavigationItem p {
         color: var(--gray-lighter);
         height: 100%;
         display: flex;
@@ -43,7 +38,9 @@
 
     .NavigationItem a:hover,
     .NavigationItem a:active,
-    .NavigationItem a.active {
+    .NavigationItem a.active,
+    .NavigationItem p:hover,
+    .NavigationItem p:active  {
         border-bottom: 4px solid var(--primary);
         color: var(--white);
     }

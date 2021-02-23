@@ -9,10 +9,10 @@ import NavigationItem from './NavigationItem/NavigationItem';
 configure({adapter: new Adapter()})
 
 describe('<NavigationItems />', () => {
-    it('should render two <NavigationItem /> elements if not authenticated', () => {
+    it('should render three <NavigationItem /> elements if not authenticated', () => {
         const wrapper = shallow(<NavigationItems/>)
 
-        expect(wrapper.find(NavigationItem)).toHaveLength(2);
+        expect(wrapper.find(NavigationItem)).toHaveLength(3);
     })
     
     it('should render five <NavigationItem /> elements if authenticated', () => {

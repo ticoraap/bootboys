@@ -6,7 +6,7 @@ export const httpService = {
     getAllDocks,
     addDock,
     removeDock,
-    
+
     addUserDock,
     getUserDocks,
     removeUserDock,
@@ -26,7 +26,7 @@ function addDock(id, dock) {
 }
 
 function getDock(dockid) {
-    return get("dock/" + dockid);
+    return getWithAuthToken("dock/" + dockid);
 }
 
 function removeDock(dockid) {
@@ -45,7 +45,7 @@ function addUserDock(dock) {
         latitude: dock.latitude,
         longitude: dock.longitude,
         length: dock.length,
-        width: dock.width
+        width: dock.width,
     };
 
     return post("users/" + userId + "/userDocks", userDock);
@@ -53,53 +53,57 @@ function addUserDock(dock) {
 
 function getUserDocks() {
     const userId = getUserId();
-    return get("users/" + userId + "/userDocks")
+    return getWithAuthToken("users/" + userId + "/userDocks");
 }
 
 function removeUserDock(dockid) {
     const userId = getUserId();
-    return remove("users/" + userId + "/userDocks/" + dockid)
+    return remove("users/" + userId + "/userDocks/" + dockid);
 }
 
-// address
 function getAddress(addressid) {
-    return get("address/" + addressid);
+    return getWithAuthToken("address/" + addressid);
 }
 
 function getAddressesFromUser() {
-    return get("address");
+    return getWithAuthToken("address");
 }
 
 function addAddress(address) {
     return post("address", address);
 }
 
-
-
-// http functions
 function post(url, JSON) {
-    const URL = composeApiURL(url);
+    const URL = composeApiURLWithAuth(url);
     return axios.post(URL, JSON);
 }
 
 function put(url, dock) {
-    dock.userid = getUserId()
-    const URL = composeApiURL(url);
+    dock.userid = getUserId();
+    const URL = composeApiURLWithAuth(url);
     return axios.put(URL, dock);
 }
 
 function get(resourceLocation) {
     const URL = composeApiURL(resourceLocation);
-    return axios.get(URL)
+    return axios.get(URL);
+}
+
+function getWithAuthToken(resourceLocation) {
+    const URL = composeApiURLWithAuth(resourceLocation);
+    return axios.get(URL);
 }
 
 function remove(resourceLocation) {
-    const URL = composeApiURL(resourceLocation);
-    return axios.delete(URL)
+    const URL = composeApiURLWithAuth(resourceLocation);
+    return axios.delete(URL);
 }
 
-
 const composeApiURL = (resourceLocation) => {
+    return getBaseURL() + resourceLocation + ".json";
+};
+
+const composeApiURLWithAuth = (resourceLocation) => {
     return getBaseURL() + resourceLocation + ".json" + getAuthString();
 };
 
@@ -111,6 +115,5 @@ const getAuthString = () => {
 const getBaseURL = () => {
     return "" + process.env.REACT_APP_BASE_URL;
 };
-
 
 export default httpService;

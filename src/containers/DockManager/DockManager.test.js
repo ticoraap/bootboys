@@ -4,7 +4,7 @@ import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16'
 
 import { DockManager } from './DockManager';
-import DockCard from '../../components/Dock/DockCard/DockCard';
+import DockCard from '../../components/DockCard/DockCard';
 
 const dock1 = {
     addressid: 4,

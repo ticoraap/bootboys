@@ -24,7 +24,7 @@ const sideDrawer = (props) => {
                     <Logo/>
                 </div>
                 <nav>
-                    <NavigationItems NavigationType='SideDrawer'/>
+                    <NavigationItems isSideDrawer />
                 </nav>
             </div>
         </Auxiliary>

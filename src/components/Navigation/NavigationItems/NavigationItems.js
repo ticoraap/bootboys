@@ -8,75 +8,75 @@ import * as actions from "../../../store/actions/index";
 import * as actionTypes from "../../../store/actions/actionTypes";
 
 import NavigationItem from "./NavigationItem/NavigationItem";
+import Auxiliary from "../../../HOC/Auxiliary/Auxiliary";
 
 export class NavigationItems extends Component {
-    onLoginLogout = () => {
-        if (this.props.NavigationType === "SideDrawer") {
-            this.toggleSideDrawerIfMobileLayout();
-        }
-        if (this.props.isAuthenticated) {
-            this.props.onLogoutUser(this.props.history);
-        } else {
-            this.props.onToggleLoginModal();
-        }
+    login = () => {
+        this.props.onToggleLoginModal();
+        this.toggleSideDrawerIfMobile();
     };
 
-    onRegister = () => {
-        if (this.props.NavigationType === "SideDrawer") {
-            this.toggleSideDrawerIfMobileLayout();
-        }
+    register = () => {
         this.props.onToggleRegisterModal();
+        this.toggleSideDrawerIfMobile();
     };
 
-    toggleSideDrawerIfMobileLayout = () => {
-        if (this.props.NavigationType === "SideDrawer") {
+    toggleSideDrawerIfMobile = () => {
+        if (this.props.isSideDrawer) {
             this.props.onToggleSideDrawer();
         }
     };
 
     render() {
         return (
-            <ul className={classes.NavigationItem}>
+            <ul className={classes.NavigationItems}>
                 <NavigationItem
-                    closeSidedrawer={this.toggleSideDrawerIfMobileLayout}
+                    onClick={this.toggleSideDrawerIfMobile}
                     link="/rent-dock"
                     exact
                 >
                     Rent Dock
                 </NavigationItem>
-                {this.props.isAuthenticated ? (
-                    <NavigationItem
-                        closeSidedrawer={this.toggleSideDrawerIfMobileLayout}
-                        link="/manage-docks"
-                        exact
-                    >
-                        Manage Docks
-                    </NavigationItem>
-                ) : null}
 
                 {this.props.isAuthenticated ? (
-                    <NavigationItem
-                        closeSidedrawer={this.toggleSideDrawerIfMobileLayout}
-                        link="/Account"
-                        exact
-                    >
-                        Account
-                    </NavigationItem>
-                ) : null}
-                {!this.props.isAuthenticated ? (
-                    <span
-                        className={classes.NavigationItem}
-                        onClick={this.onRegister}
-                    >
-                        <p>Register</p>
-                    </span>
-                ) : null}
-                <span
-                    className={classes.NavigationItem}
-                    onClick={this.onLoginLogout}
-                >
-                    <p>{this.props.isAuthenticated ? "Logout" : "Login"}</p>
-                </span>
+                    <Auxiliary>
+                        <NavigationItem
+                            onClick={this.toggleSideDrawerIfMobile}
+                            link="/manage-docks"
+                            exact
+                        >
+                            Manage Docks
+                        </NavigationItem>
+                        <NavigationItem
+                            onClick={this.toggleSideDrawerIfMobile}
+                            link="/account"
+                            exact
+                        >
+                            Account
+                        </NavigationItem>
+
+                        <NavigationItem
+                            onClick={() =>
+                                this.props.onLogoutUser(this.props.history)
+                            }>
+                            Logout
+                        </NavigationItem>
+                    </Auxiliary>
+                ) : (
+                    <Auxiliary>
+                        <NavigationItem
+                            onClick={this.register}
+                        >
+                            Register
+                        </NavigationItem>
+
+                        <NavigationItem
+                            onClick={this.login}
+                        >
+                            Login
+                        </NavigationItem>
+                    </Auxiliary>
+                )}
             </ul>
         );
     }
@@ -84,7 +84,7 @@ export class NavigationItems extends Component {
 
 NavigationItems.propTypes = {
     isAuthenticated: PropTypes.bool,
-    NavigationType: PropTypes.string,
+    isSideDrawer: PropTypes.bool,
     onLogoutUser: PropTypes.func,
     onToggleSideDrawer: PropTypes.func,
     onToggleLoginModal: PropTypes.func,

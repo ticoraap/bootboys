@@ -5,14 +5,12 @@ import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 
 class ReactMap extends Component {
     makeBoundingBox = (boundMapToMarkers, docks) => {
-        console.log("madeBoundingBox")
         if (boundMapToMarkers && docks.length) {
             const boundingBox = latLngBounds(
                 latLng(docks[0].latitude, docks[0].longitude),
                 latLng(docks[0].latitude, docks[0].longitude)
             );
             docks.forEach((dock) => {
-                console.log("for each dock")
                 boundingBox.extend(latLng(dock.latitude, dock.longitude));
             });
             return boundingBox;
@@ -22,7 +20,6 @@ class ReactMap extends Component {
 
     createMarkerArray = (docks) => {
         return docks.map((dock) => {
-            console.log("createMarkerArray")
             return (
                 <Marker
                     key={dock.dockid}

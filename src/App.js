@@ -12,7 +12,7 @@ import Dock from "./containers/Dock/Dock";
 import DockManager from "./containers/DockManager/DockManager";
 
 // components
-import PageNotFound from "./components/PageNotFound/PageNotFound";
+import NotFound from "./components/NotFound/NotFound";
 
 class App extends Component {
     render() {
@@ -38,7 +38,7 @@ class App extends Component {
                                 path="/manage-docks"
                                 component={DockManager}
                             />
-                            <Route component={PageNotFound} />
+                            <Route component={NotFound} />
                         </Switch>
                     </Layout>
                 </BrowserRouter>

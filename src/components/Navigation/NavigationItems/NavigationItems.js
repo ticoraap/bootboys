@@ -13,15 +13,15 @@ import Auxiliary from "../../../HOC/Auxiliary/Auxiliary";
 export class NavigationItems extends Component {
     login = () => {
         this.props.onToggleLoginModal();
-        this.toggleSideDrawerIfMobile();
+        this.toggleSideDrawer();
     };
 
     register = () => {
         this.props.onToggleRegisterModal();
-        this.toggleSideDrawerIfMobile();
+        this.toggleSideDrawer();
     };
 
-    toggleSideDrawerIfMobile = () => {
+    toggleSideDrawer = () => {
         if (this.props.isSideDrawer) {
             this.props.onToggleSideDrawer();
         }
@@ -31,7 +31,7 @@ export class NavigationItems extends Component {
         return (
             <ul className={classes.NavigationItems}>
                 <NavigationItem
-                    onClick={this.toggleSideDrawerIfMobile}
+                    onClick={this.toggleSideDrawer}
                     link="/rent-dock"
                     exact
                 >
@@ -41,14 +41,14 @@ export class NavigationItems extends Component {
                 {this.props.isAuthenticated ? (
                     <Auxiliary>
                         <NavigationItem
-                            onClick={this.toggleSideDrawerIfMobile}
+                            onClick={this.toggleSideDrawer}
                             link="/manage-docks"
                             exact
                         >
                             Manage Docks
                         </NavigationItem>
                         <NavigationItem
-                            onClick={this.toggleSideDrawerIfMobile}
+                            onClick={this.toggleSideDrawer}
                             link="/account"
                             exact
                         >

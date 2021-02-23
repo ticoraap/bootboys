@@ -7,52 +7,38 @@ import Map from "../Map/Map";
 
 class DockMap extends Component {
     state = {
-        lat: 52.143929,
-        lon: 4.5603223,
+        lat: 0,
+        lon: 0,
         zoom: 14,
         geolocationAllowed: false,
     };
 
     componentDidMount() {
-        this.getGeoPermissions();
+        this.getGeoLocation();
     }
 
-    getGeoPermissions = () => {
-        navigator.permissions.query({ name: "geolocation" }).then((result) => {
-            this.validateGeoPerms(result.state);
+    getGeoLocation = () => {
+        if (typeof navigator === "undefined") return;
+        navigator.geolocation.getCurrentPosition(
+            this.setCurrentGeoLocation,
+            this.noGeoLocation
+        );
+    };
+
+    setCurrentGeoLocation = (location) => {
+        this.setState({
+            lat: location.coords.latitude,
+            lon: location.coords.longitude,
+            geolocationAllowed: true,
         });
     };
 
-    validateGeoPerms = (geoPermission) => {
-        if (geoPermission === "granted" || geoPermission === "prompt") {
-            this.getGeoLocation();
+    noGeoLocation = () => {
+        if (navigator.permissions.query({ name: "geolocation" })) {
+            ToastMaker.infoToast("Geolocation perms not granted");
         } else {
-            this.setDefaultMapCenter();
-            ToastMaker.errorToast("Geolocation perms not granted");
+            ToastMaker.warnToast("Couldn't get current position");
         }
-    };
-
-    getGeoLocation() {
-        navigator.geolocation.getCurrentPosition(
-            (location) => {
-                this.setState({
-                    lat: location.coords.latitude,
-                    lon: location.coords.longitude,
-                    geolocationAllowed: true,
-                });
-            },
-            () => {
-                this.setDefaultMapCenter();
-                if (navigator.permissions.query({ name: "geolocation" })) {
-                    ToastMaker.errorToast("Geolocation perms not granted");
-                } else {
-                    ToastMaker.errorToast("Couldn't get current position");
-                }
-            }
-        );
-    }
-
-    setDefaultMapCenter = () => {
         this.setState({
             lat: 52.143929,
             long: 4.5603223,

@@ -379,10 +379,10 @@ export class DockCreator extends Component {
                     <div className={classes.DockForm}>
                         <div className={classes.FormInformation}>
                             {basicInformationTitle}
-                            {address}
-                            {newAddressButton}
+
                             {name}
                             {description}
+
                             {facilityCreator}
                             {length}
                             {width}
@@ -392,6 +392,15 @@ export class DockCreator extends Component {
                         <div className={classes.FormLocation}>
                             {locationTitle}
                             {locationSubText}
+                            <div
+                                style={{
+                                    display: "flex",
+                                    width: "100%",
+                                }}
+                            >
+                                {address}
+                                {newAddressButton}
+                            </div>
                             {latitude}
                             {longitude}
                             {manualFillLatLonButton}

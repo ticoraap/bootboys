@@ -1,38 +1,41 @@
-.SearchDock {
-    width: 220px;
-    display: inline-block;
-}
-
-.Wrapper {
-    width: 100%;
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.MapDocks {
-    height: 80%;
-    width: 40%;
-    position: fixed;
-    margin-left: 35%;
-    margin-top: 25px;
-    border: solid 1px black;
+.DockSearcher {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
 }
 
 .Inputs {
     margin-bottom: 10px;
 }
 
+.InputElement {
+    width: 220px;
+    display: inline-block;
+}
+
+.Content {
+    display: flex;
+    flex-direction: row;
+    min-height: 100%;
+}
+
+.Map {
+    height: 500px;
+    width: 100%;
+    border: solid 1px black;
+    margin-left: 10px;
+}
+
+
+
 @media (max-width: 750px) {
-    .Wrapper {
-        grid-template-columns: 1fr;
+    .Content {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
     }
 
-    .MapDocks {
-        width: 70vw;
-        height: 30vw;
-        margin-left: 10vw;
-      
-        margin-top: 60vw;
+    .Map {
+        margin-left: 0;
     }
 }

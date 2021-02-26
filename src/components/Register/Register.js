@@ -1,106 +1,80 @@
 import React, { Component } from "react";
+import classes from "./Register.module.css";
+import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
-import "./Register.css";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import PropTypes from "prop-types";
-import { validateEmail } from "../../shared/validation";
+import Input from "../UI/InputCom/InputCom";
+import Button from "../UI/Button/Button";
+import Auxiliary from "../../HOC/Auxiliary/Auxiliary";
 
 class Register extends Component {
     state = {
-        email: "",
-        password: "",
-        submit: false,
+        email: { value: "", valid: false },
+        password: { value: "", valid: false },
+        allValid: false,
     };
 
-    submitForm(event) {
-        event.preventDefault();
-        this.props.onRegister(this.state.email, this.state.password);
-    }
+    submitHandler = () => {
+        this.props.onAuth(this.state.email.value, this.state.password.value);
+    };
 
-    handleOnChange(event) {
+    inputChangedHandler = (id, value, valid) => {
         this.setState({
-            [event.target.name]: event.target.value,
+            [id]: { value: value, valid: valid },
         });
-    }
-
-    handleOpen() {
-        this.props.toggleModal("showRegister");
-    }
+        this.setState((prevState) => {
+            return {
+                allValid: prevState.email.valid && prevState.password.valid,
+            };
+        });
+    };
 
     render() {
         return (
-            <div className={"noRemove"}>
-                <div
-                    id={"modalSignUp"}
-                    className={"noRemove"}
-                    ref={(node) => {
-                        this.pop = node;
-                    }}
-                >
+            <Auxiliary>
+                <div className={classes.RegisterHeader}>
                     <span
-                        className={"closeModal"}
-                        onClick={() => this.props.toggleModal("showRegister")}
+                        className={classes.CloseModal}
+                        onClick={this.props.registerModalToggle}
                     >
                         &times;
                     </span>
                     <h1>Sign up</h1>
                     <hr />
-                    <form
-                        noValidate
-                        autoComplete="off"
-                        onSubmit={this.submitForm.bind(this)}
-                    >
-                        <TextField
-                            required
-                            id={"email"}
-                            className={"input fullLength"}
-                            type={"email"}
-                            label={"Email Address"}
-                            variant={"outlined"}
-                            value={this.state.email}
-                            onChange={this.handleOnChange.bind(this)}
-                            name={"email"}
-                            error={
-                                !validateEmail(this.state.email) &&
-                                this.state.submit === true
-                            }
-                            margin={"normal"}
-                        />
-
-                        <TextField
-                            required
-                            id={"password"}
-                            className={"input fullLength"}
-                            type={"password"}
-                            label={"Password"}
-                            variant={"outlined"}
-                            value={this.state.password}
-                            onChange={this.handleOnChange.bind(this)}
-                            name={"password"}
-                            error={
-                                this.state.password === "" &&
-                                this.state.submit === true
-                            }
-                            margin={"normal"}
-                        />
-
-                        <br />
-                        <Button
-                            type={"submit"}
-                            variant={"contained"}
-                            color={"primary"}
-                            size={"large"}
-                            id={"submitRegister"}
-                        >
-                            Register
-                        </Button>
-                    </form>
                 </div>
-            </div>
+                <div>
+                    <Input
+                        id="email"
+                        type="text"
+                        label="E-mail"
+                        placeholder="Enter your e-mail"
+                        validationRules={{
+                            isEmail: true,
+                        }}
+                        notifyParentOfChange={this.inputChangedHandler}
+                    />
+                    <Input
+                        id="password"
+                        type="password"
+                        label="Password"
+                        placeholder="Enter your e-mail"
+                        validationRules={{
+                            minLength: 8,
+                        }}
+                        notifyParentOfChange={this.inputChangedHandler}
+                    />
+
+                    <Button
+                        btnType="Form"
+                        disabled={!this.state.allValid}
+                        clicked={this.submitHandler}
+                    >
+                        Login
+                    </Button>
+                </div>
+            </Auxiliary>
         );
     }
 }

@@ -1,0 +1,22 @@
+.Select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.Label {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.SelectElement {
+    outline: none;
+    border: 1px solid var(--gray-lighter);
+    background-color: var(--white);
+    font: inherit;
+    padding: 6px 10px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}

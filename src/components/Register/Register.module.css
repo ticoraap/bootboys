@@ -1,11 +1,11 @@
-.LoginHeader {
+.RegisterHeader {
     padding: 10px;
 }
 
 .CloseModal {
+    padding: 10px;
     cursor: pointer;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
-

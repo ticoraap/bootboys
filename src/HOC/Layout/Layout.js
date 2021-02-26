@@ -28,7 +28,6 @@ class Layout extends Component {
                     <SideDrawer />
 
                     <Modal
-                        onlyBackdrop
                         show={this.props.showLoginModal}
                         modalClosed={this.props.onToggleLoginModal}
                     >
@@ -38,12 +37,11 @@ class Layout extends Component {
                     </Modal>
 
                     <Modal
-                        onlyBackdrop
                         show={this.props.showRegisterModal}
                         modalClosed={this.props.onToggleRegisterModal}
                     >
                         <Register
-                            toggleModal={this.props.onToggleRegisterModal}
+                            registerModalToggle={this.props.onToggleRegisterModal}
                         />
                     </Modal>
 

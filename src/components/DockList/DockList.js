@@ -24,7 +24,7 @@ export default class DockList extends Component {
             );
         }
 
-        return this.props.docks.map((value, index) => {
+        const docklist = this.props.docks.map((value, index) => {
             return (
                 <div
                     className={classes.RentableDockItem}
@@ -32,16 +32,21 @@ export default class DockList extends Component {
                     onClick={() => this.onClickDockHandler(value.dockid)}
                 >
                     <div id={"test"}>
-                        <p>Dock name: {value.name}</p>
-                        <p>Dock width: {value.width} meter</p>
-                        <p>Dock length: {value.length} meter</p>
-                        <p>Dock price: &euro; {value.price}</p>
-                        <p>Dock description: {value.description}</p>
+                        <h3>{value.name}</h3>
+                        <p><b>Price:  &euro;</b> {value.price}</p>
+                        <p><b>Width:</b> {value.width} meters</p>
+                        <p><b>Length:</b> {value.length} meters</p>
+                        <p><b>Description:</b> {value.description}</p>
                     </div>
-                    <br />
                 </div>
             );
         });
+
+        return (
+            <div className={classes.DockList}>
+                {docklist}
+            </div>
+        )
     }
 }
 

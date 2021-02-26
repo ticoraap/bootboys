@@ -1,74 +1,80 @@
 import React, { Component } from "react";
 import classes from "./Login.module.css";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-
 import PropTypes from "prop-types";
+
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
+import Input from "../UI/InputCom/InputCom";
+import Button from "../UI/Button/Button";
+import Auxiliary from "../../HOC/Auxiliary/Auxiliary";
+
 export class Login extends Component {
     state = {
-        username: "",
-        password: "",
+        email: { value: "", valid: false },
+        password: { value: "", valid: false },
+        allValid: false,
     };
 
-    submitHandler = (event) => {
-        event.preventDefault();
-        this.props.onAuth(this.state.username, this.state.password);
+    submitHandler = () => {
+        this.props.onAuth(this.state.email.value, this.state.password.value);
     };
 
-    inputChangedHandler = (event) => {
+    inputChangedHandler = (id, value, valid) => {
         this.setState({
-            [event.target.name]: event.target.value,
+            [id]: { value: value, valid: valid },
+        });
+        this.setState((prevState) => {
+            return {
+                allValid: prevState.email.valid && prevState.password.valid,
+            };
         });
     };
 
     render() {
         return (
-            <div className={classes.ModalLogin}>
-                <span
-                    className={classes.CloseModal}
-                    onClick={this.props.LoginModalToggle}
-                >
-                    &times;
-                </span>
-                <h1>Login</h1>
-                <hr />
-                <form autoComplete="off" onSubmit={this.submitHandler}>
-                    <TextField
-                        required
-                        type={"text"}
-                        label={"Username"}
-                        variant={"outlined"}
-                        autoFocus={true}
-                        value={this.state.username}
-                        onChange={this.inputChangedHandler}
-                        name={"username"}
-                        margin={"normal"}
+            <Auxiliary>
+                <div className={classes.LoginHeader}>
+                    <span
+                        className={classes.CloseModal}
+                        onClick={this.props.LoginModalToggle}
+                    >
+                        &times;
+                    </span>
+                    <h1>Login</h1>
+                    <hr />
+                </div>
+                <div>
+                    <Input
+                        id="email"
+                        type="text"
+                        label="E-mail"
+                        placeholder="Enter your e-mail"
+                        validationRules={{
+                            isEmail: true,
+                        }}
+                        notifyParentOfChange={this.inputChangedHandler}
                     />
-                    <br />
-                    <TextField
-                        required
-                        type={"password"}
-                        label={"Password"}
-                        variant={"outlined"}
-                        value={this.state.password}
-                        onChange={this.inputChangedHandler}
-                        name={"password"}
-                        margin={"normal"}
+                    <Input
+                        id="password"
+                        type="password"
+                        label="Password"
+                        placeholder="Enter your e-mail"
+                        validationRules={{
+                            minLength: 8,
+                        }}
+                        notifyParentOfChange={this.inputChangedHandler}
                     />
-                    <br />
+
                     <Button
-                        type={"submit"}
-                        variant={"contained"}
-                        color={"primary"}
-                        size={"large"}
+                        btnType="Form"
+                        disabled={!this.state.allValid}
+                        clicked={this.submitHandler}
                     >
                         Login
                     </Button>
-                </form>
-            </div>
+                </div>
+            </Auxiliary>
         );
     }
 }

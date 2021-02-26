@@ -8,12 +8,12 @@ import { dockCreatorForm } from "./DockCreatorForm";
 
 import * as utility from "../../shared/utility";
 
-import AddAddress from "../AddAddress/AddAddress";
+import AddressCreator from "../AddressCreator/AddressCreator";
 import Button from "../../components/UI/Button/Button";
 import Input from "../../components/UI/Input/Input";
 import Modal from "../../components/UI/Modal/Modal";
 import { Map, Marker, TileLayer } from "react-leaflet";
-import { queryAddressLatLong } from "../AddAddress/LocationQuery";
+import { queryAddressLatLong } from "../AddressCreator/LocationQuery";
 import FacilityCreator from "../FacilityCreator/FacilityCreator";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import ToastMaker from "../../shared/toastMaker";
@@ -371,7 +371,7 @@ export class DockCreator extends Component {
                     show={this.state.addingAddress}
                     modalClosed={this.toggleAddressModal}
                 >
-                    <AddAddress
+                    <AddressCreator
                         notifyDockCreatorAddressAdded={this.notifyAddressAdded}
                     />
                 </Modal>

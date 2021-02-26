@@ -8,6 +8,7 @@
 
 .NavigationItem a,
 .NavigationItem p {
+    font-weight: normal;
     color: var(--grey-darker);
     text-decoration: none;
     width: 100%;
@@ -40,7 +41,7 @@
     .NavigationItem a:active,
     .NavigationItem a.active,
     .NavigationItem p:hover,
-    .NavigationItem p:active  {
+    .NavigationItem p:active {
         border-bottom: 4px solid var(--primary);
         color: var(--white);
     }

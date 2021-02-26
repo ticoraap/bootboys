@@ -20,24 +20,18 @@
     --primary-lighter: #dab5ad; /* #2F8BE6 */
 }
 
-@font-face {
-    font-family: "Comic Sans MS";
-    src: url("assets/fonts/ComicSansMSRegular.ttf");
-}
-
 body {
+    font-family: "Roboto", sans-serif;
     margin: 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: "Comic Sans MS", 'Source Sans Pro', sans-serif;
     background-color: var(--gray-lightest);
     color: var(--gray-dark);
-    font-size: 14px;
 }
 
-code {
-    font-family: "Comic Sans MS", source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h3 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    text-align: left;
 }
 
 h4 {
@@ -45,24 +39,19 @@ h4 {
     margin-bottom: 10px;
     font-size: 30px;
     text-align: left;
-    font-weight: lighter;
 }
 
 h5 {
     font-size: 25px;
     text-align: left;
-    font-weight: lighter;
 }
 
 p {
     font-size: 15px;
     text-align: left;
-    font-weight: lighter;
 }
-
 
 .leaflet-container {
     width: 100%;
     min-height: 100%;
 }
-

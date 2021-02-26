@@ -20,7 +20,7 @@ const dockCard = (props) => {
                     <b>price</b> €{props.dock.price}
                 </p>
                 <p>
-                    <b>facilities</b> {props.dock.numFacilities}
+                    <b>facilities</b> {props.dock.numfacilities}
                 </p>
             </div>
             <div>

@@ -48,18 +48,22 @@ class Register extends Component {
                     <Input
                         id="email"
                         type="text"
+                        value={this.state.email.value}
                         label="E-mail"
                         placeholder="Enter your e-mail"
+                        invalidMessage="Please enter a valid email"
                         validationRules={{
                             isEmail: true,
                         }}
                         notifyParentOfChange={this.inputChangedHandler}
-                    />
+                        />
                     <Input
                         id="password"
                         type="password"
+                        value={this.state.password.value}
                         label="Password"
                         placeholder="Enter your e-mail"
+                        invalidMessage="Minimum of 8 characters required"
                         validationRules={{
                             minLength: 8,
                         }}

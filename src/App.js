@@ -9,6 +9,10 @@ import Account from "./containers/Account/Account";
 import DockSearcher from "./containers/DockSearcher/DockSearcher";
 import Dock from "./containers/Dock/Dock";
 import DockManager from "./containers/DockManager/DockManager";
+import DockCreator from './containers/DockCreator/DockCreator';
+import DockEditor from './containers/DockEditor/DockEditor';
+import  LocationEditor  from './containers/DockCreator/LocationEditor/LocationEditor';
+import FacilityEditor from './containers/FacilityEditor/FacilityEditor';
 
 // components
 import NotFound from "./components/NotFound/NotFound";
@@ -25,6 +29,26 @@ class App extends Component {
                                 exact
                                 path="/rent-dock"
                                 component={DockSearcher}
+                            />
+                            <Route
+                                exact
+                                path="/dockcreator"
+                                component={DockCreator}
+                            />
+                            <Route
+                                exact
+                                path="/locationeditor"
+                                component={LocationEditor}
+                            />
+                            <Route
+                                exact
+                                path="/dockeditor"
+                                component={DockEditor}
+                            />
+                            <Route
+                                exact
+                                path="/facilityEditor"
+                                component={FacilityEditor}
                             />
                             <PrivateRoute
                                 exact

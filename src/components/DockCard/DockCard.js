@@ -4,27 +4,27 @@ import classes from "./DockCard.module.css";
 import Button from "../UI/Button/Button";
 import PropTypes from "prop-types";
 
-const dockCard = (props) => {
+const dockCard = ({ dock, remove }) => {
     return (
         <div className={classes.DockCard}>
             <div>
-                <p className={classes.CardTitle}>{props.dock.name}</p>
-                <p>{getshortenedDescription(props.dock.description)}</p>
+                <p className={classes.CardTitle}>{dock.name}</p>
+                <p>{getshortenedDescription(dock.description)}</p>
                 <p>
-                    <b>length</b> {props.dock.length}
+                    <b>length</b> {dock.length}
                 </p>
                 <p>
-                    <b>width</b> {props.dock.width}
+                    <b>width</b> {dock.width}
                 </p>
                 <p>
-                    <b>price</b> €{props.dock.price}
+                    <b>price</b> €{dock.price}
                 </p>
                 <p>
-                    <b>facilities</b> {props.dock.numfacilities}
+                    <b>facilities</b> {dock.numfacilities}
                 </p>
             </div>
             <div>
-                <Button clicked={props.remove} btnType="DockCardDanger">
+                <Button clicked={remove} btnType="DockCardDanger">
                     Remove
                 </Button>
             </div>

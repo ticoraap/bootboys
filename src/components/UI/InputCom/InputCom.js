@@ -11,18 +11,21 @@ const InputCom = ({
     validationRules,
     invalidMessage,
     notifyParentOfChange,
+    disabled = false,
+    className,
     ...props
 }) => {
-    const [inputValue, setInputValue] = useState(value);
     const [touched, setTouched] = useState(false);
     const [valid, setValid] = useState(true);
 
     function inputChanged(event) {
         setTouched(true);
-        setInputValue(event.target.value);
-        const isValid = isInputValidByRules(event.target.value, validationRules)
+        const isValid = isInputValidByRules(
+            event.target.value,
+            validationRules
+        );
         setValid(isValid);
-        notifyParentOfChange(id, event.target.value, isValid)
+        notifyParentOfChange(id, event.target.value, isValid);
     }
 
     let inputElement = null;
@@ -32,13 +35,19 @@ const InputCom = ({
         inputClasses.push(classes.Invalid);
     }
 
+    if (disabled) {
+        inputClasses.push(classes.Disabled);
+    }
+
     switch (type) {
         case "input":
             inputElement = (
                 <input
                     className={inputClasses.join(" ")}
-                    value={inputValue}
+                    value={value}
                     onChange={inputChanged}
+                    disabled={disabled}
+                    placeholder={placeholder}
                 />
             );
             break;
@@ -47,8 +56,10 @@ const InputCom = ({
                 <input
                     type="password"
                     className={inputClasses.join(" ")}
-                    value={inputValue}
+                    value={value}
                     onChange={inputChanged}
+                    disabled={disabled}
+                    placeholder={placeholder}
                 />
             );
             break;
@@ -56,8 +67,10 @@ const InputCom = ({
             inputElement = (
                 <textarea
                     className={inputClasses.join(" ")}
-                    value={inputValue}
+                    value={value}
                     onChange={inputChanged}
+                    disabled={disabled}
+                    placeholder={placeholder}
                 />
             );
             break;
@@ -66,8 +79,10 @@ const InputCom = ({
             inputElement = (
                 <input
                     className={inputClasses.join(" ")}
-                    value={inputValue}
+                    value={value}
                     onChange={inputChanged}
+                    disabled={disabled}
+                    placeholder={placeholder}
                 />
             );
     }
@@ -84,7 +99,7 @@ const InputCom = ({
     }
 
     return (
-        <div className={classes.Input}>
+        <div className={className}>
             <label className={classes.Label}>{label}</label>
             {inputElement}
             {validationWarning}

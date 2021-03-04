@@ -1,0 +1,45 @@
+.FacilityEditor {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-content: flex-start;
+}
+
+.FacilityEditor h5 {
+    width: 100%;
+}
+
+
+.Input {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 100%;
+}
+
+.Input70 {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 70%;
+}
+
+.Input30 {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 30%;
+}
+
+.InputHalf {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 50%;
+}
+
+.FacilityList {
+    width: 100%;
+}
+
+@media (min-width: 1000px) {
+    .FacilityEditor {
+        width: 50%;
+    }
+}

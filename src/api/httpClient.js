@@ -73,6 +73,8 @@ function addAddress(address) {
     return post("address", address);
 }
 
+// TODO Change to httpService to HttpClient
+
 function post(url, JSON) {
     const URL = composeApiURLWithAuth(url);
     return axios.post(URL, JSON);
@@ -99,6 +101,7 @@ function remove(resourceLocation) {
     return axios.delete(URL);
 }
 
+// TODO Change to function syntax
 const composeApiURL = (resourceLocation) => {
     return getBaseURL() + resourceLocation + ".json";
 };

@@ -1,11 +1,11 @@
-import httpService from "./httpService";
-import { getAddressApi } from "./Adress";
-import { getDockApi } from "./Dock";
-import { getUserApi } from "./User";
+import httpService from "./httpClient";
+import { AddressApi } from "./Adress";
+import { DockApi } from "./Dock";
+import { UserApi } from "./User";
 
 export const Api = {
-    dock: getDockApi(httpService),
-    address: getAddressApi(httpService),
-    user: getUserApi(httpService)
+    dock: DockApi(httpService),
+    address: AddressApi(httpService),
+    user: UserApi(httpService)
 };
 

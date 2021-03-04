@@ -3,6 +3,7 @@ import classes from "./DockList.module.css";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
+// TODO: use functional component
 export default class DockList extends Component {
     state = {
         redirect: false,

@@ -1,15 +1,15 @@
-export function getUserApi(httpService) {
+export function UserApi(httpService) {
 
-    function addDock(userDock) {
-        return httpService.addUserDock(userDock)
+    function addDock(dock) {
+        return httpService.addUserDock(dock)
     }
 
     function getDocks(){
         return httpService.getUserDocks()
     }
     
-    function removeDock(dockid){
-        return httpService.removeUserDock(dockid)
+    function removeDock(id){
+        return httpService.removeUserDock(id)
     }
 
     return Object.freeze({ addDock, getDocks, removeDock });

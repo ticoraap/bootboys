@@ -5,22 +5,21 @@ import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 
 class ReactMap extends Component {
     makeBoundingBox = (boundMapToMarkers, docks) => {
-        if (boundMapToMarkers && docks.length) {
-            const boundingBox = latLngBounds(
-                latLng(docks[0].latitude, docks[0].longitude),
-                latLng(docks[0].latitude, docks[0].longitude)
-            );
-            docks.forEach((dock) => {
-                boundingBox.extend(latLng(dock.latitude, dock.longitude));
-            });
-            return boundingBox;
-        }
-        return null;
+        if (!boundMapToMarkers || !docks.length) return null;
+
+        const boundingBox = latLngBounds(
+            latLng(docks[0].latitude, docks[0].longitude),
+            latLng(docks[0].latitude, docks[0].longitude)
+        );
+        docks.forEach((dock) => {
+            boundingBox.extend(latLng(dock.latitude, dock.longitude));
+        });
+
+        return boundingBox;
     };
 
     createMarkerArray = (docks) => {
-        return docks.map((dock) => {
-            return (
+        return docks.map((dock) => (
                 <Marker
                     key={dock.dockid}
                     position={{ lat: dock.latitude, lng: dock.longitude }}
@@ -32,8 +31,8 @@ class ReactMap extends Component {
                         Price: &euro; {dock.price}
                     </Popup>
                 </Marker>
-            );
-        });
+            )
+        );
     };
 
     render() {
@@ -43,23 +42,19 @@ class ReactMap extends Component {
         );
         let markers = this.createMarkerArray(this.props.docks);
 
-        let mapOptions = {
-            doubleClickZoom: false,
-            closePopupOnClick: false,
-            dragging: true,
-            zoomSnap: false,
-            zoomDelta: true,
-            trackResize: true,
-            touchZoom: true,
-            scrollWheelZoom: false,
-        };
-
         return (
             <Map
                 center={this.props.center}
                 zoom={this.props.zoom}
                 bounds={boundingBox}
-                {...mapOptions}
+                doubleClickZoom={false}
+                closePopupOnClick={false}
+                dragging={true}
+                zoomSnap={false}
+                zoomDelta={true}
+                trackResize={true}
+                touchZoom={true}
+                scrollWheelZoom={false}
                 boundsOptions={{ padding: [150, 150] }}
             >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

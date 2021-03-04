@@ -1,86 +1,63 @@
 import React, { Component } from "react";
-import { addressForm } from "./AddressCreatorForm";
+import classes from "./AddressCreator.module.css";
 
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
-import * as utility from "../../shared/utility";
-
-import Input from "../../components/UI/Input/Input";
+import Input from "../../components/UI/InputCom/InputCom";
+import Select from "../../components/UI/Select/Select";
 import Button from "../../components/UI/Button/Button";
-import classes from "./AddressCreator.module.css";
 
 import { queryAddressLatLong } from "./LocationQuery";
 import PropTypes from "prop-types";
 import Spinner from "../../components/UI/Spinner/Spinner";
 
+import { countryCodes } from "./countryCodes";
+
 class AddressCreator extends Component {
     state = {
-        addressForm: { ...addressForm },
+        street: { value: "", valid: false },
+        number: { value: "", valid: false },
+        postalcode: { value: "", valid: false },
+        city: { value: "", valid: false },
+        country: { value: "NL", valid: true },
         allFieldsValid: false,
         loading: false,
-        address: null,
         badAddressWarning: false,
     };
 
-    componentDidUpdate() {
-        if (this.props.addressAddedSuccess) {
+    componentDidUpdate(prevProps) {
+        if (
+            this.props.addressAddedSuccess &&
+            prevProps.addressAddedSuccess !== this.props.addressAddedSuccess
+        ) {
             this.resetAddressForm();
             this.props.notifyDockCreatorAddressAdded();
-            this.props.onAddressCreatorSuccessReceived()
+            this.props.onAddressCreatorSuccessReceived();
         }
     }
 
-    inputFieldChangedHandler = (event, inputElementKey) => {
-        this.updateAddressFormElement(event.target.value, inputElementKey);
-        this.updateAddressFormValidity();
+    onInputChange = (id, value, valid) => {
+        this.setState({
+            [id]: { value: value, valid: valid },
+        });
+        this.isFormValid();
     };
 
-    updateAddressFormElement = (inputElementValue, inputElementKey) => {
-        const updatedAddressForm = this.getUpdatedAddressForm(
-            inputElementValue,
-            inputElementKey
-        );
-        this.setState({ addressForm: updatedAddressForm });
-    };
-
-    getUpdatedAddressForm = (inputElementValue, inputElementKey) => {
-        const valid = this.isInputValid(inputElementValue, inputElementKey);
-        return {
-            ...this.state.addressForm,
-            [inputElementKey]: {
-                ...this.state.addressForm[inputElementKey],
-                value: inputElementValue,
-                valid: valid,
-                touched: true,
-            },
-        };
-    };
-
-    isInputValid = (inputElementValue, inputElementKey) => {
-        const validationRules = this.state.addressForm[inputElementKey]
-            .validationRules;
-        return utility.isInputValidByRules(inputElementValue, validationRules);
-    };
-
-    updateAddressFormValidity = () => {
-        this.setState((prevstate) => {
-            const allFieldsValid = this.isFormValid(prevstate.addressForm);
-            return { allFieldsValid: allFieldsValid, badAddressWarning: false };
+    isFormValid = () => {
+        this.setState((prevState) => {
+            return {
+                allFieldsValid:
+                    prevState.street.valid &&
+                    prevState.number.valid &&
+                    prevState.postalcode.valid &&
+                    prevState.city.valid &&
+                    prevState.country.valid,
+            };
         });
     };
 
-    isFormValid = (addressForm) => {
-        let allFieldsValid = true;
-        for (let formElement of Object.values(addressForm)) {
-            if (formElement.validationRules) {
-                allFieldsValid = allFieldsValid && formElement.valid;
-            }
-        }
-        return allFieldsValid;
-    };
-
-    submitForm = (event) => {
+    onSubmit = (event) => {
         event.preventDefault();
         this.setState({ loading: true });
 
@@ -88,31 +65,27 @@ class AddressCreator extends Component {
             this.submitWarnedAboutAddress();
         } else {
             const address = this.getAddressFromInputValues();
-
             queryAddressLatLong(address)
                 .then(() => {
                     this.submitNewAddress(address);
                 })
                 .catch(() => {
-                    this.warnAboutAddress(address);
+                    this.showAddressWarning(address);
                 });
         }
     };
 
     getAddressFromInputValues = () => {
         return {
-            street: this.state.addressForm.street.value,
-            houseNumber: this.state.addressForm.houseNumber.value,
-            postalcode: this.state.addressForm.postalcode.value
-                .split(" ")
-                .join(""),
-            city: this.state.addressForm.city.value,
-            country: this.state.addressForm.country.value,
-            state: this.state.addressForm.state.value,
+            street: this.state.street.value,
+            houseNumber: this.state.number.value,
+            postalcode: this.state.postalcode.value.split(" ").join(""),
+            city: this.state.city.value,
+            country: this.state.country.value,
         };
     };
 
-    warnAboutAddress = (address) => {
+    showAddressWarning = (address) => {
         this.setState({
             address: address,
             badAddressWarning: true,
@@ -121,56 +94,31 @@ class AddressCreator extends Component {
     };
 
     submitWarnedAboutAddress = () => {
-        this.submitNewAddress(this.state.address);
+        this.submitNewAddress(this.getAddressFromInputValues());
     };
 
     submitNewAddress = (address) => {
-        this.props.onAddUserAddress(address);
+        this.props.onAddUserAddress(address).then(console.log("bladiebla"));
+    };
+
+    finishadd = () => {
+        console.log(this.state);
     };
 
     resetAddressForm = () => {
-        const UpdatedaddressForm = {
-            ...this.state.addressForm,
-            street: {
-                ...this.state.addressForm.street,
-                value: "",
-            },
-            houseNumber: {
-                ...this.state.addressForm.houseNumber,
-                value: "",
-            },
-            postalcode: {
-                ...this.state.addressForm.postalcode,
-                value: "",
-            },
-            city: {
-                ...this.state.addressForm.city,
-                value: "",
-            },
-            country: {
-                ...this.state.addressForm.country,
-                value: "NL",
-            },
-            state: {
-                ...this.state.addressForm.state,
-                value: "",
-            },
-        };
         this.setState({
-            addressForm: UpdatedaddressForm,
+            street: { value: "", valid: false },
+            number: { value: "", valid: false },
+            postalcode: { value: "", valid: false },
+            city: { value: "", valid: false },
+            country: { value: "", valid: true },
+            allFieldsValid: false,
             badAddressWarning: false,
             loading: false,
         });
     };
 
     render() {
-        let form = (
-            <form onSubmit={this.submitForm} className={classes.AddressForm}>
-                {this.renderFormElements()}
-                {this.renderSubmitButton()}
-            </form>
-        );
-
         let loadingSpinner = this.state.loading && (
             <div className={classes.Spinner}>
                 <Spinner />
@@ -182,7 +130,65 @@ class AddressCreator extends Component {
                 <div className={classes.AddressCreator}>
                     {loadingSpinner}
                     <h5>Add a new Address</h5>
-                    {form}
+                    <form
+                        onSubmit={this.onSubmit}
+                        className={classes.AddressForm}
+                    >
+                        <Input
+                            id="street"
+                            type="text"
+                            value={this.state.street.value}
+                            label="Street"
+                            placeholder="Applestreet"
+                            validationRules={{
+                                required: true,
+                            }}
+                            notifyParentOfChange={this.onInputChange}
+                        />
+                        <Input
+                            id="number"
+                            type="text"
+                            value={this.state.number.value}
+                            label="Number"
+                            placeholder="12e"
+                            validationRules={{
+                                required: true,
+                            }}
+                            notifyParentOfChange={this.onInputChange}
+                        />
+                        <Input
+                            id="postalcode"
+                            type="text"
+                            value={this.state.postalcode.value}
+                            label="Postal code"
+                            placeholder="1234AB"
+                            validationRules={{
+                                required: true,
+                                isPostalcode: true,
+                            }}
+                            notifyParentOfChange={this.onInputChange}
+                        />
+                        <Input
+                            id="city"
+                            type="text"
+                            value={this.state.city.value}
+                            label="City"
+                            placeholder="Leiden"
+                            validationRules={{
+                                required: true,
+                            }}
+                            notifyParentOfChange={this.onInputChange}
+                        />
+                        <Select
+                            id="country"
+                            value={this.state.country.value}
+                            label="Country"
+                            invalidMessage="Please select a country"
+                            options={countryCodes}
+                            notifyParentOfChange={this.onInputChange}
+                        />
+                        {this.renderSubmitButton()}
+                    </form>
                     {this.state.badAddressWarning && (
                         <p className={classes.Warning}>
                             The address entered above could not be resolved do
@@ -193,31 +199,6 @@ class AddressCreator extends Component {
             </div>
         );
     }
-
-    renderFormElements = () => {
-        const formElementsArray = [];
-        for (let key in this.state.addressForm) {
-            if (
-                key === "state" &&
-                this.state.addressForm.country.value !== "US"
-            ) {
-                continue;
-            }
-            formElementsArray.push(this.createInputField(key));
-        }
-
-        return formElementsArray;
-    };
-
-    createInputField = (key) => {
-        return (
-            <Input
-                key={key}
-                {...this.state.addressForm[key]}
-                changed={(event) => this.inputFieldChangedHandler(event, key)}
-            ></Input>
-        );
-    };
 
     renderSubmitButton = () => {
         return (
@@ -237,7 +218,7 @@ AddressCreator.propTypes = {
     notifyDockCreatorAddressAdded: PropTypes.func,
     onAddUserAddress: PropTypes.func,
     addressAddedSuccess: PropTypes.bool,
-    onAddressCreatorSuccessReceived: PropTypes.func
+    onAddressCreatorSuccessReceived: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 
-import DockCreator from '../DockCreator/DockCreator';
+import DockEditor from '../DockEditor/DockEditor';
 import DockCard from '../../components/DockCard/DockCard';
 import Button from '../../components/UI/Button/Button';
 import Modal from '../../components/UI/Modal/Modal';
@@ -102,7 +102,7 @@ export class DockManager extends Component{
                     
             
                     <div className={classes.DockManagerCreator} >
-                    {this.state.editNew ? <DockCreator notifyDockManagerDockCreated={this.toMap} /> : <Map boundMapToMarkers center={[52.16121472938702, 4.501615852518094]} zoom={13} docks={this.props.userDocks}/> }
+                    {this.state.editNew ? <DockEditor onDockCreated={this.toMap} /> : <Map boundMapToMarkers center={[52.16121472938702, 4.501615852518094]} zoom={13} docks={this.props.userDocks}/> }
                     </div>
                 </div>
             </div>

@@ -8,7 +8,6 @@ export const queryAddressLatLong = (address) => {
             postalcode: address.postalcode,
             city: address.city,
             country: address.country,
-            state: address.state,
         }
         const searchParamsString = new URLSearchParams(searchParams).toString();
 

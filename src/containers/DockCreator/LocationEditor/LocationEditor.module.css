@@ -1,0 +1,34 @@
+.LocationEditor {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.LocationEditor h5 {
+    width: 100%;
+}
+
+.Select {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 80%;
+}
+
+.LatLon {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 50%;
+}
+
+.InputHalf {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 50%;
+}
+
+
+.Leaflet {
+    height: 400px;
+    width: 100%;
+    padding: 10px;
+}

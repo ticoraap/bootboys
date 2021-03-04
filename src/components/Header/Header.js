@@ -7,7 +7,7 @@ export default class Header extends Component {
         return (
             <header>
                 <a>
-                    <img src={Logo} alt={'Logo of a boat'} width={'100px'}/>
+                    <img src={Logo} alt={'Logo of a boat'}/> 
                     <p className={classes.NameLogo}>BoatBnB</p>
                 </a>
             </header>

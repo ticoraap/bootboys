@@ -1,0 +1,28 @@
+.DockEditor {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.DockProperties {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.Input {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 100%;
+}
+
+.InputHalf {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 50%;
+}
+
+@media (min-width: 1000px) {
+    .DockProperties {
+        width: 50%;
+    }
+}

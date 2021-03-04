@@ -16,11 +16,11 @@ export class Login extends Component {
         allValid: false,
     };
 
-    submitHandler = () => {
-        this.props.onAuth(this.state.email.value, this.state.password.value);
+    onSubmit = () => {
+        this.props.onLogin(this.state.email.value, this.state.password.value); 
     };
 
-    inputChangedHandler = (id, value, valid) => {
+    onInputChange = (id, value, valid) => {
         this.setState({
             [id]: { value: value, valid: valid },
         });
@@ -48,28 +48,30 @@ export class Login extends Component {
                     <Input
                         id="email"
                         type="text"
+                        value={this.state.email.value}
                         label="E-mail"
                         placeholder="Enter your e-mail"
                         validationRules={{
                             isEmail: true,
                         }}
-                        notifyParentOfChange={this.inputChangedHandler}
-                    />
+                        notifyParentOfChange={this.onInputChange}
+                        />
                     <Input
                         id="password"
                         type="password"
+                        value={this.state.password.value}
                         label="Password"
                         placeholder="Enter your e-mail"
                         validationRules={{
                             minLength: 8,
                         }}
-                        notifyParentOfChange={this.inputChangedHandler}
+                        notifyParentOfChange={this.onInputChange}
                     />
 
                     <Button
                         btnType="Form"
                         disabled={!this.state.allValid}
-                        clicked={this.submitHandler}
+                        clicked={this.onSubmit}
                     >
                         Login
                     </Button>
@@ -86,7 +88,7 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onAuth: (email, password) => dispatch(actions.auth(email, password)),
+        onLogin: (email, password) => dispatch(actions.auth(email, password)),
     };
 };
 

@@ -1,17 +1,15 @@
-import React from 'react';
+import React from "react";
 
-import Button from '../UI/Button/Button';
-import PropTypes from 'prop-types';
+import Button from "../UI/Button/Button";
+import PropTypes from "prop-types";
 
-const confirmationQuestion = ( props ) => (
-
+const confirmationQuestion = (props) => (
     <div>
         <p>{props.question}</p>
-        <Button clicked={props.accept} >{props.acceptLabel}</Button>
-        <Button clicked={props.decline} >{props.declineLabel}</Button>
+        <Button clicked={props.accept}>{props.acceptLabel}</Button>
+        <Button clicked={props.decline}>{props.declineLabel}</Button>
     </div>
-
-)
+);
 
 confirmationQuestion.propTypes = {
     question: PropTypes.string,

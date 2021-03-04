@@ -1,7 +1,6 @@
-export function getAddressApi(httpService) {
-
+export function AddressApi(httpService) {
     function get(addressid) {
-        return httpService.getAddress(addressid)
+        return httpService.getAddress(addressid);
     }
 
     function getAllFromUser() {

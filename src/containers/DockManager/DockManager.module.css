@@ -14,7 +14,6 @@
 .DockManagerCreator {
     flex-grow: 1;
     min-height: 68vh; 
-    border-style: groove;
     width: min-content;
 }
 

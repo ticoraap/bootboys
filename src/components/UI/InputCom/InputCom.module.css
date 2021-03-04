@@ -1,12 +1,7 @@
-.Input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
 .Label {
     display: flex;
     margin-bottom: 8px;
+    padding-top: 10px;
 }
 
 .InputElement {
@@ -26,3 +21,7 @@
     margin: 5px 0;
     text-align: left;
 } 
+
+.Disabled {
+    background-color: var(--gray-lighter);
+}

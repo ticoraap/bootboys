@@ -1,43 +1,65 @@
 import React, { useState } from "react";
-import classes from './Select.module.css';
-
+import classes from "./Select.module.css";
 
 const Select = ({
     id,
     label,
-    placeholder,
+    value,
     invalidMessage,
+    placeholder,
     options,
     notifyParentOfChange,
+    className,
     ...props
 }) => {
-
-    const [selectValue, setSelectValue] = useState(value);
     const [touched, setTouched] = useState(false);
     const [valid, setValid] = useState(true);
-    
+
     function inputChanged(event) {
         setTouched(true);
-        setSelectValue(event.target.value);
-        setValid(true);
-        notifyParentOfChange(id, event.target.value, true)
+        setValid(event.target.value !== "");
+        notifyParentOfChange(id, event.target.value, event.target.value !== "");
     }
 
-    let selectElement = null;
     const selectClasses = [classes.SelectElement];
 
     if (!valid && touched) {
         selectClasses.push(classes.Invalid);
     }
 
+    let validationWarning = null;
+    if (!valid && touched) {
+        validationWarning = (
+            <p className={classes.validationWarning}>
+                {invalidMessage
+                    ? invalidMessage
+                    : "*Please enter a valid value"}
+            </p>
+        );
+    }
+
     return (
-        <div className={classes.Select}>
+        <div className={className}>
             <label className={classes.Label}>{label}</label>
-            <select>
-                
+            <select
+                onChange={inputChanged}
+                value={value}
+                className={selectClasses.join(" ")}
+            >
+                <option value="" >
+                    {placeholder ? placeholder : "Select a value"}
+                </option>
+                {options?.map((option) => {
+                    return (
+                        <option key={option.value} value={option.value}>
+                            {option.displayValue}
+                        </option>
+                    );
+                })}
             </select>
             {validationWarning}
         </div>
-    )
+    );
+};
 
-}
+export default Select;

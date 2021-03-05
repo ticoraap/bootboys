@@ -4,7 +4,7 @@ import classes from "./AddressCreator.module.css";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
-import Input from "../../components/UI/InputCom/InputCom";
+import Input from "../../components/UI/Input/Input";
 import Select from "../../components/UI/Select/Select";
 import Button from "../../components/UI/Button/Button";
 
@@ -28,12 +28,11 @@ class AddressCreator extends Component {
 
     componentDidUpdate(prevProps) {
         if (
-            this.props.addressAddedSuccess &&
-            prevProps.addressAddedSuccess !== this.props.addressAddedSuccess
+            prevProps.addAddressLoading === false &&
+            this.props.addAddressLoading
         ) {
             this.resetAddressForm();
-            this.props.notifyDockCreatorAddressAdded();
-            this.props.onAddressCreatorSuccessReceived();
+            this.props.toggleModal()
         }
     }
 
@@ -98,7 +97,7 @@ class AddressCreator extends Component {
     };
 
     submitNewAddress = (address) => {
-        this.props.onAddUserAddress(address).then(console.log("bladiebla"));
+        this.props.onAddUserAddress(address);
     };
 
     finishadd = () => {
@@ -135,6 +134,7 @@ class AddressCreator extends Component {
                         className={classes.AddressForm}
                     >
                         <Input
+                            className={classes.InputHalf}
                             id="street"
                             type="text"
                             value={this.state.street.value}
@@ -146,6 +146,7 @@ class AddressCreator extends Component {
                             notifyParentOfChange={this.onInputChange}
                         />
                         <Input
+                            className={classes.InputHalf}
                             id="number"
                             type="text"
                             value={this.state.number.value}
@@ -157,6 +158,7 @@ class AddressCreator extends Component {
                             notifyParentOfChange={this.onInputChange}
                         />
                         <Input
+                            className={classes.InputHalf}
                             id="postalcode"
                             type="text"
                             value={this.state.postalcode.value}
@@ -169,6 +171,7 @@ class AddressCreator extends Component {
                             notifyParentOfChange={this.onInputChange}
                         />
                         <Input
+                            className={classes.InputHalf}
                             id="city"
                             type="text"
                             value={this.state.city.value}
@@ -180,6 +183,7 @@ class AddressCreator extends Component {
                             notifyParentOfChange={this.onInputChange}
                         />
                         <Select
+                            className={classes.Input}
                             id="country"
                             value={this.state.country.value}
                             label="Country"
@@ -217,13 +221,12 @@ AddressCreator.propTypes = {
     addAddress: PropTypes.func,
     notifyDockCreatorAddressAdded: PropTypes.func,
     onAddUserAddress: PropTypes.func,
-    addressAddedSuccess: PropTypes.bool,
-    onAddressCreatorSuccessReceived: PropTypes.func,
+    addAddressLoading: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
     return {
-        addressAddedSuccess: state.address.addressAddedSuccess,
+        addAddressLoading: state.address.addAddressLoading,
     };
 };
 
@@ -231,8 +234,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onAddUserAddress: (address) =>
             dispatch(actions.addUserAddress(address)),
-        onAddressCreatorSuccessReceived: () =>
-            dispatch(actions.addAddressSuccessReceived()),
     };
 };
 

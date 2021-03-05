@@ -34,9 +34,11 @@ export const auth = (email, password) => {
                 ToastMaker.infoToast("Logged in as " + response.data.email);
             })
             .catch((error) => {
+                console.log(error.response.data.error.message)
+                ToastMaker.errorToast(error.response.data.error.message);
                 dispatch({
                     type: actionTypes.AUTH_FAIL,
-                    error: error,
+                    error: error.response.data.error.message,
                 });
             });
     };

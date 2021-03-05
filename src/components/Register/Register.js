@@ -5,9 +5,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
-import Input from "../UI/InputCom/InputCom";
+import Input from "../UI/Input/Input";
 import Button from "../UI/Button/Button";
-import Auxiliary from "../../HOC/Auxiliary/Auxiliary";
 
 class Register extends Component {
     state = {
@@ -16,7 +15,8 @@ class Register extends Component {
         allValid: false,
     };
 
-    submitHandler = () => {
+    omSubmit = (event) => {
+        event.preventDefault();
         this.props.onAuth(this.state.email.value, this.state.password.value);
     };
 
@@ -33,7 +33,7 @@ class Register extends Component {
 
     render() {
         return (
-            <Auxiliary>
+            <form>
                 <div className={classes.RegisterHeader}>
                     <span
                         className={classes.CloseModal}
@@ -73,21 +73,16 @@ class Register extends Component {
                     <Button
                         btnType="Form"
                         disabled={!this.state.allValid}
-                        clicked={this.submitHandler}
+                        clicked={this.onSubmit}
                     >
                         Login
                     </Button>
                 </div>
-            </Auxiliary>
+            </form>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        userDocks: state.dock.userDocks,
-    };
-};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -96,7 +91,7 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(null, mapDispatchToProps)(Register);
 
 Register.propTypes = {
     toggleModal: PropTypes.func,

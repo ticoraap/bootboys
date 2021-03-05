@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // TODO: use functional component
-export default class DockList extends Component {
+class DockList extends Component {
     state = {
         redirect: false,
         dockid: 0,
@@ -18,6 +18,7 @@ export default class DockList extends Component {
         if (this.state.redirect) {
             return (
                 <Redirect
+                    push
                     to={{
                         pathname: "/dock/" + this.state.dockid,
                     }}
@@ -34,20 +35,24 @@ export default class DockList extends Component {
                 >
                     <div id={"test"}>
                         <h3>{value.name}</h3>
-                        <p><b>Price:  &euro;</b> {value.price}</p>
-                        <p><b>Width:</b> {value.width} meters</p>
-                        <p><b>Length:</b> {value.length} meters</p>
-                        <p><b>Description:</b> {value.description}</p>
+                        <p>
+                            <b>Price: &euro;</b> {value.price}
+                        </p>
+                        <p>
+                            <b>Width:</b> {value.width} meters
+                        </p>
+                        <p>
+                            <b>Length:</b> {value.length} meters
+                        </p>
+                        <p>
+                            <b>Description:</b> {value.description}
+                        </p>
                     </div>
                 </div>
             );
         });
 
-        return (
-            <div className={classes.DockList}>
-                {docklist}
-            </div>
-        )
+        return <div className={classes.DockList}>{docklist}</div>;
     }
 }
 
@@ -55,3 +60,5 @@ DockList.propTypes = {
     mapUpdate: PropTypes.func,
     docks: PropTypes.array,
 };
+
+export default DockList;

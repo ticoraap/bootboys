@@ -4,12 +4,13 @@ import classes from "./LocationEditor.module.css";
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
 
-import Input from "../../../components/UI/InputCom/InputCom";
+import Input from "../../../components/UI/Input/Input";
 import Select from "../../../components/UI/Select/Select";
 import Button from "../../../components/UI/Button/Button";
+import Modal from "../../../components/UI/Modal/Modal";
+import AddressCreator from '../../AddressCreator/AddressCreator';
 import { queryAddressLatLong } from "../../AddressCreator/LocationQuery";
 import ToastMaker from "../../../shared/toastMaker";
-
 import { Map, Marker, TileLayer } from "react-leaflet";
 
 class LocationEditor extends Component {
@@ -27,6 +28,7 @@ class LocationEditor extends Component {
             lon: 0,
         },
         allFieldsValid: false,
+        showAddressModal: false,
     };
 
     componentDidMount() {
@@ -122,9 +124,18 @@ class LocationEditor extends Component {
         });
     };
 
+    onToggleAddressModal = () => {
+        this.setState({
+            showAddressModal: !this.state.showAddressModal
+        })
+    }
+
     render() {
         return (
             <div className={classes.LocationEditor}>
+                <Modal show={this.state.showAddressModal} modalClosed={this.onToggleAddressModal}>
+                    <AddressCreator toggleModal={this.onToggleAddressModal}/>
+                </Modal>
                 <h5>Location</h5>
                 <p>
                     We have pre-selected the location of the dock based on the
@@ -141,11 +152,13 @@ class LocationEditor extends Component {
                     options={this.mapAddressesToOptions()}
                     notifyParentOfChange={this.onSelectChange}
                 />
-                <Button btnType="Form" clicked={this.onToggleEdit}>
-                    Edit
+
+                <Button btnType="Form" clicked={this.onToggleAddressModal}>
+                    New
                 </Button>
+
                 <Input
-                    className={classes.LatLon}
+                    className={classes.Input40}
                     id="latitude"
                     type="text"
                     value={this.state.latitude.value}
@@ -157,7 +170,7 @@ class LocationEditor extends Component {
                     disabled={!this.state.allowEdit}
                 />
                 <Input
-                    className={classes.LatLon}
+                    className={classes.Input40}
                     id="longitude"
                     type="text"
                     value={this.state.longitude.value}
@@ -168,6 +181,9 @@ class LocationEditor extends Component {
                     notifyParentOfChange={this.onInputChange}
                     disabled={!this.state.allowEdit}
                 />
+                <Button btnType="Form" clicked={this.onToggleEdit}>
+                    Edit
+                </Button>
 
                 <div className={classes.Leaflet}>
                     <Map

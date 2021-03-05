@@ -53,9 +53,3 @@ export const addUserAddress = (address) => {
             });
     };
 };
-
-export const addAddressSuccessReceived = () => {
-    return (dispatch) => {
-        dispatch({type: actionTypes.ADD_ADDRESS_SUCCESS_RECEIVED})
-    }
-}

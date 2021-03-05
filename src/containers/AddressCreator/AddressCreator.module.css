@@ -1,8 +1,6 @@
 .AddressCreator h5 {
     width: 100%;
-
     text-align: left;
-    font-weight: lighter;
     margin: 0;
 }
 
@@ -16,7 +14,15 @@
 }
 
 .Input {
-    display: block;
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 100%;
+}
+
+.InputHalf {
+    box-sizing: border-box;
+    padding: 5px 5px 5px 5px;
+    width: 50%;
 }
 
 .Warning {

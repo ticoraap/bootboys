@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
-import Input from "../../components/UI/InputCom/InputCom";
+import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
-import LocationEditor from "../DockCreator/LocationEditor/LocationEditor";
+import LocationEditor from "./LocationEditor/LocationEditor";
 import FacilityEditor from "../FacilityEditor/FacilityEditor";
 import {
     parseFloatFromEurosInput,
@@ -197,7 +197,6 @@ const mapStateToProps = (state) => {
         addDockLoading: state.dock.addDockLoading,
         userAddresses: state.address.userAddresses,
         userAddressesLoading: state.address.userAddressesLoading,
-        addAddressLoading: state.address.addAddressLoading,
     };
 };
 

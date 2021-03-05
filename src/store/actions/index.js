@@ -24,7 +24,6 @@ export {
 export {
     getUserAddresses,
     addUserAddress,
-    addAddressSuccessReceived
 } from './address'
 
 export {

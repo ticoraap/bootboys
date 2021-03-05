@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import classes from "./FacilityEditor.module.css";
 import PropTypes from "prop-types";
 
-import Input from "../../components/UI/InputCom/InputCom";
+import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import Facility from "./Facility/Facility";
 

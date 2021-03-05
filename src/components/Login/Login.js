@@ -5,9 +5,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
-import Input from "../UI/InputCom/InputCom";
+import Input from "../UI/Input/Input";
 import Button from "../UI/Button/Button";
-import Auxiliary from "../../HOC/Auxiliary/Auxiliary";
 
 export class Login extends Component {
     state = {
@@ -16,7 +15,8 @@ export class Login extends Component {
         allValid: false,
     };
 
-    onSubmit = () => {
+    onSubmit = (event) => {
+        event.preventDefault();
         this.props.onLogin(this.state.email.value, this.state.password.value); 
     };
 
@@ -33,7 +33,7 @@ export class Login extends Component {
 
     render() {
         return (
-            <Auxiliary>
+            <form>
                 <div className={classes.LoginHeader}>
                     <span
                         className={classes.CloseModal}
@@ -76,7 +76,7 @@ export class Login extends Component {
                         Login
                     </Button>
                 </div>
-            </Auxiliary>
+            </form>
         );
     }
 }
@@ -85,6 +85,7 @@ Login.propTypes = {
     LoginModalToggle: PropTypes.func,
     onAuth: PropTypes.func,
 };
+
 
 const mapDispatchToProps = (dispatch) => {
     return {

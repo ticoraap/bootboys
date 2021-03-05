@@ -14,10 +14,10 @@
     width: 80%;
 }
 
-.LatLon {
+.Input40 {
     box-sizing: border-box;
     padding: 5px 5px 5px 5px;
-    width: 50%;
+    width: 40%;
 }
 
 .InputHalf {
@@ -25,7 +25,6 @@
     padding: 5px 5px 5px 5px;
     width: 50%;
 }
-
 
 .Leaflet {
     height: 400px;

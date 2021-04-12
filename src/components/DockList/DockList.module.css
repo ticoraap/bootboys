@@ -1,5 +1,6 @@
 .DockList {
     margin-right: 10px;
+    width: 4 00px;
 }
 
 .RentableDockItem {
@@ -26,7 +27,7 @@
         margin: 25px auto auto auto;
     }
     .DockList {
+        width: 100%;
         margin-right: 0;
     }
-    
 }

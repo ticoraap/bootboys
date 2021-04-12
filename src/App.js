@@ -10,15 +10,13 @@ import DockSearcher from "./containers/DockSearcher/DockSearcher";
 import Dock from "./containers/Dock/Dock";
 import DockManager from "./containers/DockManager/DockManager";
 
-
-
 // components
 import NotFound from "./components/NotFound/NotFound";
 
 class App extends Component {
     render() {
         return (
-            <div>
+            <>
                 <BrowserRouter>
                     <Layout>
                         <Switch>
@@ -33,7 +31,11 @@ class App extends Component {
                                 path="/Account"
                                 component={Account}
                             />
-                            <Route exact path="/dock/:dockid" component={Dock} />
+                            <Route
+                                exact
+                                path="/dock/:dockid"
+                                component={Dock}
+                            />
                             <PrivateRoute
                                 exact
                                 path="/manage-docks"
@@ -43,7 +45,7 @@ class App extends Component {
                         </Switch>
                     </Layout>
                 </BrowserRouter>
-            </div>
+            </>
         );
     }
 }

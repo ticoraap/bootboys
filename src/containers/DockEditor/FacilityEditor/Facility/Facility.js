@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "../../../components/UI/Button/Button";
+import Button from "../../../../components/UI/Button/Button";
 import classes from "./Facility.module.css";
 import PropTypes from "prop-types";
 

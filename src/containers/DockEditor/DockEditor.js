@@ -7,7 +7,7 @@ import * as actions from "../../store/actions/index";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import LocationEditor from "./LocationEditor/LocationEditor";
-import FacilityEditor from "../FacilityEditor/FacilityEditor";
+import FacilityEditor from "./FacilityEditor/FacilityEditor";
 import {
     parseFloatFromEurosInput,
     parseFloatFromMetersInput,

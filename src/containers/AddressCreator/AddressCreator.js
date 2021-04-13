@@ -21,9 +21,9 @@ class AddressCreator extends Component {
         postalcode: { value: "", valid: false },
         city: { value: "", valid: false },
         country: { value: "NL", valid: true },
-        allFieldsValid: false,
-        loading: false,
-        badAddressWarning: false,
+        isFormValid: false,
+        isSubmitting: false,
+        isBadAddress: false,
     };
 
     componentDidUpdate(prevProps) {
@@ -32,21 +32,21 @@ class AddressCreator extends Component {
             this.props.addAddressLoading
         ) {
             this.resetAddressForm();
-            this.props.toggleModal()
+            this.props.toggleModal();
         }
     }
 
     onInputChange = (id, value, valid) => {
         this.setState({
-            [id]: { value: value, valid: valid },
+            [id]: { value, valid },
         });
-        this.isFormValid();
+        this.setFormValidityToState();
     };
 
-    isFormValid = () => {
+    setFormValidityToState = () => {
         this.setState((prevState) => {
             return {
-                allFieldsValid:
+                isFormValid:
                     prevState.street.valid &&
                     prevState.number.valid &&
                     prevState.postalcode.valid &&
@@ -58,18 +58,18 @@ class AddressCreator extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.setState({ loading: true });
+        this.setState({ isSubmitting: true });
+        const address = this.getAddressFromInputValues();
 
-        if (this.state.badAddressWarning) {
-            this.submitWarnedAboutAddress();
+        if (this.state.isBadAddress) {
+            this.submitNewAddress();
         } else {
-            const address = this.getAddressFromInputValues();
             queryAddressLatLong(address)
                 .then(() => {
-                    this.submitNewAddress(address);
+                    this.submitNewAddress();
                 })
                 .catch(() => {
-                    this.showAddressWarning(address);
+                    this.showBadAddressWarning(address);
                 });
         }
     };
@@ -84,24 +84,16 @@ class AddressCreator extends Component {
         };
     };
 
-    showAddressWarning = (address) => {
+    showBadAddressWarning = () => {
         this.setState({
-            address: address,
-            badAddressWarning: true,
-            loading: false,
+            isBadAddress: true,
+            isSubmitting: false,
         });
     };
 
-    submitWarnedAboutAddress = () => {
-        this.submitNewAddress(this.getAddressFromInputValues());
-    };
-
-    submitNewAddress = (address) => {
+    submitNewAddress = () => {
+        const address = this.getAddressFromInputValues();
         this.props.onAddUserAddress(address);
-    };
-
-    finishadd = () => {
-        console.log(this.state);
     };
 
     resetAddressForm = () => {
@@ -111,14 +103,14 @@ class AddressCreator extends Component {
             postalcode: { value: "", valid: false },
             city: { value: "", valid: false },
             country: { value: "", valid: true },
-            allFieldsValid: false,
-            badAddressWarning: false,
-            loading: false,
+            isFormValid: false,
+            isBadAddress: false,
+            isSubmitting: false,
         });
     };
 
     render() {
-        let loadingSpinner = this.state.loading && (
+        let loadingSpinner = this.state.isSubmitting && (
             <div className={classes.Spinner}>
                 <Spinner />
             </div>
@@ -191,9 +183,15 @@ class AddressCreator extends Component {
                             options={countryCodes}
                             notifyParentOfChange={this.onInputChange}
                         />
-                        {this.renderSubmitButton()}
+                        <div className={classes.ButtonContainer}>
+                            <Button disabled={!this.state.isFormValid}>
+                                {this.state.isBadAddress
+                                    ? "Yes continue"
+                                    : "Add address"}
+                            </Button>
+                        </div>
                     </form>
-                    {this.state.badAddressWarning && (
+                    {this.state.isBadAddress && (
                         <p className={classes.Warning}>
                             The address entered above could not be resolved do
                             you want to continue anyway?
@@ -203,18 +201,6 @@ class AddressCreator extends Component {
             </div>
         );
     }
-
-    renderSubmitButton = () => {
-        return (
-            <div style={{ width: "100%" }}>
-                <Button disabled={!this.state.allFieldsValid}>
-                    {this.state.badAddressWarning
-                        ? "Yes continue"
-                        : "Add address"}
-                </Button>
-            </div>
-        );
-    };
 }
 
 AddressCreator.propTypes = {

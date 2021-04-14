@@ -26,7 +26,7 @@ class DockEditor extends Component {
             valid: false,
         },
         facilities: [],
-        allFieldsValid: false,
+        isFormValid: false,
     };
 
     componentDidUpdate(prevProps) {
@@ -37,7 +37,7 @@ class DockEditor extends Component {
 
     onInputChange = (id, value, valid) => {
         this.setState({
-            [id]: { value: value, valid: valid },
+            [id]: { value, valid },
         });
         this.isFormValid();
     };
@@ -45,7 +45,7 @@ class DockEditor extends Component {
     isFormValid = () => {
         this.setState((prevState) => {
             return {
-                allFieldsValid:
+                isFormValid:
                     prevState.title.valid &&
                     prevState.description.valid &&
                     prevState.length.valid &&
@@ -174,7 +174,7 @@ class DockEditor extends Component {
                 />
                 <LocationEditor setLocationDetails={this.setLocationDetails} />
                 <Button
-                    disabled={!this.state.allFieldsValid}
+                    disabled={!this.state.isFormValid}
                     clicked={this.onAddDockHandler}
                 >
                     Submit new Dock

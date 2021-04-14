@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import classes from "./LocationEditor.module.css";
+import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
 import * as actions from "../../../store/actions/index";
@@ -8,7 +9,7 @@ import Input from "../../../components/UI/Input/Input";
 import Select from "../../../components/UI/Select/Select";
 import Button from "../../../components/UI/Button/Button";
 import Modal from "../../../components/UI/Modal/Modal";
-import AddressCreator from '../../AddressCreator/AddressCreator';
+import AddressCreator from "../../AddressCreator/AddressCreator";
 import { queryAddressLatLong } from "../../AddressCreator/LocationQuery";
 import ToastMaker from "../../../shared/toastMaker";
 import { Map, Marker, TileLayer } from "react-leaflet";
@@ -18,7 +19,6 @@ class LocationEditor extends Component {
         addressid: { value: "", valid: false },
         latitude: { value: "0", valid: false },
         longitude: { value: "0", valid: false },
-        allowEdit: false,
         markerPosition: {
             lat: 0,
             lon: 0,
@@ -27,8 +27,9 @@ class LocationEditor extends Component {
             lat: 0,
             lon: 0,
         },
-        allFieldsValid: false,
-        showAddressModal: false,
+        isEditAllowed: false,
+        isFormValid: false,
+        isAddressModalVisible: false,
     };
 
     componentDidMount() {
@@ -39,14 +40,14 @@ class LocationEditor extends Component {
         this.setState({
             [id]: { value: value, valid: valid },
         });
-        this.isLocationValid();
+        this.isFormValid();
     };
 
-    isLocationValid = () => {
+    isFormValid = () => {
         this.setState(
             (prevState) => {
                 return {
-                    allFieldsValid:
+                    isFormValid:
                         prevState.addressid.valid &&
                         prevState.latitude.valid &&
                         prevState.longitude.valid,
@@ -57,13 +58,13 @@ class LocationEditor extends Component {
                     this.state.addressid.value,
                     this.state.latitude.value,
                     this.state.longitude.value,
-                    this.state.allFieldsValid
+                    this.state.isFormValid
                 );
             }
         );
     };
 
-    mapAddressesToOptions = () => {
+    mapAddressesToSelectOptions = () => {
         return this.props.userAddresses.map((address) => ({
             value: address.addressid,
             displayValue: address.street + " " + address.houseNumber,
@@ -118,23 +119,26 @@ class LocationEditor extends Component {
         return latlon;
     };
 
-    onToggleEdit = () => {
+    onToggleLatLonEdit = () => {
         this.setState({
-            allowEdit: !this.state.allowEdit,
+            isEditAllowed: !this.state.isEditAllowed,
         });
     };
 
     onToggleAddressModal = () => {
         this.setState({
-            showAddressModal: !this.state.showAddressModal
-        })
-    }
+            isAddressModalVisible: !this.state.isAddressModalVisible,
+        });
+    };
 
     render() {
         return (
             <div className={classes.LocationEditor}>
-                <Modal show={this.state.showAddressModal} modalClosed={this.onToggleAddressModal}>
-                    <AddressCreator toggleModal={this.onToggleAddressModal}/>
+                <Modal
+                    show={this.state.isAddressModalVisible}
+                    modalClosed={this.onToggleAddressModal}
+                >
+                    <AddressCreator toggleModal={this.onToggleAddressModal} />
                 </Modal>
                 <h5>Location</h5>
                 <p>
@@ -149,7 +153,7 @@ class LocationEditor extends Component {
                     label="Address"
                     placeholder="Select a address first"
                     invalidMessage="Please select a country"
-                    options={this.mapAddressesToOptions()}
+                    options={this.mapAddressesToSelectOptions()}
                     notifyParentOfChange={this.onSelectChange}
                 />
 
@@ -167,7 +171,7 @@ class LocationEditor extends Component {
                         required: true,
                     }}
                     notifyParentOfChange={this.onInputChange}
-                    disabled={!this.state.allowEdit}
+                    disabled={!this.state.isEditAllowed}
                 />
                 <Input
                     className={classes.Input40}
@@ -179,9 +183,9 @@ class LocationEditor extends Component {
                         required: true,
                     }}
                     notifyParentOfChange={this.onInputChange}
-                    disabled={!this.state.allowEdit}
+                    disabled={!this.state.isEditAllowed}
                 />
-                <Button btnType="Form" clicked={this.onToggleEdit}>
+                <Button btnType="Form" clicked={this.onToggleLatLonEdit}>
                     Edit
                 </Button>
 
@@ -212,6 +216,12 @@ class LocationEditor extends Component {
         );
     }
 }
+
+LocationEditor.propTypes = {
+    onLoadUserAddresses: PropTypes.func,
+    userAddresses: PropTypes.array,
+    setLocationDetails: PropTypes.func,
+};
 
 const mapStateToProps = (state) => {
     return {

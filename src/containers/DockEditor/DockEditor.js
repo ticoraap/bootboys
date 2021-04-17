@@ -186,10 +186,10 @@ class DockEditor extends Component {
 
 DockEditor.propTypes = {
     onAddDock: PropTypes.func,
-    onAddUserDock: PropTypes.func,
     addDockLoading: PropTypes.bool,
     onLoadUserAddresses: PropTypes.func,
     userAddresses: PropTypes.array,
+    onDockCreated: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {

@@ -124,7 +124,7 @@ class FacilityEditor extends Component {
 
 FacilityEditor.propTypes = {
     facilities: PropTypes.array,
-    setNewFacilityList: PropTypes.func,
+    setFacilities: PropTypes.func,
 };
 
 export default FacilityEditor;

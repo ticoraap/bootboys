@@ -10,13 +10,13 @@ class FacilityEditor extends Component {
     state = {
         description: { value: "", valid: false },
         price: { value: "", valid: false },
-        allFieldsValid: false,
+        isFormValid: false,
         facilityList: [],
     };
 
     onInputChange = (id, value, valid) => {
         this.setState({
-            [id]: { value: value, valid: valid },
+            [id]: { value, valid },
         });
         this.isFormValid();
     };
@@ -24,7 +24,7 @@ class FacilityEditor extends Component {
     isFormValid = () => {
         this.setState((prevState) => {
             return {
-                allFieldsValid:
+                isFormValid:
                     prevState.description.valid && prevState.price.valid,
             };
         });
@@ -34,7 +34,7 @@ class FacilityEditor extends Component {
         this.setState({
             description: { value: "", valid: false },
             price: { value: "", valid: false },
-            allFieldsValid: false,
+            isFormValid: false,
         });
     };
 
@@ -109,7 +109,7 @@ class FacilityEditor extends Component {
                 />
                 <Button
                     clicked={this.addFacility}
-                    disabled={!this.state.allFieldsValid}
+                    disabled={!this.state.isFormValid}
                     btnType="Form"
                 >
                     Add

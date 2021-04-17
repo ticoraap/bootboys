@@ -108,8 +108,6 @@ class DockSearcher extends Component {
     };
 
     render() {
-        const filteredDocks = this.getFilteredDocks();
-
         return (
             <div className={classes.DockSearcher}>
                 <div className={classes.Inputs}>
@@ -150,7 +148,7 @@ class DockSearcher extends Component {
                     />
                 </div>
                 <div className={classes.Content}>
-                    <DockList docks={filteredDocks} />
+                    <DockList docks={this.getFilteredDocks()} />
                     <div className={classes.Map}>
                         <Map
                             className={classes.Map}

@@ -38,7 +38,7 @@ class LocationEditor extends Component {
 
     onInputChange = (id, value, valid) => {
         this.setState({
-            [id]: { value: value, valid: valid },
+            [id]: { value, valid },
         });
         this.isFormValid();
     };

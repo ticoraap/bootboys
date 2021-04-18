@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import classes from "./AddressCreator.module.css";
+import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
@@ -7,12 +8,9 @@ import * as actions from "../../store/actions/index";
 import Input from "../../components/UI/Input/Input";
 import Select from "../../components/UI/Select/Select";
 import Button from "../../components/UI/Button/Button";
-
-import { queryAddressLatLong } from "./LocationQuery";
-import PropTypes from "prop-types";
 import Spinner from "../../components/UI/Spinner/Spinner";
-
 import { countryCodes } from "./countryCodes";
+import { queryAddressLatLong } from "./LocationQuery";
 
 class AddressCreator extends Component {
     state = {
@@ -59,18 +57,11 @@ class AddressCreator extends Component {
     onSubmit = (event) => {
         event.preventDefault();
         this.setState({ isSubmitting: true });
-        const address = this.getAddressFromInputValues();
 
         if (this.state.isBadAddress) {
             this.submitNewAddress();
         } else {
-            queryAddressLatLong(address)
-                .then(() => {
-                    this.submitNewAddress();
-                })
-                .catch(() => {
-                    this.showBadAddressWarning(address);
-                });
+            this.checkAddressExists();
         }
     };
 
@@ -82,6 +73,17 @@ class AddressCreator extends Component {
             city: this.state.city.value,
             country: this.state.country.value,
         };
+    };
+
+    checkAddressExists = () => {
+        const address = this.getAddressFromInputValues();
+        queryAddressLatLong(address)
+            .then(() => {
+                this.submitNewAddress();
+            })
+            .catch(() => {
+                this.showBadAddressWarning(address);
+            });
     };
 
     showBadAddressWarning = () => {

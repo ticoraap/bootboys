@@ -5,6 +5,7 @@ const initialState = {
     userAddresses: [],
     userAddressesLoading: false,
     addAddressLoading: false,
+    getUserAddresError: null,
 };
 
 const getUserAddressesStart = (state) => {
@@ -20,9 +21,10 @@ const getUserAddressesSuccess = (state, action) => {
     });
 };
 
-const getUserAddressesFail = (state) => {
+const getUserAddressesFail = (state, action) => {
     return updateObject(state, {
         userAddressesLoading: false,
+        getUserAddresError: action.error,
     });
 };
 
@@ -41,10 +43,9 @@ const addAddressSuccess = (state) => {
 const addAddressFail = (state) => {
     return updateObject(state, {
         addAddressLoading: false,
+        getUser,
     });
 };
-
-
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
@@ -54,7 +55,7 @@ const reducer = (state = initialState, action) => {
             return getUserAddressesSuccess(state, action);
         case actionTypes.GET_USER_ADDRESSES_FAIL:
             return getUserAddressesFail(state, action);
-        
+
         case actionTypes.ADD_USER_ADDRESS_START:
             return addAddressStart(state, action);
         case actionTypes.ADD_USER_ADDRESS_SUCCESS:

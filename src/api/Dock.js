@@ -1,22 +1,22 @@
-export function DockApi(httpService) {
+export function DockApi(httpClient) {
     function get(id) {
-        return httpService.getDock(id)
+        return httpClient.getDock(id);
     }
-    
+
     function getAll() {
-        return httpService.getAllDocks()
+        return httpClient.getAllDocks();
     }
 
     function getAllOwned() {
-        return httpService.getAllDocks()
+        return httpClient.getAllDocks();
     }
-    
+
     function add(id, dock) {
-        return httpService.addDock(id, dock);
+        return httpClient.addDock(id, dock);
     }
 
     function remove(id) {
-        return httpService.removeDock(id);
+        return httpClient.removeDock(id);
     }
 
     return Object.freeze({ get, getAll, getAllOwned, add, remove });

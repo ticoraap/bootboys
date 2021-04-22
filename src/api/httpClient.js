@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAuthToken, getUserId } from "../shared/utility";
 
-export const httpService = {
+export const httpClient = {
     getDock,
     getAllDocks,
     addDock,
@@ -119,4 +119,4 @@ const getBaseURL = () => {
     return "" + process.env.REACT_APP_BASE_URL;
 };
 
-export default httpService;
+export default httpClient;

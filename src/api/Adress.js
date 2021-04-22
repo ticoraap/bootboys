@@ -1,14 +1,14 @@
-export function AddressApi(httpService) {
+export function AddressApi(httpClient) {
     function get(addressid) {
-        return httpService.getAddress(addressid);
+        return httpClient.getAddress(addressid);
     }
 
     function getAllFromUser() {
-        return httpService.getAddressesFromUser();
+        return httpClient.getAddressesFromUser();
     }
 
     function add(address) {
-        return httpService.addAddress(address);
+        return httpClient.addAddress(address);
     }
 
     return Object.freeze({ get, getAllFromUser, add });

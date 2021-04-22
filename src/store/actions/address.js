@@ -15,10 +15,13 @@ export const getUserAddresses = () => {
                 dispatch(getUserAddressesSuccess(addresses));
             })
             .catch((error) => {
-                dispatch(getUserAddressesFail(error));
+                dispatch(
+                    getUserAddressesFail(error.response.data.error.message)
+                );
             });
     };
 };
+
 export const getUserAddressesStart = () => {
     return {
         type: actionTypes.GET_USER_ADDRESSES_START,
@@ -46,7 +49,7 @@ export const addUserAddress = (address) => {
             .add(address)
             .then(() => {
                 dispatch({ type: actionTypes.ADD_USER_ADDRESS_SUCCESS });
-                dispatch(getUserAddresses())
+                dispatch(getUserAddresses());
             })
             .catch(() => {
                 dispatch({ type: actionTypes.ADD_USER_ADDRESS_FAIL });

@@ -4,13 +4,11 @@ import Layout from "./HOC/Layout/Layout";
 import PrivateRoute from "./shared/PrivateRoute";
 import "react-toastify/dist/ReactToastify.css";
 
-// containers
 import Account from "./containers/Account/Account";
 import DockSearcher from "./containers/DockSearcher/DockSearcher";
 import Dock from "./containers/Dock/Dock";
 import DockManager from "./containers/DockManager/DockManager";
 
-// components
 import NotFound from "./components/NotFound/NotFound";
 
 class App extends Component {

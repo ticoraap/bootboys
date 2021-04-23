@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getAuthToken, getUserId } from "../shared/utility";
 
+// REFACTOR make a interface for API clients like httpClient
 export const httpClient = {
     getDock,
     getAllDocks,
@@ -16,7 +17,6 @@ export const httpClient = {
     getAddressesFromUser,
 };
 
-// docks
 function getAllDocks() {
     return get("dock");
 }
@@ -33,7 +33,6 @@ function removeDock(dockid) {
     return remove("dock/" + dockid);
 }
 
-// user
 function addUserDock(dock) {
     const userId = getUserId();
     const userDock = {
@@ -73,8 +72,6 @@ function addAddress(address) {
     return post("address", address);
 }
 
-// TODO Change to httpService to HttpClient
-
 function post(url, JSON) {
     const URL = composeApiURLWithAuth(url);
     return axios.post(URL, JSON);
@@ -101,22 +98,21 @@ function remove(resourceLocation) {
     return axios.delete(URL);
 }
 
-// TODO Change to function syntax
-const composeApiURL = (resourceLocation) => {
+function composeApiURL(resourceLocation) {
     return getBaseURL() + resourceLocation + ".json";
-};
+}
 
-const composeApiURLWithAuth = (resourceLocation) => {
+function composeApiURLWithAuth(resourceLocation) {
     return getBaseURL() + resourceLocation + ".json" + getAuthString();
-};
+}
 
-const getAuthString = () => {
+function getAuthString() {
     if (getAuthToken()) return "?auth=" + getAuthToken();
     return "";
-};
+}
 
-const getBaseURL = () => {
+function getBaseURL() {
     return "" + process.env.REACT_APP_BASE_URL;
-};
+}
 
 export default httpClient;

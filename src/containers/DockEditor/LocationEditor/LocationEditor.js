@@ -40,10 +40,10 @@ class LocationEditor extends Component {
         this.setState({
             [id]: { value, valid },
         });
-        this.isFormValid();
+        this.setFormValidityToState();
     };
 
-    isFormValid = () => {
+    setFormValidityToState = () => {
         this.setState(
             (prevState) => {
                 return {
@@ -156,7 +156,6 @@ class LocationEditor extends Component {
                     options={this.mapAddressesToSelectOptions()}
                     notifyParentOfChange={this.onSelectChange}
                 />
-
                 <Button btnType="Form" clicked={this.onToggleAddressModal}>
                     New
                 </Button>

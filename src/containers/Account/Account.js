@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Account.css";
+import classes from "./Account.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
@@ -34,16 +34,15 @@ class Account extends Component {
         if (this.state.editDetails) {
             return (
                 <div>
-                    <div id="elementbox">
+                    <div className={classes.Elementbox}>
                         <h1>Account Details</h1>
-                        <div id="editform">
+                        <div className={classes.Editform}>
                             <form
                                 noValidate
                                 autoComplete="off"
                                 onSubmit={this.submitForm}
                             >
                                 <TextField
-                                    id="Password"
                                     label="New Password"
                                     defaultValue={this.state.password}
                                     variant={"outlined"}
@@ -62,17 +61,17 @@ class Account extends Component {
             );
         }
         return (
-            <div id="master">
-                <div id="elementbox">
+            <div>
+                <div className={classes.Elementbox}>
                     <h1>Account Details</h1>
-                    <div id="textfields">
-                        <p id="ownP">
+                    <div className={classes.Textfields}>
+                        <p className={classes.OwnP}>
                             Username: {this.props.name} <br />
                             Email: {this.props.email} <br />
                         </p>
                     </div>
                     <button
-                        id="editbutton"
+                        className={classes.Editbutton}
                         onClick={this.onClickEditButton.bind(this)}
                     >
                         Edit Details

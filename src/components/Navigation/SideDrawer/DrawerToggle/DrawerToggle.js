@@ -1,9 +1,9 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import classes from "./DrawerToggle.module.css";
+import PropTypes from "prop-types";
 
-import PropTypes from 'prop-types';
-import classes from './DrawerToggle.module.css';
-import * as actionTypes from '../../../../store/actions/actionTypes';
+import { connect } from "react-redux";
+import * as actionTypes from "../../../../store/actions/actionTypes";
 
 const drawerToggle = (props) => (
     <div className={classes.DrawerToggle} onClick={props.onToggleSideDrawer}>
@@ -11,23 +11,24 @@ const drawerToggle = (props) => (
         <div></div>
         <div></div>
     </div>
-)
+);
 
 drawerToggle.propTypes = {
-    onToggleSideDrawer: PropTypes.func
+    onToggleSideDrawer: PropTypes.func,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         isAuthenticated: state.auth.isAuthenticated,
-        showSideDrawer: state.ux.showSideDrawer
-    }
-}
+        showSideDrawer: state.ux.showSideDrawer,
+    };
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
     return {
-        onToggleSideDrawer: () => dispatch({type: actionTypes.TOGGLE_SIDEDRAWER}),
-    }
-}
+        onToggleSideDrawer: () =>
+            dispatch({ type: actionTypes.TOGGLE_SIDEDRAWER }),
+    };
+};
 
-export default connect(mapStateToProps,mapDispatchToProps)(drawerToggle);
+export default connect(mapStateToProps, mapDispatchToProps)(drawerToggle);

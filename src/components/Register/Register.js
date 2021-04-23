@@ -20,10 +20,14 @@ class Register extends Component {
         this.props.onAuth(this.state.email.value, this.state.password.value);
     };
 
-    inputChangedHandler = (id, value, valid) => {
+    onInputChange = (id, value, valid) => {
         this.setState({
             [id]: { value: value, valid: valid },
         });
+        setFormValidityToState();
+    };
+
+    setFormValidityToState = () => {
         this.setState((prevState) => {
             return {
                 allValid: prevState.email.valid && prevState.password.valid,
@@ -55,8 +59,8 @@ class Register extends Component {
                         validationRules={{
                             isEmail: true,
                         }}
-                        notifyParentOfChange={this.inputChangedHandler}
-                        />
+                        notifyParentOfChange={this.onInputChange}
+                    />
                     <Input
                         id="password"
                         type="password"
@@ -67,7 +71,7 @@ class Register extends Component {
                         validationRules={{
                             minLength: 8,
                         }}
-                        notifyParentOfChange={this.inputChangedHandler}
+                        notifyParentOfChange={this.onInputChange}
                     />
 
                     <Button
@@ -82,7 +86,6 @@ class Register extends Component {
         );
     }
 }
-
 
 const mapDispatchToProps = (dispatch) => {
     return {

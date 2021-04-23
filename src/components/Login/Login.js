@@ -12,18 +12,22 @@ export class Login extends Component {
     state = {
         email: { value: "", valid: false },
         password: { value: "", valid: false },
-        allValid: false,
+        isFormValid: false,
     };
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.onLogin(this.state.email.value, this.state.password.value); 
+        this.props.onLogin(this.state.email.value, this.state.password.value);
     };
 
     onInputChange = (id, value, valid) => {
         this.setState({
-            [id]: { value: value, valid: valid },
+            [id]: { value, valid },
         });
+        this.setFormValidityToState();
+    };
+
+    setFormValidityToState = () => {
         this.setState((prevState) => {
             return {
                 allValid: prevState.email.valid && prevState.password.valid,
@@ -55,7 +59,7 @@ export class Login extends Component {
                             isEmail: true,
                         }}
                         notifyParentOfChange={this.onInputChange}
-                        />
+                    />
                     <Input
                         id="password"
                         type="password"
@@ -70,7 +74,7 @@ export class Login extends Component {
 
                     <Button
                         btnType="Form"
-                        disabled={!this.state.allValid}
+                        disabled={!this.state.isFormValid}
                         clicked={this.onSubmit}
                     >
                         Login
@@ -85,7 +89,6 @@ Login.propTypes = {
     LoginModalToggle: PropTypes.func,
     onAuth: PropTypes.func,
 };
-
 
 const mapDispatchToProps = (dispatch) => {
     return {

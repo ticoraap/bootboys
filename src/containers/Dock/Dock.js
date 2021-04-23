@@ -1,6 +1,7 @@
 import React from "react";
 import classes from "./Dock.module.css";
 import PropTypes from "prop-types";
+
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
 
@@ -9,7 +10,6 @@ import { Calendar } from "react-calendar";
 import ToastMaker from "../../shared/toastMaker";
 import { Button } from "@material-ui/core";
 
-// components
 import Map from "../../components/Map/Map";
 
 class Dock extends React.Component {
@@ -25,7 +25,7 @@ class Dock extends React.Component {
     };
 
     componentDidMount() {
-        this.props.onGetDockWithAddressById(this.props.match.params.dockid)
+        this.props.onGetDockWithAddressById(this.props.match.params.dockid);
     }
 
     reserveDock() {
@@ -120,9 +120,10 @@ class Dock extends React.Component {
                         <p>facilities:</p>
                         <ul>{this.buildFacilitiesList()}</ul>
                         <p>
-                            Lenght of the dock: {this.props.dockWithAddress?.length} Meters{" "}
-                            <br />
-                            Width of the dock: {this.props.dockWithAddress?.width} Meters
+                            Lenght of the dock:{" "}
+                            {this.props.dockWithAddress?.length} Meters <br />
+                            Width of the dock:{" "}
+                            {this.props.dockWithAddress?.width} Meters
                         </p>
                     </div>
                     <div className={classes.rent}>
@@ -170,14 +171,19 @@ class Dock extends React.Component {
                 <div className={classes.location}>
                     <div className={classes.locationDetails}>
                         <p>
-                            Country: {this.props.dockWithAddress?.address?.country} <br />
+                            Country:{" "}
+                            {this.props.dockWithAddress?.address?.country}{" "}
+                            <br />
                             City: {this.props.dockWithAddress?.address?.city}
                             <br />
-                            Street: {this.props.dockWithAddress?.address?.street}
+                            Street:{" "}
+                            {this.props.dockWithAddress?.address?.street}
                             <br />
-                            Housenumber: {this.props.dockWithAddress?.address?.houseNumber}
+                            Housenumber:{" "}
+                            {this.props.dockWithAddress?.address?.houseNumber}
                             <br />
-                            postalcode: {this.props.dockWithAddress?.address?.postalcode}
+                            postalcode:{" "}
+                            {this.props.dockWithAddress?.address?.postalcode}
                             <br />
                             {this.props.dockWithAddress?.address?.state}
                         </p>
@@ -204,7 +210,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onGetDockWithAddressById: (dockid) => dispatch(actions.getDockWithAddressById(dockid)),
+        onGetDockWithAddressById: (dockid) =>
+            dispatch(actions.getDockWithAddressById(dockid)),
     };
 };
 
@@ -212,7 +219,7 @@ Dock.propTypes = {
     location: PropTypes.any,
     match: PropTypes.any,
     onGetDockWithAddressById: PropTypes.func,
-    dockWithAddress: PropTypes.any
+    dockWithAddress: PropTypes.any,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dock);

@@ -56,10 +56,10 @@ export const isInputValidByRules = (input, rules) => {
     return isValid;
 };
 
-export const JSONtoObjectArrary = (firebaseObject, keyname = "id") => {
+export const objectMembersToArray = (firebaseObject, keyName = "id") => {
     const arrayOfObjects = [];
     for (const [key, value] of Object.entries(firebaseObject)) {
-        value[keyname] = key;
+        value[keyName] = key;
         arrayOfObjects.push(value);
     }
     return arrayOfObjects;

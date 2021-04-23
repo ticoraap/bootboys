@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import classes from "./NavigationItems.module.css";
+
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
@@ -11,12 +12,12 @@ import NavigationItem from "./NavigationItem/NavigationItem";
 import Auxiliary from "../../../HOC/Auxiliary/Auxiliary";
 
 export class NavigationItems extends Component {
-    login = () => {
+    onLogin = () => {
         this.props.onToggleLoginModal();
         this.toggleSideDrawer();
     };
 
-    register = () => {
+    onRegister = () => {
         this.props.onToggleRegisterModal();
         this.toggleSideDrawer();
     };
@@ -58,21 +59,18 @@ export class NavigationItems extends Component {
                         <NavigationItem
                             onClick={() =>
                                 this.props.onLogoutUser(this.props.history)
-                            }>
+                            }
+                        >
                             Logout
                         </NavigationItem>
                     </Auxiliary>
                 ) : (
                     <Auxiliary>
-                        <NavigationItem
-                            onClick={this.register}
-                        >
+                        <NavigationItem onClick={this.onRegister}>
                             Register
                         </NavigationItem>
 
-                        <NavigationItem
-                            onClick={this.login}
-                        >
+                        <NavigationItem onClick={this.onLogin}>
                             Login
                         </NavigationItem>
                     </Auxiliary>

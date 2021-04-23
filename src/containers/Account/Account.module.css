@@ -1,21 +1,21 @@
-#elementbox {
+.Elementbox {
     border-style: groove;
     background-color: #f3f3f3;
     margin-top: 3%;
 }
 
-#textfields {
+.Textfields {
     justify-content: center;
     display: flex;
     font-size: 18px;
 }
 
-#ownP{
+.OwnP {
     margin-left: 5%;
     margin-right: 5%;
 }
 
-#editbutton {
+.Editbutton {
     background-color: #ea4634;
     border: none;
     color: white;
@@ -25,6 +25,3 @@
     width: 100%;
     cursor: pointer;
 }
-
-
-

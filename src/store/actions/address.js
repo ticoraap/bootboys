@@ -8,7 +8,7 @@ export const getUserAddresses = () => {
         Api.address
             .getAllFromUser()
             .then((response) => {
-                const addresses = utility.JSONtoObjectArrary(
+                const addresses = utility.objectMembersToArray(
                     response.data,
                     "addressid"
                 );

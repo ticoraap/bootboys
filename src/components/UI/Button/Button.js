@@ -1,7 +1,6 @@
 import React from "react";
-
-import PropTypes from "prop-types";
 import classes from "./Button.module.css";
+import PropTypes from "prop-types";
 
 const button = (props) => {
     const buttonClasses = [classes.Button, classes[props.btnType]];

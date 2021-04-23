@@ -39,10 +39,10 @@ class DockEditor extends Component {
         this.setState({
             [id]: { value, valid },
         });
-        this.isFormValid();
+        this.setFormValidityToState();
     };
 
-    isFormValid = () => {
+    setFormValidityToState = () => {
         this.setState((prevState) => {
             return {
                 isFormValid:
@@ -83,7 +83,7 @@ class DockEditor extends Component {
             length: parseFloatFromMetersInput(this.state.length.value),
             width: parseFloatFromMetersInput(this.state.width.value),
             price: parseFloatFromEurosInput(this.state.price.value),
-            place: this.state.label.value, // TODO change place to label everywhere
+            place: this.state.label.value,
             latitude: parseFloat(this.state.locationDetails.value.latitude),
             longitude: parseFloat(this.state.locationDetails.value.longitude),
             facilities: this.state.facilities,

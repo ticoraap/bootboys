@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+
 import { latLngBounds, latLng } from "leaflet";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 
@@ -20,19 +21,18 @@ class ReactMap extends Component {
 
     createMarkerArray = (docks) => {
         return docks.map((dock) => (
-                <Marker
-                    key={dock.dockid}
-                    position={{ lat: dock.latitude, lng: dock.longitude }}
-                >
-                    <Popup>
-                        Name dock: {dock.name} <br />
-                        Length: {dock.length} meter <br />
-                        Width: {dock.width} meter <br />
-                        Price: &euro; {dock.price}
-                    </Popup>
-                </Marker>
-            )
-        );
+            <Marker
+                key={dock.dockid}
+                position={{ lat: dock.latitude, lng: dock.longitude }}
+            >
+                <Popup>
+                    Name dock: {dock.name} <br />
+                    Length: {dock.length} meter <br />
+                    Width: {dock.width} meter <br />
+                    Price: &euro; {dock.price}
+                </Popup>
+            </Marker>
+        ));
     };
 
     render() {

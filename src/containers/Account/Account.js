@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import classes from "./Account.css";
+import classes from "./Account.module.css";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as actions from "../../store/actions/index";
@@ -86,6 +86,7 @@ Account.propTypes = {
     name: PropTypes.string,
     email: PropTypes.string,
     onChangePassword: PropTypes.func,
+    token: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {

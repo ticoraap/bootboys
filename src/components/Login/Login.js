@@ -30,7 +30,7 @@ export class Login extends Component {
     setFormValidityToState = () => {
         this.setState((prevState) => {
             return {
-                allValid: prevState.email.valid && prevState.password.valid,
+                isFormValid: prevState.email.valid && prevState.password.valid,
             };
         });
     };
@@ -87,7 +87,7 @@ export class Login extends Component {
 
 Login.propTypes = {
     LoginModalToggle: PropTypes.func,
-    onAuth: PropTypes.func,
+    onLogin: PropTypes.func,
 };
 
 const mapDispatchToProps = (dispatch) => {

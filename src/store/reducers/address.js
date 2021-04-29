@@ -43,7 +43,6 @@ const addAddressSuccess = (state) => {
 const addAddressFail = (state) => {
     return updateObject(state, {
         addAddressLoading: false,
-        getUser,
     });
 };
 

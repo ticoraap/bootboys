@@ -24,7 +24,7 @@ class Register extends Component {
         this.setState({
             [id]: { value: value, valid: valid },
         });
-        setFormValidityToState();
+        this.setFormValidityToState();
     };
 
     setFormValidityToState = () => {
